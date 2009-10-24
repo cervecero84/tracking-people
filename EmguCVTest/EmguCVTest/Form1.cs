@@ -26,6 +26,8 @@ namespace EmguCVTest
                     viewer.Image = capture.QueryFrame();    // draw the image obtained from the camera
                 });
             viewer.ShowDialog();    // show the image viewer
+
+            MessageBox.Show("This is a test message");
         }
     }
 }
