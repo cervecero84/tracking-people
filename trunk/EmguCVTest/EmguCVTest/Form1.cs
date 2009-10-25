@@ -20,7 +20,14 @@ namespace EmguCVTest
      */
     public partial class Form1 : Form
     {
-
+        /**
+        * This comment is to test conflict/update/merge etc... 
+        * It will be deleted
+         * * It will be deleted
+         * * It will be deleted
+         * * It will be deleted
+        */
+        int Hello;
         Image<Gray, Byte> _backgroundImage;
         // One instance of the capture resource
         Capture _capture;
