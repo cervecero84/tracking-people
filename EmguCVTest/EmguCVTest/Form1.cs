@@ -15,31 +15,58 @@ namespace EmguCVTest
 {
     public partial class Form1 : Form
     {
+
+        Image<Gray, Byte> backgroundImage;
+        const String DEFAULT_TEXT_BTN_BG_CAPTURE = "Take Background Image [5s]";
+        const String DEFAULT_TEXT_BTN_BEGIN_DIFFERENCING = "Begin Differencing";
+
         public Form1()
         {
             InitializeComponent();
+            this.backgroundImage = new Image<Gray, byte>(640, 480);
+        }
 
-            ImageViewer viewer = new ImageViewer(); // create an image viewer
-            Capture capture = new Capture(); // create a camera capture
-            Application.Idle += new EventHandler(delegate(object sender, EventArgs e)
-                {   // run this until the application is closed
-                    viewer.Image = capture.QueryFrame();    // draw the image obtained from the camera
-                });
-            viewer.ShowDialog();    // show the image viewer
+        private void btnBgCapture_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Background capture will happen 5s after you click OK");
 
-            using (Image<Bgr, Byte> img = new Image<Bgr, byte>(400, 200, new Bgr(255, 0, 0)))
+            using (Capture capture = new Capture())
             {
-                //Create the font
-                MCvFont f = new MCvFont(CvEnum.FONT.CV_FONT_HERSHEY_COMPLEX, 1.0, 1.0);
-
-                //Draw "Hello, world." on the image using the specific font
-                img.Draw("Hello, world", ref f, new Point(10, 80), new Bgr(0, 255, 0));
-
-                //Show the image using ImageViewer from Emgu.CV.UI
-                ImageViewer.Show(img, "Test Window");
+                capture.FlipHorizontal = true;
+                for (int i = 0; i < 50; i++)
+                {
+                    capture.QueryGrayFrame();
+                    System.Threading.Thread.Sleep(100);
+                }
+                this.backgroundImage = capture.QueryGrayFrame();
             }
-            //new test to check annotations
+        }
 
+        private void btnBeginDifferencing_Click(object sender, EventArgs e)
+        {
+            ImageViewer viewer = new ImageViewer(); // create an image viewer
+
+            Capture capture = new Capture(); // create a camera capture
+            capture.FlipHorizontal = true;
+            Image<Gray, Byte> frame = new Image<Gray, byte>(640,480);
+            Application.Idle += new EventHandler(delegate(object newsender, EventArgs newe)
+            {   // run this until the application is closed
+                System.Threading.Thread.Sleep(50);
+                frame = capture.QueryGrayFrame();
+                Image<Gray, Byte> difference = new Image<Gray, byte>(640, 480);
+                CvInvoke.cvAbsDiff(this.backgroundImage, frame, difference);
+                viewer.Image = difference.ThresholdBinary(new Gray(15), new Gray(255));
+                //viewer.Image = difference;
+            });
+            
+            viewer.ShowDialog();    // show the image viewer
+        }
+
+        private void btnShowBackground_Click(object sender, EventArgs e)
+        {
+            ImageViewer viewer = new ImageViewer();
+            viewer.Image = backgroundImage;
+            viewer.ShowDialog();
         }
     }
 }
