@@ -14,6 +14,10 @@ using Emgu.CV.Structure;
 
 namespace EmguCVTest
 {
+    /**
+     * This comment is to test conflict/update/merge etc... 
+     * It will be deleted
+     */
     public partial class Form1 : Form
     {
 
