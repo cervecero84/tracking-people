@@ -38,7 +38,7 @@ namespace EmguCVTest
                 //Show the image using ImageViewer from Emgu.CV.UI
                 ImageViewer.Show(img, "Test Window");
             }
-            //new test again
+            //new test again2
 
         }
     }
