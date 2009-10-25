@@ -65,6 +65,7 @@ namespace EmguCVTest
         private void btnShowBackground_Click(object sender, EventArgs e)
         {
             ImageViewer viewer = new ImageViewer();
+            // Show the background image
             viewer.Image = backgroundImage;
             viewer.ShowDialog();
         }
