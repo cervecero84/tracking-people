@@ -28,8 +28,9 @@ namespace EmguCVTest
          * * It will be deleted
         */
         int Hello;
+        MessageBox m = new MessageBox();
         Image<Gray, Byte> _backgroundImage;
-        // One instance of the capture resource
+      
         Capture _capture;
         // One instance of the difference viewer
         ImageViewer _differenceViewer;
@@ -58,6 +59,7 @@ namespace EmguCVTest
         private void btnBgCapture_Click(object sender, EventArgs e)
         {
             // Initialize in case it was destroyed somewhere else
+            //new comment for svn conflict testing
             InitializeCamera();
             MessageBox.Show("Background capture will happen 5s after you click OK");
             // Warm up the camera - let it take 100 frames, and finish its auto-adjustment
