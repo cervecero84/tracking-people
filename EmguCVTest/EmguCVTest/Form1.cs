@@ -39,6 +39,8 @@ namespace EmguCVTest
                 ImageViewer.Show(img, "Test Window");
             }
 
+            // this is another test
+
         }
     }
 }
