@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9352B55E-4F7B-4D76-A673-973DE7233DD7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -33,19 +33,15 @@
   <ItemGroup>
     <Reference Include="Emgu.CV, Version=1.5.0.1, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\4A\4YDP\Milestone 1\EmguCV\Emgu.CV.Binary-1.5.0.1\Emgu.CV.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.ML, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a288bfcf2d37d93b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\4A\4YDP\Milestone 1\EmguCV\Emgu.CV.Binary-1.5.0.1\Emgu.CV.ML.dll</HintPath>
+      <HintPath>..\..\..\..\Emgu.CV.SourceAndExample-1.5.0.1\src\bin\Emgu.CV.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=987a5607bf4f198c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\4A\4YDP\Milestone 1\EmguCV\Emgu.CV.Binary-1.5.0.1\Emgu.CV.UI.dll</HintPath>
+      <HintPath>..\..\..\..\Emgu.CV.SourceAndExample-1.5.0.1\src\bin\Emgu.CV.UI.dll</HintPath>
     </Reference>
-    <Reference Include="Emgu.Util, Version=1.1.3345.35405, Culture=neutral, PublicKeyToken=9ce8ff41c3b3d7f5, processorArchitecture=MSIL">
+    <Reference Include="Emgu.Util, Version=1.1.3584.17903, Culture=neutral, PublicKeyToken=9ce8ff41c3b3d7f5, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\4A\4YDP\Milestone 1\EmguCV\Emgu.CV.Binary-1.5.0.1\Emgu.Util.dll</HintPath>
+      <HintPath>..\..\..\..\Emgu.CV.SourceAndExample-1.5.0.1\src\bin\Emgu.Util.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -64,7 +60,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="zlib.net, Version=1.0.3.0, Culture=neutral, PublicKeyToken=47d7877cb3620160">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\4A\4YDP\Milestone 1\EmguCV\Emgu.CV.Binary-1.5.0.1\zlib.net.dll</HintPath>
+      <HintPath>..\..\..\..\Emgu.CV.SourceAndExample-1.5.0.1\src\bin\zlib.net.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +70,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Hello_World.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
