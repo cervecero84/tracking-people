@@ -14,21 +14,9 @@ using Emgu.CV.Structure;
 
 namespace EmguCVTest
 {
-    /**
-     * This comment is to test conflict/update/merge etc... 
-     * It will be deleted
-     */
+
     public partial class Form1 : Form
     {
-        /**
-        * This comment is to test conflict/update/merge etc... 
-        * It will be deleted
-         * * It will be deleted
-         * * It will be deleted
-         * * It will be deleted
-        */
-        int Hello;
-        MessageBox m = new MessageBox();
         Image<Gray, Byte> _backgroundImage;
       
         Capture _capture;
@@ -48,11 +36,16 @@ namespace EmguCVTest
         // the thresholding on the difference
         private void ProcessFrame(object sender, EventArgs e)
         {
+            Point tableTopL = new Point(100, 200);
+            Size tableDim = new Size(50, 40);
             Image<Gray, Byte> frame = _capture.QueryGrayFrame();
             Image<Gray, Byte> difference = new Image<Gray, byte>(640, 480);
             CvInvoke.cvAbsDiff(_backgroundImage, frame, difference);
             Image<Gray, Byte> thresholded = new Image<Gray,byte>(640, 480);
             thresholded = difference.ThresholdBinary(new Gray(20), new Gray(255));
+            Rectangle myRectangle = new Rectangle(tableTopL, tableDim);
+            thresholded.Draw(myRectangle, new Gray(10), 2);
+
             _differenceViewer.Image = thresholded;
         }
 
@@ -94,7 +87,7 @@ namespace EmguCVTest
                 // Register the event handler
                 Application.Idle += new EventHandler(ProcessFrame);
             }
-            
+
             _differenceViewer.ShowDialog();    // show the image viewer
         }
 
