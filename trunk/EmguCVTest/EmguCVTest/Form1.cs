@@ -44,9 +44,14 @@ namespace EmguCVTest
             Image<Gray, Byte> thresholded = new Image<Gray,byte>(640, 480);
             thresholded = difference.ThresholdBinary(new Gray(20), new Gray(255));
             Rectangle myRectangle = new Rectangle(tableTopL, tableDim);
-            thresholded.Draw(myRectangle, new Gray(10), 2);
+            thresholded.Draw(myRectangle, new Gray(255), 2);
 
-            _differenceViewer.Image = thresholded;
+         //_differenceViewer.Image = thresholded;
+
+            Image<Bgr, Byte> image = _capture.QuerySmallFrame().PyrUp(); //reduce noise from the image
+            capturedImageBox.Image = image;
+
+            motionImageBox.Image = thresholded;
         }
 
         private void btnBgCapture_Click(object sender, EventArgs e)
@@ -88,7 +93,7 @@ namespace EmguCVTest
                 Application.Idle += new EventHandler(ProcessFrame);
             }
 
-            _differenceViewer.ShowDialog();    // show the image viewer
+            //_differenceViewer.ShowDialog();    // show the image viewer
         }
 
         private void btnShowBackground_Click(object sender, EventArgs e)
@@ -96,6 +101,8 @@ namespace EmguCVTest
             ImageViewer viewer = new ImageViewer();
             // Show the background image
             viewer.Image = _backgroundImage;
+            //backgroundImage.Image = _backgroundImage;
+
             viewer.ShowDialog();
         }
     }
