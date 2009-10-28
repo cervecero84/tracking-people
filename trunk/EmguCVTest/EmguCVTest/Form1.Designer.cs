@@ -42,7 +42,7 @@
             // 
             // btnBgCapture
             // 
-            this.btnBgCapture.Location = new System.Drawing.Point(45, 12);
+            this.btnBgCapture.Location = new System.Drawing.Point(12, 12);
             this.btnBgCapture.Name = "btnBgCapture";
             this.btnBgCapture.Size = new System.Drawing.Size(177, 52);
             this.btnBgCapture.TabIndex = 0;
@@ -52,7 +52,7 @@
             // 
             // btnBeginDifferencing
             // 
-            this.btnBeginDifferencing.Location = new System.Drawing.Point(45, 70);
+            this.btnBeginDifferencing.Location = new System.Drawing.Point(12, 70);
             this.btnBeginDifferencing.Name = "btnBeginDifferencing";
             this.btnBeginDifferencing.Size = new System.Drawing.Size(177, 52);
             this.btnBeginDifferencing.TabIndex = 1;
@@ -62,7 +62,7 @@
             // 
             // btnShowBackground
             // 
-            this.btnShowBackground.Location = new System.Drawing.Point(45, 128);
+            this.btnShowBackground.Location = new System.Drawing.Point(12, 128);
             this.btnShowBackground.Name = "btnShowBackground";
             this.btnShowBackground.Size = new System.Drawing.Size(177, 52);
             this.btnShowBackground.TabIndex = 2;
@@ -74,9 +74,9 @@
             // 
             this.capturedImageBox.BackColor = System.Drawing.SystemColors.ControlText;
             this.capturedImageBox.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.capturedImageBox.Location = new System.Drawing.Point(228, 12);
+            this.capturedImageBox.Location = new System.Drawing.Point(195, 12);
             this.capturedImageBox.Name = "capturedImageBox";
-            this.capturedImageBox.Size = new System.Drawing.Size(409, 353);
+            this.capturedImageBox.Size = new System.Drawing.Size(622, 509);
             this.capturedImageBox.TabIndex = 3;
             this.capturedImageBox.TabStop = false;
             // 
@@ -84,16 +84,16 @@
             // 
             this.motionImageBox.BackColor = System.Drawing.SystemColors.ControlText;
             this.motionImageBox.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.motionImageBox.Location = new System.Drawing.Point(643, 12);
+            this.motionImageBox.Location = new System.Drawing.Point(823, 12);
             this.motionImageBox.Name = "motionImageBox";
-            this.motionImageBox.Size = new System.Drawing.Size(397, 353);
+            this.motionImageBox.Size = new System.Drawing.Size(588, 509);
             this.motionImageBox.TabIndex = 4;
             this.motionImageBox.TabStop = false;
             // 
             // backgroundImage
             // 
             this.backgroundImage.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.backgroundImage.Location = new System.Drawing.Point(45, 186);
+            this.backgroundImage.Location = new System.Drawing.Point(12, 186);
             this.backgroundImage.Name = "backgroundImage";
             this.backgroundImage.Size = new System.Drawing.Size(177, 173);
             this.backgroundImage.TabIndex = 5;
@@ -103,7 +103,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1048, 371);
+            this.ClientSize = new System.Drawing.Size(1468, 533);
             this.Controls.Add(this.backgroundImage);
             this.Controls.Add(this.motionImageBox);
             this.Controls.Add(this.capturedImageBox);
