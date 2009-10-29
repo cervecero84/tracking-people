@@ -76,7 +76,7 @@
             this.capturedImageBox.Cursor = System.Windows.Forms.Cursors.Cross;
             this.capturedImageBox.Location = new System.Drawing.Point(195, 12);
             this.capturedImageBox.Name = "capturedImageBox";
-            this.capturedImageBox.Size = new System.Drawing.Size(622, 509);
+            this.capturedImageBox.Size = new System.Drawing.Size(400, 400);
             this.capturedImageBox.TabIndex = 3;
             this.capturedImageBox.TabStop = false;
             // 
@@ -84,9 +84,9 @@
             // 
             this.motionImageBox.BackColor = System.Drawing.SystemColors.ControlText;
             this.motionImageBox.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.motionImageBox.Location = new System.Drawing.Point(823, 12);
+            this.motionImageBox.Location = new System.Drawing.Point(601, 12);
             this.motionImageBox.Name = "motionImageBox";
-            this.motionImageBox.Size = new System.Drawing.Size(588, 509);
+            this.motionImageBox.Size = new System.Drawing.Size(400, 400);
             this.motionImageBox.TabIndex = 4;
             this.motionImageBox.TabStop = false;
             // 
@@ -103,7 +103,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1468, 533);
+            this.ClientSize = new System.Drawing.Size(1005, 419);
             this.Controls.Add(this.backgroundImage);
             this.Controls.Add(this.motionImageBox);
             this.Controls.Add(this.capturedImageBox);
