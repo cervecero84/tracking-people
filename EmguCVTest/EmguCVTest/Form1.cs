@@ -47,7 +47,9 @@ namespace EmguCVTest
             Rectangle myRectangle = new Rectangle(tableTopL, tableDim);
             //thresholded.Draw(myRectangle, new Gray(255), 2);
 
+            Image<Bgr, Byte> thresholdedPass = thresholded.Convert<Bgr, Byte>();
 
+            drawBoxes(thresholdedPass);
 
 
          //_differenceViewer.Image = thresholded;
@@ -211,16 +213,27 @@ namespace EmguCVTest
         {
             InitializeCamera();
 
-                _capture.QueryGrayFrame();
+                //_capture.QueryGrayFrame();
 
-            //Image<Bgr, Byte> image = _capture.QuerySmallFrame().PyrUp(); //reduce noise from the image
-            //capturedImageBox.Image = image.Resize(400, 400, true);
 
-            _sqImage = _capture.QuerySmallFrame().PyrUp();
-            drawBoxes(_sqImage);
+            //_sqImage = _capture.QuerySmallFrame().PyrUp();
 
-            //Image<Bgr, Byte> image = _capture.QuerySmallFrame().PyrUp(); //reduce noise from the image
-            //capturedImageBox.Image = image.Resize(400, 400, true);
+            Image<Gray, Byte> frame = _capture.QueryGrayFrame();
+            Image<Gray, Byte> difference = new Image<Gray, byte>(640, 480);
+            CvInvoke.cvAbsDiff(_backgroundImage, frame, difference);
+            Image<Gray, Byte> thresholded = new Image<Gray, byte>(640, 480);
+            thresholded = difference.ThresholdBinary(new Gray(20), new Gray(255));
+
+            //thresholded.Save("thresholded.png");
+
+            //fileNameTextBox.Text = "pic3.png";
+            Image<Bgr, Byte> test = new Image<Bgr, byte>("pic3.png").Resize(400, 400, true);
+            //Emgu.CV.Image<Bgr, Byte> test = new Image<Bgr,byte> (pic3.png
+
+            Image<Bgr, Byte> thresholdedPass = thresholded.Convert<Bgr,Byte>();
+
+            drawBoxes(thresholdedPass);
+            //_sqImage.Save("Test.jpg");
         }
     }
 }
