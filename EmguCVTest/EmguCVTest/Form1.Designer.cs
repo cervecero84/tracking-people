@@ -35,9 +35,14 @@
             this.capturedImageBox = new Emgu.CV.UI.ImageBox();
             this.motionImageBox = new Emgu.CV.UI.ImageBox();
             this.backgroundImage = new Emgu.CV.UI.ImageBox();
+            this.imgImageBox = new Emgu.CV.UI.ImageBox();
+            this.grayImageBox = new Emgu.CV.UI.ImageBox();
+            this.detectSQ = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.capturedImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.motionImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.backgroundImage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imgImageBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grayImageBox)).BeginInit();
             this.SuspendLayout();
             // 
             // btnBgCapture
@@ -93,17 +98,50 @@
             // backgroundImage
             // 
             this.backgroundImage.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.backgroundImage.Location = new System.Drawing.Point(12, 186);
+            this.backgroundImage.Location = new System.Drawing.Point(12, 431);
             this.backgroundImage.Name = "backgroundImage";
-            this.backgroundImage.Size = new System.Drawing.Size(177, 173);
+            this.backgroundImage.Size = new System.Drawing.Size(177, 177);
             this.backgroundImage.TabIndex = 5;
             this.backgroundImage.TabStop = false;
+            // 
+            // imgImageBox
+            // 
+            this.imgImageBox.BackColor = System.Drawing.SystemColors.ControlText;
+            this.imgImageBox.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.imgImageBox.Location = new System.Drawing.Point(195, 431);
+            this.imgImageBox.Name = "imgImageBox";
+            this.imgImageBox.Size = new System.Drawing.Size(400, 400);
+            this.imgImageBox.TabIndex = 6;
+            this.imgImageBox.TabStop = false;
+            // 
+            // grayImageBox
+            // 
+            this.grayImageBox.BackColor = System.Drawing.SystemColors.ControlText;
+            this.grayImageBox.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.grayImageBox.Location = new System.Drawing.Point(601, 431);
+            this.grayImageBox.Name = "grayImageBox";
+            this.grayImageBox.Size = new System.Drawing.Size(400, 400);
+            this.grayImageBox.TabIndex = 7;
+            this.grayImageBox.TabStop = false;
+            // 
+            // detectSQ
+            // 
+            this.detectSQ.Location = new System.Drawing.Point(12, 187);
+            this.detectSQ.Name = "detectSQ";
+            this.detectSQ.Size = new System.Drawing.Size(177, 51);
+            this.detectSQ.TabIndex = 8;
+            this.detectSQ.Text = "Detect Squares";
+            this.detectSQ.UseVisualStyleBackColor = true;
+            this.detectSQ.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1005, 419);
+            this.ClientSize = new System.Drawing.Size(1004, 843);
+            this.Controls.Add(this.detectSQ);
+            this.Controls.Add(this.grayImageBox);
+            this.Controls.Add(this.imgImageBox);
             this.Controls.Add(this.backgroundImage);
             this.Controls.Add(this.motionImageBox);
             this.Controls.Add(this.capturedImageBox);
@@ -115,6 +153,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.capturedImageBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.motionImageBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.backgroundImage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imgImageBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grayImageBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -127,6 +167,9 @@
         private Emgu.CV.UI.ImageBox capturedImageBox;
         private Emgu.CV.UI.ImageBox motionImageBox;
         private Emgu.CV.UI.ImageBox backgroundImage;
+        private Emgu.CV.UI.ImageBox imgImageBox;
+        private Emgu.CV.UI.ImageBox grayImageBox;
+        private System.Windows.Forms.Button detectSQ;
     }
 }
 
