@@ -18,6 +18,7 @@ namespace EmguCVTest
     public partial class Form1 : Form
     {
         Image<Gray, Byte> _backgroundImage;
+        Image<Bgr, Byte> _sqImage;
       
         Capture _capture;
         // One instance of the difference viewer
@@ -44,22 +45,89 @@ namespace EmguCVTest
             Image<Gray, Byte> thresholded = new Image<Gray,byte>(640, 480);
             thresholded = difference.ThresholdBinary(new Gray(20), new Gray(255));
             Rectangle myRectangle = new Rectangle(tableTopL, tableDim);
-            thresholded.Draw(myRectangle, new Gray(255), 2);
+            //thresholded.Draw(myRectangle, new Gray(255), 2);
 
-            //Image<Bgr, Byte> img = new Image<Bgr, byte>(fileNameTextBox.Text).Resize(400, 400, true);
 
-            //Image<Gray, Byte> gray = img.Convert<Gray, Byte>().PyrDown().PyrUp();
 
-            Gray cannyThreshold = new Gray(180);
-            Gray cannyThresholdLinking = new Gray(120);
-            Gray circleAccumulatorThreshold = new Gray(120);
 
          //_differenceViewer.Image = thresholded;
 
             Image<Bgr, Byte> image = _capture.QuerySmallFrame().PyrUp(); //reduce noise from the image
             capturedImageBox.Image = image.Resize(400, 400, true);
 
-            /*
+            //Detecting Squares
+
+            //Image<Bgr, Byte> img = image.Resize(400, 400, true);
+            //drawBoxes(_sqImage);
+
+            motionImageBox.Image = thresholded.Resize(400, 400, true);
+        }
+
+        private void btnBgCapture_Click(object sender, EventArgs e)
+        {
+            // Initialize in case it was destroyed somewhere else
+            //new comment for svn conflict testing
+            InitializeCamera();
+            MessageBox.Show("Background capture will happen 5s after you click OK");
+            // Warm up the camera - let it take 100 frames, and finish its auto-adjustment
+            for (int i = 0; i < 100; i++)
+            {
+                Thread.Sleep(50);
+                _capture.QueryGrayFrame();
+            }
+            // Actual background capture
+            _backgroundImage = _capture.QueryGrayFrame();
+            backgroundImage.Image = _backgroundImage.Resize(177, 177);
+            MessageBox.Show("Background capture complete");
+        }
+
+        // Initializes the camera resource, if it does not currently exist
+        private void InitializeCamera()
+        {
+            if (_capture == null)
+            {
+                _capture = new Capture();
+                _capture.FlipHorizontal = true;
+            }
+        }
+
+        private void btnBeginDifferencing_Click(object sender, EventArgs e)
+        {
+            // Initialize the camera - in case it was destroyed somewhere else
+            InitializeCamera();
+            if (_capture != null)
+            {
+                // Unregister the event handler *in case* it was already registed (reclick of this button)
+                Application.Idle -= new EventHandler(ProcessFrame);
+                // Register the event handler
+                Application.Idle += new EventHandler(ProcessFrame);
+            }
+
+            //_differenceViewer.ShowDialog();    // show the image viewer
+        }
+
+        private void btnShowBackground_Click(object sender, EventArgs e)
+        {
+            ImageViewer viewer = new ImageViewer();
+            // Show the background image
+            viewer.Image = _backgroundImage;
+            backgroundImage.Image = _backgroundImage.Resize(177,177);
+
+            viewer.ShowDialog();
+        }
+
+        private void drawBoxes(Emgu.CV.Image<Bgr, Byte> img)
+        {
+
+            Gray cannyThreshold = new Gray(180);
+            Gray cannyThresholdLinking = new Gray(120);
+            Gray circleAccumulatorThreshold = new Gray(120);
+
+            //Image<Bgr, Byte> img = image.Resize(400, 400, true);
+            Image<Gray, Byte> gray = img.Convert<Gray, Byte>().PyrDown().PyrUp();
+            grayImageBox.Image = gray.Resize(400,400);
+
+
             CircleF[] circles = gray.HoughCircles(
                 cannyThreshold,
                 circleAccumulatorThreshold,
@@ -77,8 +145,8 @@ namespace EmguCVTest
                 30, //min Line width
                 10 //gap between lines
                 )[0]; //Get the lines from the first channel
-            */
-            /*
+
+
             #region Find triangles and rectangles
             List<Triangle2DF> triangleList = new List<Triangle2DF>();
             List<MCvBox2D> boxList = new List<MCvBox2D>();
@@ -123,74 +191,36 @@ namespace EmguCVTest
                     }
                 }
             #endregion
-            */
 
-            //originalImageBox.Image = img;
 
-            /*
+            imgImageBox.Image = img.Resize(400,400);
+
+
             #region draw triangles and rectangles
             Image<Bgr, Byte> triangleRectangleImage = img.CopyBlank();
             foreach (Triangle2DF triangle in triangleList)
                 triangleRectangleImage.Draw(triangle, new Bgr(Color.DarkBlue), 2);
             foreach (MCvBox2D box in boxList)
                 triangleRectangleImage.Draw(box, new Bgr(Color.DarkOrange), 2);
-            motionImageBox.Image = triangleRectangleImage;
+            imgImageBox.Image = triangleRectangleImage.Resize(400, 400);
+            capturedImageBox.Image = triangleRectangleImage.Resize(400, 400);
             #endregion
-            */
-
-            motionImageBox.Image = thresholded.Resize(400, 400, true);
         }
 
-        private void btnBgCapture_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            // Initialize in case it was destroyed somewhere else
-            //new comment for svn conflict testing
             InitializeCamera();
-            MessageBox.Show("Background capture will happen 5s after you click OK");
-            // Warm up the camera - let it take 100 frames, and finish its auto-adjustment
-            for (int i = 0; i < 100; i++)
-            {
-                Thread.Sleep(50);
+
                 _capture.QueryGrayFrame();
-            }
-            // Actual background capture
-            _backgroundImage = _capture.QueryGrayFrame();
-            MessageBox.Show("Background capture complete");
-        }
 
-        // Initializes the camera resource, if it does not currently exist
-        private void InitializeCamera()
-        {
-            if (_capture == null)
-            {
-                _capture = new Capture();
-                _capture.FlipHorizontal = true;
-            }
-        }
+            //Image<Bgr, Byte> image = _capture.QuerySmallFrame().PyrUp(); //reduce noise from the image
+            //capturedImageBox.Image = image.Resize(400, 400, true);
 
-        private void btnBeginDifferencing_Click(object sender, EventArgs e)
-        {
-            // Initialize the camera - in case it was destroyed somewhere else
-            InitializeCamera();
-            if (_capture != null)
-            {
-                // Unregister the event handler *in case* it was already registed (reclick of this button)
-                Application.Idle -= new EventHandler(ProcessFrame);
-                // Register the event handler
-                Application.Idle += new EventHandler(ProcessFrame);
-            }
+            _sqImage = _capture.QuerySmallFrame().PyrUp();
+            drawBoxes(_sqImage);
 
-            //_differenceViewer.ShowDialog();    // show the image viewer
-        }
-
-        private void btnShowBackground_Click(object sender, EventArgs e)
-        {
-            ImageViewer viewer = new ImageViewer();
-            // Show the background image
-            viewer.Image = _backgroundImage;
-            //backgroundImage.Image = _backgroundImage;
-
-            viewer.ShowDialog();
+            //Image<Bgr, Byte> image = _capture.QuerySmallFrame().PyrUp(); //reduce noise from the image
+            //capturedImageBox.Image = image.Resize(400, 400, true);
         }
     }
 }
