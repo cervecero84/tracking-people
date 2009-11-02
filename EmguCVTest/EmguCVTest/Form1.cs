@@ -14,7 +14,6 @@ using Emgu.CV.Structure;
 
 namespace EmguCVTest
 {
-
     public partial class Form1 : Form
     {
         Image<Gray, Byte> _backgroundImage;
@@ -26,8 +25,8 @@ namespace EmguCVTest
 
         public Form1()
         {
-            InitializeComponent();
             // Initialize the components
+            InitializeComponent();
             _backgroundImage = new Image<Gray, byte>(640, 480);
             _differenceViewer = new ImageViewer();
             InitializeCamera();
