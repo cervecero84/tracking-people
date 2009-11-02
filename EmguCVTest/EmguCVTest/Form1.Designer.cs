@@ -81,7 +81,7 @@
             this.capturedImageBox.Cursor = System.Windows.Forms.Cursors.Cross;
             this.capturedImageBox.Location = new System.Drawing.Point(195, 12);
             this.capturedImageBox.Name = "capturedImageBox";
-            this.capturedImageBox.Size = new System.Drawing.Size(400, 400);
+            this.capturedImageBox.Size = new System.Drawing.Size(400, 300);
             this.capturedImageBox.TabIndex = 3;
             this.capturedImageBox.TabStop = false;
             // 
@@ -91,14 +91,14 @@
             this.motionImageBox.Cursor = System.Windows.Forms.Cursors.Cross;
             this.motionImageBox.Location = new System.Drawing.Point(601, 12);
             this.motionImageBox.Name = "motionImageBox";
-            this.motionImageBox.Size = new System.Drawing.Size(400, 400);
+            this.motionImageBox.Size = new System.Drawing.Size(400, 300);
             this.motionImageBox.TabIndex = 4;
             this.motionImageBox.TabStop = false;
             // 
             // backgroundImage
             // 
             this.backgroundImage.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.backgroundImage.Location = new System.Drawing.Point(12, 431);
+            this.backgroundImage.Location = new System.Drawing.Point(12, 318);
             this.backgroundImage.Name = "backgroundImage";
             this.backgroundImage.Size = new System.Drawing.Size(177, 177);
             this.backgroundImage.TabIndex = 5;
@@ -108,9 +108,9 @@
             // 
             this.imgImageBox.BackColor = System.Drawing.SystemColors.ControlText;
             this.imgImageBox.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.imgImageBox.Location = new System.Drawing.Point(195, 431);
+            this.imgImageBox.Location = new System.Drawing.Point(195, 318);
             this.imgImageBox.Name = "imgImageBox";
-            this.imgImageBox.Size = new System.Drawing.Size(400, 400);
+            this.imgImageBox.Size = new System.Drawing.Size(400, 300);
             this.imgImageBox.TabIndex = 6;
             this.imgImageBox.TabStop = false;
             // 
@@ -118,9 +118,9 @@
             // 
             this.grayImageBox.BackColor = System.Drawing.SystemColors.ControlText;
             this.grayImageBox.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.grayImageBox.Location = new System.Drawing.Point(601, 431);
+            this.grayImageBox.Location = new System.Drawing.Point(601, 318);
             this.grayImageBox.Name = "grayImageBox";
-            this.grayImageBox.Size = new System.Drawing.Size(400, 400);
+            this.grayImageBox.Size = new System.Drawing.Size(400, 300);
             this.grayImageBox.TabIndex = 7;
             this.grayImageBox.TabStop = false;
             // 
@@ -138,7 +138,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1004, 843);
+            this.ClientSize = new System.Drawing.Size(1004, 631);
             this.Controls.Add(this.detectSQ);
             this.Controls.Add(this.grayImageBox);
             this.Controls.Add(this.imgImageBox);
