@@ -29,7 +29,7 @@ namespace EmguCVTest
         int _frameHeight = 300;
 
         // Specify video source
-        VideoSource _source = VideoSource.Video;
+        VideoSource _source = VideoSource.Camera;
         // If video source is "Video", where is the file located
         String _videoName = "TestVideos\\test_mod.avi";
 
