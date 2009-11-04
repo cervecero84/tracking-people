@@ -14,84 +14,147 @@ using Emgu.CV.Structure;
 
 namespace EmguCVTest
 {
+    /// <summary>
+    /// Different types of video sources
+    /// Camera: Source of the video is camera
+    /// Video: Source of the video is a video file
+    /// </summary>
+    enum VideoSource { Camera = 0, Video = 1 };
+
     public partial class Form1 : Form
     {
         Image<Gray, Byte> _backgroundImage;
-        Image<Bgr, Byte> _sqImage;
+        Image<Gray, Byte> _lastFrame;
         int _frameWidth = 400;
         int _frameHeight = 300;
-      
+
+        // Specify video source
+        VideoSource _source = VideoSource.Video;
+        // If video source is "Video", where is the file located
+        String _videoName = "TestVideos\\test_mod.avi";
+
         Capture _capture;
-        // One instance of the difference viewer
-        ImageViewer _differenceViewer;
 
         public Form1()
         {
             // Initialize the components
             InitializeComponent();
             _backgroundImage = new Image<Gray, byte>(_frameWidth, _frameHeight);
-            _differenceViewer = new ImageViewer();
             InitializeCamera();
         }
 
-        // This is the function that updates the difference frames and performs
-        // the thresholding on the difference
+        /// <summary>
+        /// This is the function that updates the difference frames, performs
+        /// the thresholding on the difference and then does erosion to get rid
+        /// of camera noise. This is where all the work is initiated/done
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ProcessFrame(object sender, EventArgs e)
         {
-            Point tableTopL = new Point(100, 200);
-            Size tableDim = new Size(50, 40);
-            
-            Image<Bgr, Byte> image = _capture.QuerySmallFrame().PyrUp().Resize(_frameWidth, _frameHeight); //reduce noise from the image
-            
+            // Get the current frame from the camera - color and gray
+            Image<Bgr, Byte> image = _capture.QueryFrame().Resize(_frameWidth, _frameHeight); //reduce noise from the image
             Image<Gray, Byte> frame = _capture.QueryGrayFrame().Resize(_frameWidth, _frameHeight);
-            Image<Gray, Byte> difference = new Image<Gray, byte>(_frameWidth, _frameHeight);
-            CvInvoke.cvAbsDiff(_backgroundImage, frame, difference);
+            
+            // Perform differencing on them to find the "new introductions to the background" and "motions"
+            Image<Gray, Byte> BgDifference = new Image<Gray, byte>(_frameWidth, _frameHeight);
+            Image<Gray, Byte> FrameDifference = new Image<Gray, byte>(_frameWidth, _frameHeight);
+            CvInvoke.cvAbsDiff(_backgroundImage, frame, BgDifference);
+            CvInvoke.cvAbsDiff((_lastFrame == null) ? frame : _lastFrame, frame, FrameDifference);
+            
+            // Perform thresholding to remove noise and boost "new introductions"
             Image<Gray, Byte> thresholded = new Image<Gray,byte>(_frameWidth, _frameHeight);
-            thresholded = difference.ThresholdBinary(new Gray(20), new Gray(255));
-            Rectangle myRectangle = new Rectangle(tableTopL, tableDim);
-            //thresholded.Draw(myRectangle, new Gray(255), 2);
-
-            Image<Bgr, Byte> thresholdedPass = thresholded.Convert<Bgr, Byte>();
-
-            drawBoxes(thresholdedPass,image);
-
-
-         //_differenceViewer.Image = thresholded;
+            thresholded = BgDifference.ThresholdBinary(new Gray(20), new Gray(255));
+            
+            // Perform erision to remove camera noise
+            Image<Gray, Byte> eroded = new Image<Gray, byte>(_frameWidth, _frameHeight);
+            CvInvoke.cvErode(thresholded, eroded, IntPtr.Zero, 2);
+            
+            // Takes the thresholded image and looks for squares and draws the squares out on top of the current frame
+            drawBoxes(eroded,image);
+            
+            // Put the captured frame in the imagebox
             capturedImageBox.Image = image;
+            // Store the current frame in the _lastFrame variable - it becomes the last frame now
+            _lastFrame = image.Convert<Gray,Byte>();
 
-            //Detecting Squares
+            // Draw the frame-to-frame difference (motion) on to the imgImageBox image box
+            imgImageBox.Image = FrameDifference;
 
-            //Image<Bgr, Byte> img = image.Resize(400, 400, true);
-            //drawBoxes(_sqImage);
+            // Draw the thresholded image in the motionImageBox image box - so that we can view it
+            motionImageBox.Image = eroded;
 
-            motionImageBox.Image = thresholded;
+            // Move the background close to the current frame
+            Image<Gray, Byte> newBackground = new Image<Gray, byte>(_frameWidth, _frameHeight);
+            MoveToward(ref _backgroundImage, ref frame, ref newBackground, 0.05);
+            grayImageBox.Image = newBackground;
+            _backgroundImage = newBackground;
         }
 
         private void btnBgCapture_Click(object sender, EventArgs e)
         {
             // Initialize in case it was destroyed somewhere else
-            //new comment for svn conflict testing
             InitializeCamera();
-            MessageBox.Show("Background capture will happen 5s after you click OK");
+            
             // Warm up the camera - let it take 100 frames, and finish its auto-adjustment
             for (int i = 0; i < 100; i++)
             {
-                Thread.Sleep(50);
+                Thread.Sleep(5);
                 _capture.QueryGrayFrame();
             }
+            
             // Actual background capture
             _backgroundImage = _capture.QueryGrayFrame().Resize(_frameWidth,_frameHeight);
-            backgroundImage.Image = _backgroundImage.Resize(177, 177);
+            backgroundImage.Image = _backgroundImage.Resize(backgroundImage.Width, backgroundImage.Height);
             MessageBox.Show("Background capture complete");
         }
 
-        // Initializes the camera resource, if it does not currently exist
+        /// <summary>
+        /// Function takes the source image, and the overlay image and the resulting image. The source image
+        /// is moved towards making it the overlay image using a factor of movementFactor. movementFactor = 1
+        /// means make the source image the overlay image. This works by: 
+        /// res = src + movementFactor * (ovr - src)
+        /// </summary>
+        /// <param name="src">Source Image - the original image</param>
+        /// <param name="ovr">Overlay Image - the new image that you want to change the source to</param>
+        /// <param name="res">The resulting image (passed by reference)</param>
+        /// <param name="movementFactor">The amount of change of source towards overlay. Range 
+        /// is 0 to 1. 1 means source becomes overlay.</param>
+        private void MoveToward(ref Image<Gray, Byte> src, ref Image<Gray, Byte> ovr, ref Image<Gray, Byte> res, double movementFactor)
+        {
+            // If movement factor is in an invalid range, default to 1
+            if (movementFactor <= 0 || movementFactor > 1)
+            {
+                movementFactor = 1;
+            }
+
+            // TODO: This code is inefficient - need to find a better way of doing this; this causes extensive slow down
+            // Change all the pixels according to the movement formula
+            for (int i = 0; i < src.Height; i++)
+            {
+                for (int j = 0; j < src.Width; j++)
+                {
+                    res[i, j] = new Gray(src[i, j].Intensity + movementFactor * (ovr[i, j].Intensity - src[i, j].Intensity));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Initializes the camera resource, if it does not currently exist
+        /// </summary>
         private void InitializeCamera()
         {
             if (_capture == null)
             {
-                _capture = new Capture();
-                _capture.FlipHorizontal = true;
+                if (_source == VideoSource.Camera)
+                {
+                    _capture = new Capture();
+                    _capture.FlipHorizontal = true;
+                }
+                else
+                {
+                    _capture = new Capture(_videoName);
+                }
             }
         }
 
@@ -106,8 +169,6 @@ namespace EmguCVTest
                 // Register the event handler
                 Application.Idle += new EventHandler(ProcessFrame);
             }
-
-            //_differenceViewer.ShowDialog();    // show the image viewer
         }
 
         private void btnShowBackground_Click(object sender, EventArgs e)
@@ -120,28 +181,22 @@ namespace EmguCVTest
             viewer.ShowDialog();
         }
 
-        private void drawBoxes(Emgu.CV.Image<Bgr, Byte> img,Emgu.CV.Image<Bgr,Byte> original)
+        /// <summary>
+        /// Function takes in a grayscale image and a colour image. Rectangles are located
+        /// in the grayscale image (this is usually a thresholded image - so shapes are 
+        /// strongly visible) and borders around them are drawn on the same coordinates in
+        /// the colour image.
+        /// </summary>
+        /// <param name="img">Grayscale image where rectangles would be located</param>
+        /// <param name="original">Original (colour) image where the rectangle borders will be drawn</param>
+        private void drawBoxes(Emgu.CV.Image<Gray, Byte> img,Emgu.CV.Image<Bgr,Byte> original)
         {
 
             Gray cannyThreshold = new Gray(180);
             Gray cannyThresholdLinking = new Gray(120);
             Gray circleAccumulatorThreshold = new Gray(120);
 
-            //Image<Bgr, Byte> img = image.Resize(400, 400, true);
-            Image<Gray, Byte> gray = img.Convert<Gray, Byte>().PyrDown().PyrUp();
-            grayImageBox.Image = gray;
-
-
-            CircleF[] circles = gray.HoughCircles(
-                cannyThreshold,
-                circleAccumulatorThreshold,
-                5.0, //Resolution of the accumulator used to detect centers of the circles
-                10.0, //min distance 
-                5, //min radius
-                0 //max radius
-                )[0]; //Get the circles from the first channel
-
-            Image<Gray, Byte> cannyEdges = gray.Canny(cannyThreshold, cannyThresholdLinking);
+            Image<Gray, Byte> cannyEdges = img.Canny(cannyThreshold, cannyThresholdLinking);
             LineSegment2D[] lines = cannyEdges.HoughLinesBinary(
                 1, //Distance resolution in pixel-related units
                 Math.PI / 45.0, //Angle resolution measured in radians.
@@ -152,7 +207,6 @@ namespace EmguCVTest
 
 
             #region Find triangles and rectangles
-            List<Triangle2DF> triangleList = new List<Triangle2DF>();
             List<MCvBox2D> boxList = new List<MCvBox2D>();
 
             using (MemStorage storage = new MemStorage()) //allocate storage for contour approximation
@@ -162,16 +216,7 @@ namespace EmguCVTest
 
                     if (contours.Area > 250) //only consider contours with area greater than 250
                     {
-                        if (currentContour.Total == 3) //The contour has 3 vertices, it is a triangle
-                        {
-                            Point[] pts = currentContour.ToArray();
-                            triangleList.Add(new Triangle2DF(
-                               pts[0],
-                               pts[1],
-                               pts[2]
-                               ));
-                        }
-                        else if (currentContour.Total == 4) //The contour has 4 vertices.
+                        if (currentContour.Total == 4) //The contour has 4 vertices.
                         {
                             #region determine if all the angles in the contour are within the range of [80, 100] degree
                             bool isRectangle = true;
@@ -196,23 +241,15 @@ namespace EmguCVTest
                 }
             #endregion
 
-
-            imgImageBox.Image = img;
-
-
-            #region draw triangles and rectangles
-            Image<Bgr, Byte> triangleRectangleImage = img.CopyBlank();
-            foreach (Triangle2DF triangle in triangleList)
-            {
-                triangleRectangleImage.Draw(triangle, new Bgr(Color.DarkBlue), 2);
-            }
+            #region draw triangles (not anymore) and rectangles
+            Image<Bgr, Byte> rectangleImage = new Image<Bgr, byte>(img.Width, img.Height);
             foreach (MCvBox2D box in boxList)
             {
-                triangleRectangleImage.Draw(box, new Bgr(Color.DarkOrange), 2);
+                rectangleImage.Draw(box, new Bgr(Color.DarkOrange), 2);
                 original.Draw(box, new Bgr(Color.DarkOrange), 2);
             }
-            imgImageBox.Image = triangleRectangleImage;
-            capturedImageBox.Image = triangleRectangleImage;
+            
+            capturedImageBox.Image = rectangleImage;
             #endregion
         }
 
@@ -220,27 +257,15 @@ namespace EmguCVTest
         {
             InitializeCamera();
 
-                //_capture.QueryGrayFrame();
-
-
-            //_sqImage = _capture.QuerySmallFrame().PyrUp();
-
             Image<Gray, Byte> frame = _capture.QueryGrayFrame().Resize(_frameWidth,_frameHeight);
             Image<Gray, Byte> difference = new Image<Gray, byte>(_frameWidth, _frameHeight);
             CvInvoke.cvAbsDiff(_backgroundImage, frame, difference);
             Image<Gray, Byte> thresholded = new Image<Gray, byte>(_frameWidth, _frameHeight);
             thresholded = difference.ThresholdBinary(new Gray(20), new Gray(255));
 
-            //thresholded.Save("thresholded.png");
-
-            //fileNameTextBox.Text = "pic3.png";
             Image<Bgr, Byte> test = new Image<Bgr, byte>("pic3.png");
-            //Emgu.CV.Image<Bgr, Byte> test = new Image<Bgr,byte> (pic3.png
-
-            Image<Bgr, Byte> thresholdedPass = thresholded.Convert<Bgr,Byte>();
-
-            drawBoxes(thresholdedPass,frame.Convert<Bgr,Byte>());
-            //_sqImage.Save("Test.jpg");
+            
+            drawBoxes(thresholded,frame.Convert<Bgr,Byte>());
         }
     }
 }
