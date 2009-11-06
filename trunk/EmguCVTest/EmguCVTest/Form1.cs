@@ -28,6 +28,11 @@ namespace EmguCVTest
         int _frameWidth = 400;
         int _frameHeight = 300;
 
+        // Background adaptation rate
+        double _backgroundAdaptionRate = 0.35;
+        // Should background adaptation be done
+        bool _adaptiveBackground = true;
+
         // Specify video source
         VideoSource _source = VideoSource.Camera;
         // If video source is "Video", where is the file located
@@ -41,6 +46,9 @@ namespace EmguCVTest
             InitializeComponent();
             _backgroundImage = new Image<Gray, byte>(_frameWidth, _frameHeight);
             InitializeCamera();
+            tbrBgAdaptationRate.Value = (int)Math.Round(_backgroundAdaptionRate*100);
+            lblBgAdaptationRate.Text = "Rate: " + _backgroundAdaptionRate.ToString();
+            updateAPButtonText();
         }
 
         /// <summary>
@@ -53,8 +61,19 @@ namespace EmguCVTest
         private void ProcessFrame(object sender, EventArgs e)
         {
             // Get the current frame from the camera - color and gray
-            Image<Bgr, Byte> image = _capture.QueryFrame().Resize(_frameWidth, _frameHeight); //reduce noise from the image
-            Image<Gray, Byte> frame = _capture.QueryGrayFrame().Resize(_frameWidth, _frameHeight);
+            Image<Bgr, Byte> originalFrame = _capture.QueryFrame();
+
+            // This usually occurs when using a video file - after the last frame is read
+            // the next frame is null
+            if (originalFrame == null)
+            {
+                // Reset the camera since no frame was captured - for videos, restart the video playback
+                ResetCamera();
+                originalFrame = _capture.QueryFrame();
+            }
+
+            Image<Bgr, Byte> image = originalFrame.Resize(_frameWidth, _frameHeight);
+            Image<Gray, Byte> frame = image.Convert<Gray, Byte>();
             
             // Perform differencing on them to find the "new introductions to the background" and "motions"
             Image<Gray, Byte> BgDifference = new Image<Gray, byte>(_frameWidth, _frameHeight);
@@ -64,7 +83,7 @@ namespace EmguCVTest
             
             // Perform thresholding to remove noise and boost "new introductions"
             Image<Gray, Byte> thresholded = new Image<Gray,byte>(_frameWidth, _frameHeight);
-            thresholded = BgDifference.ThresholdBinary(new Gray(20), new Gray(255));
+            CvInvoke.cvThreshold(BgDifference, thresholded, 20, 255, THRESH.CV_THRESH_BINARY);
             
             // Perform erision to remove camera noise
             Image<Gray, Byte> eroded = new Image<Gray, byte>(_frameWidth, _frameHeight);
@@ -85,22 +104,27 @@ namespace EmguCVTest
             motionImageBox.Image = eroded;
 
             // Move the background close to the current frame
-            Image<Gray, Byte> newBackground = new Image<Gray, byte>(_frameWidth, _frameHeight);
-            MoveToward(ref _backgroundImage, ref frame, ref newBackground, 0.05);
-            grayImageBox.Image = newBackground;
-            _backgroundImage = newBackground;
+            if (_adaptiveBackground == true)
+            {
+                Image<Gray, Byte> newBackground = new Image<Gray, byte>(_frameWidth, _frameHeight);
+                MoveToward(ref _backgroundImage, ref frame, ref newBackground, _backgroundAdaptionRate);
+                _backgroundImage = newBackground;
+            }
+            grayImageBox.Image = _backgroundImage;
         }
 
         private void btnBgCapture_Click(object sender, EventArgs e)
         {
             // Initialize in case it was destroyed somewhere else
             InitializeCamera();
-            
-            // Warm up the camera - let it take 100 frames, and finish its auto-adjustment
-            for (int i = 0; i < 100; i++)
+
+            if (_source == VideoSource.Camera)
             {
-                Thread.Sleep(5);
-                _capture.QueryGrayFrame();
+                // Warm up the camera - let it take 100 frames, and finish its auto-adjustment
+                for (int i = 0; i < 100; i++)
+                {
+                    _capture.QueryGrayFrame();
+                }
             }
             
             // Actual background capture
@@ -123,38 +147,38 @@ namespace EmguCVTest
         private void MoveToward(ref Image<Gray, Byte> src, ref Image<Gray, Byte> ovr, ref Image<Gray, Byte> res, double movementFactor)
         {
             // If movement factor is in an invalid range, default to 1
-            if (movementFactor <= 0 || movementFactor > 1)
+            if (movementFactor < 0 || movementFactor > 1)
             {
                 movementFactor = 1;
             }
 
-            // TODO: This code is inefficient - need to find a better way of doing this; this causes extensive slow down
-            // Change all the pixels according to the movement formula
-            for (int i = 0; i < src.Height; i++)
-            {
-                for (int j = 0; j < src.Width; j++)
-                {
-                    res[i, j] = new Gray(src[i, j].Intensity + movementFactor * (ovr[i, j].Intensity - src[i, j].Intensity));
-                }
-            }
+            CvInvoke.cvAddWeighted(src, 1.0 - movementFactor, ovr, movementFactor, 0, res);
         }
 
         /// <summary>
-        /// Initializes the camera resource, if it does not currently exist
+        /// Initializes the camera resource, *if it does not currently exist*
         /// </summary>
         private void InitializeCamera()
         {
             if (_capture == null)
             {
-                if (_source == VideoSource.Camera)
-                {
-                    _capture = new Capture();
-                    _capture.FlipHorizontal = true;
-                }
-                else
-                {
-                    _capture = new Capture(_videoName);
-                }
+                ResetCamera();
+            }
+        }
+
+        /// <summary>
+        /// Starts/restarts the capture source - for both video and camera
+        /// </summary>
+        private void ResetCamera()
+        {
+            if (_source == VideoSource.Camera)
+            {
+                _capture = new Capture();
+                _capture.FlipHorizontal = true;
+            }
+            else
+            {
+                _capture = new Capture(_videoName);
             }
         }
 
@@ -206,7 +230,7 @@ namespace EmguCVTest
                 )[0]; //Get the lines from the first channel
 
 
-            #region Find triangles and rectangles
+            #region Find rectangles
             List<MCvBox2D> boxList = new List<MCvBox2D>();
 
             using (MemStorage storage = new MemStorage()) //allocate storage for contour approximation
@@ -241,7 +265,7 @@ namespace EmguCVTest
                 }
             #endregion
 
-            #region draw triangles (not anymore) and rectangles
+            #region draw rectangles
             Image<Bgr, Byte> rectangleImage = new Image<Bgr, byte>(img.Width, img.Height);
             foreach (MCvBox2D box in boxList)
             {
@@ -266,6 +290,30 @@ namespace EmguCVTest
             Image<Bgr, Byte> test = new Image<Bgr, byte>("pic3.png");
             
             drawBoxes(thresholded,frame.Convert<Bgr,Byte>());
+        }
+
+        private void tbrBgAdaptationRate_Scroll(object sender, EventArgs e)
+        {
+            _backgroundAdaptionRate = (double)tbrBgAdaptationRate.Value / 100;
+            lblBgAdaptationRate.Text = "Rate: " + _backgroundAdaptionRate.ToString();
+        }
+
+        private void btnAdaptiveBackground_Click(object sender, EventArgs e)
+        {
+            _adaptiveBackground = !(_adaptiveBackground);
+            updateAPButtonText();
+        }
+
+        private void updateAPButtonText()
+        {
+            if (_adaptiveBackground)
+            {
+                btnAdaptiveBackground.Text = "TURN OFF AP";
+            }
+            else
+            {
+                btnAdaptiveBackground.Text = "TURN ON AP";
+            }
         }
     }
 }
