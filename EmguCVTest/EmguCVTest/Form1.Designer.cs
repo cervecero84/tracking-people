@@ -38,11 +38,16 @@
             this.imgImageBox = new Emgu.CV.UI.ImageBox();
             this.grayImageBox = new Emgu.CV.UI.ImageBox();
             this.detectSQ = new System.Windows.Forms.Button();
+            this.tbrBgAdaptationRate = new System.Windows.Forms.TrackBar();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lblBgAdaptationRate = new System.Windows.Forms.Label();
+            this.btnAdaptiveBackground = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.capturedImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.motionImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.backgroundImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.grayImageBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbrBgAdaptationRate)).BeginInit();
             this.SuspendLayout();
             // 
             // btnBgCapture
@@ -98,7 +103,7 @@
             // backgroundImage
             // 
             this.backgroundImage.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.backgroundImage.Location = new System.Drawing.Point(12, 318);
+            this.backgroundImage.Location = new System.Drawing.Point(12, 375);
             this.backgroundImage.Name = "backgroundImage";
             this.backgroundImage.Size = new System.Drawing.Size(177, 177);
             this.backgroundImage.TabIndex = 5;
@@ -134,11 +139,52 @@
             this.detectSQ.UseVisualStyleBackColor = true;
             this.detectSQ.Click += new System.EventHandler(this.button1_Click);
             // 
+            // tbrBgAdaptationRate
+            // 
+            this.tbrBgAdaptationRate.Location = new System.Drawing.Point(12, 267);
+            this.tbrBgAdaptationRate.Maximum = 100;
+            this.tbrBgAdaptationRate.Name = "tbrBgAdaptationRate";
+            this.tbrBgAdaptationRate.Size = new System.Drawing.Size(177, 45);
+            this.tbrBgAdaptationRate.TabIndex = 9;
+            this.tbrBgAdaptationRate.Scroll += new System.EventHandler(this.tbrBgAdaptationRate_Scroll);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(13, 245);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(145, 13);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Background Adaptation Rate";
+            // 
+            // lblBgAdaptationRate
+            // 
+            this.lblBgAdaptationRate.AutoSize = true;
+            this.lblBgAdaptationRate.Location = new System.Drawing.Point(13, 299);
+            this.lblBgAdaptationRate.Name = "lblBgAdaptationRate";
+            this.lblBgAdaptationRate.Size = new System.Drawing.Size(33, 13);
+            this.lblBgAdaptationRate.TabIndex = 11;
+            this.lblBgAdaptationRate.Text = "Rate:";
+            // 
+            // btnAdaptiveBackground
+            // 
+            this.btnAdaptiveBackground.Location = new System.Drawing.Point(12, 318);
+            this.btnAdaptiveBackground.Name = "btnAdaptiveBackground";
+            this.btnAdaptiveBackground.Size = new System.Drawing.Size(177, 51);
+            this.btnAdaptiveBackground.TabIndex = 12;
+            this.btnAdaptiveBackground.Text = "TURN ON AP";
+            this.btnAdaptiveBackground.UseVisualStyleBackColor = true;
+            this.btnAdaptiveBackground.Click += new System.EventHandler(this.btnAdaptiveBackground_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1004, 631);
+            this.Controls.Add(this.btnAdaptiveBackground);
+            this.Controls.Add(this.lblBgAdaptationRate);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.tbrBgAdaptationRate);
             this.Controls.Add(this.detectSQ);
             this.Controls.Add(this.grayImageBox);
             this.Controls.Add(this.imgImageBox);
@@ -155,7 +201,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.backgroundImage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgImageBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.grayImageBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbrBgAdaptationRate)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -170,6 +218,10 @@
         private Emgu.CV.UI.ImageBox imgImageBox;
         private Emgu.CV.UI.ImageBox grayImageBox;
         private System.Windows.Forms.Button detectSQ;
+        private System.Windows.Forms.TrackBar tbrBgAdaptationRate;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblBgAdaptationRate;
+        private System.Windows.Forms.Button btnAdaptiveBackground;
     }
 }
 
