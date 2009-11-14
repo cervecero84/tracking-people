@@ -200,7 +200,7 @@ namespace EmguCVTest
             ImageViewer viewer = new ImageViewer();
             // Show the background image
             viewer.Image = _backgroundImage;
-            backgroundImage.Image = _backgroundImage.Resize(177,177);
+            backgroundImage.Image = _backgroundImage.Resize(177,132);
 
             viewer.ShowDialog();
         }
@@ -314,6 +314,12 @@ namespace EmguCVTest
             {
                 btnAdaptiveBackground.Text = "TURN ON AP";
             }
+        }
+
+        private void btnAffineTranform_Click(object sender, EventArgs e)
+        {
+            AffineTransform form = new AffineTransform(_capture);
+            form.ShowDialog();
         }
     }
 }
