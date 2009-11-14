@@ -42,6 +42,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.lblBgAdaptationRate = new System.Windows.Forms.Label();
             this.btnAdaptiveBackground = new System.Windows.Forms.Button();
+            this.btnAffineTranform = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.capturedImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.motionImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.backgroundImage)).BeginInit();
@@ -105,7 +106,7 @@
             this.backgroundImage.Cursor = System.Windows.Forms.Cursors.Cross;
             this.backgroundImage.Location = new System.Drawing.Point(12, 375);
             this.backgroundImage.Name = "backgroundImage";
-            this.backgroundImage.Size = new System.Drawing.Size(177, 177);
+            this.backgroundImage.Size = new System.Drawing.Size(177, 132);
             this.backgroundImage.TabIndex = 5;
             this.backgroundImage.TabStop = false;
             // 
@@ -176,11 +177,22 @@
             this.btnAdaptiveBackground.UseVisualStyleBackColor = true;
             this.btnAdaptiveBackground.Click += new System.EventHandler(this.btnAdaptiveBackground_Click);
             // 
+            // btnAffineTranform
+            // 
+            this.btnAffineTranform.Location = new System.Drawing.Point(12, 558);
+            this.btnAffineTranform.Name = "btnAffineTranform";
+            this.btnAffineTranform.Size = new System.Drawing.Size(177, 46);
+            this.btnAffineTranform.TabIndex = 13;
+            this.btnAffineTranform.Text = "Affine Transform";
+            this.btnAffineTranform.UseVisualStyleBackColor = true;
+            this.btnAffineTranform.Click += new System.EventHandler(this.btnAffineTranform_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1004, 631);
+            this.Controls.Add(this.btnAffineTranform);
             this.Controls.Add(this.btnAdaptiveBackground);
             this.Controls.Add(this.lblBgAdaptationRate);
             this.Controls.Add(this.label1);
@@ -222,6 +234,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblBgAdaptationRate;
         private System.Windows.Forms.Button btnAdaptiveBackground;
+        private System.Windows.Forms.Button btnAffineTranform;
     }
 }
 
