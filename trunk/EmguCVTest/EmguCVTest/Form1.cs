@@ -36,7 +36,7 @@ namespace EmguCVTest
         // Specify video source
         VideoSource _source = VideoSource.Video;
         // If video source is "Video", where is the file located
-        String _videoName = "TestVideos/color_test1.avi";
+        String _videoName = "TestVideos\\color_test1.avi";
 
         Capture _capture;
 
@@ -74,28 +74,28 @@ namespace EmguCVTest
 
             Image<Bgr, Byte> image = originalFrame.Resize(_frameWidth, _frameHeight);
             Image<Gray, Byte> frame = image.Convert<Gray, Byte>();
-            
+
             // Perform differencing on them to find the "new introductions to the background" and "motions"
             Image<Gray, Byte> BgDifference = new Image<Gray, byte>(_frameWidth, _frameHeight);
             Image<Gray, Byte> FrameDifference = new Image<Gray, byte>(_frameWidth, _frameHeight);
             CvInvoke.cvAbsDiff(_backgroundImage, frame, BgDifference);
             CvInvoke.cvAbsDiff((_lastFrame == null) ? frame : _lastFrame, frame, FrameDifference);
-            
+
             // Perform thresholding to remove noise and boost "new introductions"
-            Image<Gray, Byte> thresholded = new Image<Gray,byte>(_frameWidth, _frameHeight);
+            Image<Gray, Byte> thresholded = new Image<Gray, byte>(_frameWidth, _frameHeight);
             CvInvoke.cvThreshold(BgDifference, thresholded, 20, 255, THRESH.CV_THRESH_BINARY);
-            
-            // Perform erision to remove camera noise
+
+            // Perform erosion to remove camera noise
             Image<Gray, Byte> eroded = new Image<Gray, byte>(_frameWidth, _frameHeight);
             CvInvoke.cvErode(thresholded, eroded, IntPtr.Zero, 2);
-            
+
             // Takes the thresholded image and looks for squares and draws the squares out on top of the current frame
-            drawBoxes(eroded,image);
-            
+            drawBoxes(eroded, image);
+
             // Put the captured frame in the imagebox
             capturedImageBox.Image = image;
             // Store the current frame in the _lastFrame variable - it becomes the last frame now
-            _lastFrame = image.Convert<Gray,Byte>();
+            _lastFrame = image.Convert<Gray, Byte>();
 
             // Draw the frame-to-frame difference (motion) on to the imgImageBox image box
             imgImageBox.Image = FrameDifference;
@@ -111,6 +111,72 @@ namespace EmguCVTest
                 _backgroundImage = newBackground;
             }
             grayImageBox.Image = _backgroundImage;
+        }
+        private void SkinLikelihood(object sender, EventArgs e)
+        {
+            // Get the current frame from the camera - color and gray
+            Image<Bgr, Byte> originalFrame = _capture.QueryFrame();
+            
+
+            // This usually occurs when using a video file - after the last frame is read
+            // the next frame is null
+            if (originalFrame == null)
+            {
+                // Reset the camera since no frame was captured - for videos, restart the video playback
+                ResetCamera();
+                originalFrame = _capture.QueryFrame();
+            }
+
+#region Covariance Matrix
+            double CbMean = 107.9649 / 255;
+            double CrMean = 140.8913 / 255;
+            //covariance matrix taken from matlab skin detection demo mdl
+            double K1 = 1.8328501e+03;
+            double K2 = 2.2506719e+03;
+            double K3 = 2.2506719e+03;
+            double K4 = 6.8658257e+03;
+#endregion Covariance Matrix
+
+            //convert to YCbCr colourspace
+            Image<Bgr, Byte> image = originalFrame.Resize(_frameWidth, _frameHeight);
+            capturedImageBox.Image = image;
+            Image<Ycc, Byte> yccImage = new Image<Ycc, byte>(_frameWidth, _frameHeight);
+            CvInvoke.cvCvtColor(image, yccImage, COLOR_CONVERSION.CV_BGR2YCrCb);
+
+            Image<Gray, Byte> yccBlob = new Image<Gray, byte>(_frameWidth, _frameHeight);
+
+            for (int j = 0; j < yccImage.Width; j++)
+            {
+                for (int i = 0; i < yccImage.Height; i++)
+                {
+                    double Cb = yccImage[i, j].Cb / 255.0;
+                    double Cr = yccImage[i, j].Cr / 255.0;
+                    Cb -= CbMean;
+                    Cr -= CrMean;
+                    double CbDist = Cb * (K1 * Cb + K3 * Cr);
+                    double CrDist = Cr * (K2 * Cb + K4 * Cr);
+                    double dist = CbDist + CrDist;
+                    yccBlob[i,j] = new Gray(dist);
+
+                }
+            }
+
+            grayImageBox.Image = yccBlob;
+
+            Image<Gray, Byte> thresholded = new Image<Gray, byte>(_frameWidth, _frameHeight);
+
+            //Double minVal, maxVal;
+            //Point minLoc, maxLoc;
+
+            
+            CvInvoke.cvThreshold(yccBlob, thresholded, 15, 255, THRESH.CV_THRESH_BINARY);
+
+            // Perform erosion to remove camera noise
+            Image<Gray, Byte> eroded = new Image<Gray, byte>(_frameWidth, _frameHeight);
+            CvInvoke.cvErode(thresholded, eroded, IntPtr.Zero, 2);
+
+            motionImageBox.Image = eroded;
+
         }
 
         private void btnBgCapture_Click(object sender, EventArgs e)
@@ -196,6 +262,7 @@ namespace EmguCVTest
             InitializeCamera();
             if (_capture != null)
             {
+                Application.Idle -= new EventHandler(SkinLikelihood);
                 // Unregister the event handler *in case* it was already registed (reclick of this button)
                 Application.Idle -= new EventHandler(ProcessFrame);
                 // Register the event handler
@@ -324,6 +391,20 @@ namespace EmguCVTest
             }
         }
 
+        private void DetectSkin_Click(object sender, EventArgs e)
+        {
+            Application.Idle -= new EventHandler(ProcessFrame);
+            // Unregister the event handler *in case* it was already registed (reclick of this button)
+            Application.Idle -= new EventHandler(SkinLikelihood);
+            // Register the event handler
+            Application.Idle += new EventHandler(SkinLikelihood);
+ 
+        }
 
+        private void btnAffineTranform_Click(object sender, EventArgs e)
+        {
+            AffineTransform form = new AffineTransform(_capture);
+            form.ShowDialog();
+        }
     }
 }

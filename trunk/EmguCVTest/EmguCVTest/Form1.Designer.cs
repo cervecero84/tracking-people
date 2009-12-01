@@ -42,6 +42,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.lblBgAdaptationRate = new System.Windows.Forms.Label();
             this.btnAdaptiveBackground = new System.Windows.Forms.Button();
+            this.DetectSkin = new System.Windows.Forms.Button();
             this.btnAffineTranform = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.capturedImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.motionImageBox)).BeginInit();
@@ -104,7 +105,7 @@
             // backgroundImage
             // 
             this.backgroundImage.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.backgroundImage.Location = new System.Drawing.Point(12, 375);
+            this.backgroundImage.Location = new System.Drawing.Point(12, 441);
             this.backgroundImage.Name = "backgroundImage";
             this.backgroundImage.Size = new System.Drawing.Size(177, 132);
             this.backgroundImage.TabIndex = 5;
@@ -177,6 +178,16 @@
             this.btnAdaptiveBackground.UseVisualStyleBackColor = true;
             this.btnAdaptiveBackground.Click += new System.EventHandler(this.btnAdaptiveBackground_Click);
             // 
+            // DetectSkin
+            // 
+            this.DetectSkin.Location = new System.Drawing.Point(12, 384);
+            this.DetectSkin.Name = "DetectSkin";
+            this.DetectSkin.Size = new System.Drawing.Size(177, 51);
+            this.DetectSkin.TabIndex = 13;
+            this.DetectSkin.Text = "Detect Skin";
+            this.DetectSkin.UseVisualStyleBackColor = true;
+            this.DetectSkin.Click += new System.EventHandler(this.DetectSkin_Click);
+            // 
             // btnAffineTranform
             // 
             this.btnAffineTranform.Location = new System.Drawing.Point(12, 558);
@@ -192,6 +203,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1004, 631);
+            this.Controls.Add(this.DetectSkin);
             this.Controls.Add(this.btnAffineTranform);
             this.Controls.Add(this.btnAdaptiveBackground);
             this.Controls.Add(this.lblBgAdaptationRate);
@@ -234,6 +246,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblBgAdaptationRate;
         private System.Windows.Forms.Button btnAdaptiveBackground;
+        private System.Windows.Forms.Button DetectSkin;
         private System.Windows.Forms.Button btnAffineTranform;
     }
 }
