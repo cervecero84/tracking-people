@@ -34,9 +34,9 @@ namespace EmguCVTest
         bool _adaptiveBackground = true;
 
         // Specify video source
-        VideoSource _source = VideoSource.Camera;
+        VideoSource _source = VideoSource.Video;
         // If video source is "Video", where is the file located
-        String _videoName = "TestVideos\\test_mod.avi";
+        String _videoName = "TestVideos/color_test1.avi";
 
         Capture _capture;
 
@@ -154,7 +154,7 @@ namespace EmguCVTest
 
             CvInvoke.cvAddWeighted(src, 1.0 - movementFactor, ovr, movementFactor, 0, res);
         }
-
+       
         /// <summary>
         /// Initializes the camera resource, *if it does not currently exist*
         /// </summary>
@@ -169,6 +169,14 @@ namespace EmguCVTest
         /// <summary>
         /// Starts/restarts the capture source - for both video and camera
         /// </summary>
+        private void ResetCamera()
+        {
+            if (_source == VideoSource.Camera)
+            {
+                _capture = new Capture();
+                _capture.FlipHorizontal = true;
+            }
+        }
         private void ResetCamera()
         {
             if (_source == VideoSource.Camera)
@@ -200,7 +208,7 @@ namespace EmguCVTest
             ImageViewer viewer = new ImageViewer();
             // Show the background image
             viewer.Image = _backgroundImage;
-            backgroundImage.Image = _backgroundImage.Resize(177,132);
+            backgroundImage.Image = _backgroundImage.Resize(177,177);
 
             viewer.ShowDialog();
         }
@@ -287,7 +295,7 @@ namespace EmguCVTest
             Image<Gray, Byte> thresholded = new Image<Gray, byte>(_frameWidth, _frameHeight);
             thresholded = difference.ThresholdBinary(new Gray(20), new Gray(255));
 
-            Image<Bgr, Byte> test = new Image<Bgr, byte>("pic3.png");
+            //Image<Bgr, Byte> test = new Image<Bgr, byte>("pic3.png");
             
             drawBoxes(thresholded,frame.Convert<Bgr,Byte>());
         }
@@ -316,10 +324,6 @@ namespace EmguCVTest
             }
         }
 
-        private void btnAffineTranform_Click(object sender, EventArgs e)
-        {
-            AffineTransform form = new AffineTransform(_capture);
-            form.ShowDialog();
-        }
+
     }
 }
