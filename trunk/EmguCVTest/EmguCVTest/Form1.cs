@@ -34,7 +34,7 @@ namespace EmguCVTest
         bool _adaptiveBackground = true;
 
         // Specify video source
-        VideoSource _source = VideoSource.Video;
+        VideoSource _source = VideoSource.Camera;
         // If video source is "Video", where is the file located
         String _videoName = "TestVideos\\color_test1.avi";
 
@@ -235,14 +235,6 @@ namespace EmguCVTest
         /// <summary>
         /// Starts/restarts the capture source - for both video and camera
         /// </summary>
-        private void ResetCamera()
-        {
-            if (_source == VideoSource.Camera)
-            {
-                _capture = new Capture();
-                _capture.FlipHorizontal = true;
-            }
-        }
         private void ResetCamera()
         {
             if (_source == VideoSource.Camera)
