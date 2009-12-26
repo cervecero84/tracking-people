@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9352B55E-4F7B-4D76-A673-973DE7233DD7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -70,8 +70,18 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="AffineTransform.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AffineTransform.Designer.cs">
+      <DependentUpon>AffineTransform.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AffineTransform.resx">
+      <DependentUpon>AffineTransform.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -97,7 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="cv110.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="cvaux110.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -114,7 +124,9 @@
     <Content Include="ml110.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestVideos\color_test1.avi" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="TestVideos\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
