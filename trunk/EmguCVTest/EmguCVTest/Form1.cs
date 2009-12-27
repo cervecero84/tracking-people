@@ -235,6 +235,14 @@ namespace EmguCVTest
         /// <summary>
         /// Starts/restarts the capture source - for both video and camera
         /// </summary>
+        //private void ResetCamera()
+        //{
+        //    if (_source == VideoSource.Camera)
+        //    {
+        //        _capture = new Capture();
+        //        _capture.FlipHorizontal = true;
+        //    }
+        //}
         private void ResetCamera()
         {
             if (_source == VideoSource.Camera)
