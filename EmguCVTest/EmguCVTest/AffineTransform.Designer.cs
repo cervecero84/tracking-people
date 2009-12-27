@@ -34,6 +34,8 @@
             this.imageBoxPers = new Emgu.CV.UI.ImageBox();
             this.btnDrawPnt = new System.Windows.Forms.Button();
             this.btnTransform = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.lblCurrentPoint = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.imgImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBoxPers)).BeginInit();
             this.SuspendLayout();
@@ -71,7 +73,7 @@
             // 
             // btnDrawPnt
             // 
-            this.btnDrawPnt.Location = new System.Drawing.Point(94, 13);
+            this.btnDrawPnt.Location = new System.Drawing.Point(174, 12);
             this.btnDrawPnt.Name = "btnDrawPnt";
             this.btnDrawPnt.Size = new System.Drawing.Size(75, 23);
             this.btnDrawPnt.TabIndex = 9;
@@ -81,7 +83,7 @@
             // 
             // btnTransform
             // 
-            this.btnTransform.Location = new System.Drawing.Point(176, 13);
+            this.btnTransform.Location = new System.Drawing.Point(93, 12);
             this.btnTransform.Name = "btnTransform";
             this.btnTransform.Size = new System.Drawing.Size(75, 23);
             this.btnTransform.TabIndex = 10;
@@ -89,11 +91,31 @@
             this.btnTransform.UseVisualStyleBackColor = true;
             this.btnTransform.Click += new System.EventHandler(this.btnTransform_Click);
             // 
+            // btnClear
+            // 
+            this.btnClear.Location = new System.Drawing.Point(742, 13);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(75, 23);
+            this.btnClear.TabIndex = 11;
+            this.btnClear.Text = "Clear";
+            this.btnClear.UseVisualStyleBackColor = true;
+            // 
+            // lblCurrentPoint
+            // 
+            this.lblCurrentPoint.AutoSize = true;
+            this.lblCurrentPoint.Location = new System.Drawing.Point(418, 12);
+            this.lblCurrentPoint.Name = "lblCurrentPoint";
+            this.lblCurrentPoint.Size = new System.Drawing.Size(59, 13);
+            this.lblCurrentPoint.TabIndex = 12;
+            this.lblCurrentPoint.Text = "Draw Point";
+            // 
             // AffineTransform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(828, 348);
+            this.Controls.Add(this.lblCurrentPoint);
+            this.Controls.Add(this.btnClear);
             this.Controls.Add(this.btnTransform);
             this.Controls.Add(this.btnDrawPnt);
             this.Controls.Add(this.imageBoxPers);
@@ -104,6 +126,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.imgImageBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBoxPers)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -114,5 +137,7 @@
         private Emgu.CV.UI.ImageBox imageBoxPers;
         private System.Windows.Forms.Button btnDrawPnt;
         private System.Windows.Forms.Button btnTransform;
+        private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Label lblCurrentPoint;
     }
 }
