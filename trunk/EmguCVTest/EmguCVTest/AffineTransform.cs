@@ -20,7 +20,7 @@ namespace EmguCVTest
         PointF[] dstpt = new PointF[4];
 
         PointF[] leftSide = new PointF[1];
-        PointF[] leftSideTransform = new PointF[0];
+        PointF[] leftSideTransform = new PointF[1];
         PointF[] rightSide = new PointF[0];
         PointF[] rightSideTransform = new PointF[0];
 
@@ -111,14 +111,20 @@ namespace EmguCVTest
             else if (lblCurrentPoint.Text == "Coordinate Transform -->")
             {
                 //lblCurrentPoint.Text = "Draw Point";
-                lblCurrentPoint.Text = "Click on left side";
-                leftSide[1].X = e.X; //* _orgFrameWidth/_frameWidth;
-                leftSide[1].Y = e.Y; //* _orgFrameHeight/_frameHeight;
+                //lblCurrentPoint.Text = "Click on left side";
+                leftSide[0].X = e.X; //* _orgFrameWidth/_frameWidth;
+                leftSide[0].Y = e.Y; //* _orgFrameHeight/_frameHeight;
 
-                Cross2DF scrCrossTest1 = new Cross2DF(leftSide[1], 5, 5);
+                Cross2DF scrCrossTest1 = new Cross2DF(leftSide[0], 5, 5);
                 imageTransform.Draw(scrCrossTest1, new Bgr(Color.Green), 2);
                 imgImageBox.Image = imageTransform;//.Resize(_frameWidth, _frameHeight);
-                lblCurrentPoint.Text = "Hello";
+                //lblCurrentPoint.Text = "Hello";
+                IntPtr[] leftSidePtr = new IntPtr[3];
+                leftSidePtr[0] = (int)(leftSide[0].X);
+                leftSidePtr[1] = (int)(leftSide[0].Y);
+                leftSidePtr[2] = 1;
+                CvInvoke.cvPerspectiveTransform(leftSide[0], leftSideTransform[0], warpMat);
+                //
             }
             //else if (lblCurrentPoint.Text == "Coordinate Transform <--")
             //{
@@ -223,8 +229,9 @@ namespace EmguCVTest
 
             //CvInvoke.cvGetAffineTransform(srcTri, dstTri, warpMat);
             CvInvoke.cvGetPerspectiveTransform(srcTri, dstTri, warpMat);
-//            CvInvoke.cvPerspectiveTransform(
-//            CvInvoke.cvInvert(warpMat, invWarpMat, int method=CV_LU);
+
+            //INVERT_METHOD method = new INVERT_METHOD cv;
+            CvInvoke.cvInvert(warpMat, invWarpMat, Emgu.CV.CvEnum.INVERT_METHOD.CV_LU);
 
             MCvScalar fillvar = new MCvScalar(0);
             imageBoxPers.Image = new Image<Bgr, byte>(_frameWidth, _frameHeight, new Bgr(0, 0, 0));
