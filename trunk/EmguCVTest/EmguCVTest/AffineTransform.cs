@@ -20,9 +20,9 @@ namespace EmguCVTest
         PointF[] dstpt = new PointF[4];
 
         PointF[] leftSide = new PointF[1];
-        PointF[] leftSideTransform = new PointF[1];
-        PointF[] rightSide = new PointF[0];
-        PointF[] rightSideTransform = new PointF[0];
+        //PointF[] leftSideTransform = new PointF[1];
+        PointF[] rightSide = new PointF[1];
+        //PointF[] rightSideTransform = new PointF[0];
 
         enum Position { BL, TL, TR, BR };
 
@@ -36,10 +36,18 @@ namespace EmguCVTest
 
         IntPtr warpMat = CvInvoke.cvCreateMat(3, 3, MAT_DEPTH.CV_64F);
         IntPtr invWarpMat = CvInvoke.cvCreateMat(3, 3, MAT_DEPTH.CV_64F);
+
+        IntPtr leftSideM = CvInvoke.cvCreateMat(3, 1, MAT_DEPTH.CV_64F);
+        //IntPtr leftSideTransform = CvInvoke.cvCreateMat(3, 1, MAT_DEPTH.CV_64F);
+        IntPtr rightSideM = CvInvoke.cvCreateMat(3, 1, MAT_DEPTH.CV_64F);
+        //IntPtr rightSideTransform = CvInvoke.cvCreateMat(3, 1, MAT_DEPTH.CV_64F);
         
 
         Image<Bgr, Byte> imageTransform;
         Image<Bgr, Byte> imageBackup;
+        
+        Image<Bgr, Byte> imagePerspective;
+
 
         public AffineTransform(Capture c)
         {
@@ -75,14 +83,6 @@ namespace EmguCVTest
             imgImageBox.Image = imageTransform;//.Resize(_frameWidth,_frameHeight);
             ptCounter = 0;
 
-
-
-            //Cvinvoke.cvGetAffineTransform(srcTri, dstTri, warp_mat);
-
-
-
-
-            //MCvMat warpMat = CvInvoke.cvCreateMat(2, 3, MAT_DEPTH.CV_64F);
         }
 
         private void imgImageBox_MouseClick(object sender, MouseEventArgs e)
@@ -110,61 +110,46 @@ namespace EmguCVTest
             }
             else if (lblCurrentPoint.Text == "Coordinate Transform -->")
             {
-                //lblCurrentPoint.Text = "Draw Point";
+                lblCurrentPoint.Text = "Draw Point";
                 //lblCurrentPoint.Text = "Click on left side";
                 leftSide[0].X = e.X; //* _orgFrameWidth/_frameWidth;
                 leftSide[0].Y = e.Y; //* _orgFrameHeight/_frameHeight;
+                
+                double[] data = { leftSide[0].X, leftSide[0].Y, 1 };
+                Matrix<double> leftSidePtr = new Matrix<double>(data);
+                Matrix<double> leftSideTransformed = new Matrix<double>(3, 1);
+                CvInvoke.cvPerspectiveTransform(leftSidePtr, leftSideTransformed, warpMat);
+
+                Cross2DF scrCrossTest2 = new Cross2DF(rightSide[0], 5, 5);
+                imagePerspective.Draw(scrCrossTest2, new Bgr(Color.Green), 2);
+                imageBoxPers.Image = imagePerspective;//.Resize(_frameWidth, _frameHeight);
+
 
                 Cross2DF scrCrossTest1 = new Cross2DF(leftSide[0], 5, 5);
                 imageTransform.Draw(scrCrossTest1, new Bgr(Color.Green), 2);
                 imgImageBox.Image = imageTransform;//.Resize(_frameWidth, _frameHeight);
-                //lblCurrentPoint.Text = "Hello";
-                IntPtr[] leftSidePtr = new IntPtr[3];
-                leftSidePtr[0] = (int)(leftSide[0].X);
-                leftSidePtr[1] = (int)(leftSide[0].Y);
-                leftSidePtr[2] = 1;
-                CvInvoke.cvPerspectiveTransform(leftSide[0], leftSideTransform[0], warpMat);
-                //
-            }
-            //else if (lblCurrentPoint.Text == "Coordinate Transform <--")
-            //{
-            //    lblCurrentPoint.Text = "Draw Point";
-            //}
 
+            }
 
 
         }
 
         private void imageBoxPers_MouseClick(object sender, MouseEventArgs e)
         {
-            //if (lblCurrentPoint.Text == "Draw Point")
-            //{
-            //    if (ptCounter == 4)
-            //    {
-            //        imageTransform = imageBackup;
-            //        imgImageBox.Image = imageBackup;                        //ADDED this!!!!!
-            //        ptCounter = 0;
-
-            //    }
-            //    if (ptCounter < 4)
-            //    {
-            //        srcpt[ptCounter].X = e.X; //* _orgFrameWidth/_frameWidth;
-            //        srcpt[ptCounter].Y = e.Y; //* _orgFrameHeight/_frameHeight;
-
-            //        Cross2DF scrCrossTest = new Cross2DF(srcpt[ptCounter], 5, 5);
-            //        imageTransform.Draw(scrCrossTest, new Bgr(Color.Red), 2);
-            //        imgImageBox.Image = imageTransform;//.Resize(_frameWidth, _frameHeight);
-
-            //        ptCounter += 1;
-            //    }
-            //}
-            //else if (lblCurrentPoint.Text == "Coordinate Transform -->")
-            //{
-            //    lblCurrentPoint.Text = "Draw Point";
-            //}
+           
             if (lblCurrentPoint.Text == "Coordinate Transform <--")
             {
                 lblCurrentPoint.Text = "Draw Point";
+                //lblCurrentPoint.Text = "Click on left side";
+                rightSide[0].X = e.X; //* _orgFrameWidth/_frameWidth;
+                rightSide[0].Y = e.Y; //* _orgFrameHeight/_frameHeight;
+                //CvInvoke.cvSetData(leftSide, e.X e.Y 1, //leftSide = [e.X, e.Y, 1];
+
+
+
+                Cross2DF scrCrossTest1 = new Cross2DF(rightSide[0], 5, 5);
+                imagePerspective.Draw(scrCrossTest1, new Bgr(Color.Green), 2);
+                imageBoxPers.Image = imagePerspective;//.Resize(_frameWidth, _frameHeight);
             }
         }
 
@@ -182,19 +167,6 @@ namespace EmguCVTest
             {
                 lblCurrentPoint.Text = "Draw Point";
             }
-
-            //Cross2DF scrCross1 = new Cross2DF(srcpt[0], 5, 5);
-            //Cross2DF scrCross2 = new Cross2DF(srcpt[1], 5, 5);
-            //Cross2DF scrCross3 = new Cross2DF(srcpt[2], 5, 5);
-            //Cross2DF scrCross4 = new Cross2DF(srcpt[3], 5, 5);
-
-            //imageTransform.Draw(scrCross1, new Bgr(Color.Red), 2);
-            //imageTransform.Draw(scrCross2, new Bgr(Color.Red), 2);
-            //imageTransform.Draw(scrCross3, new Bgr(Color.Red), 2);
-            //imageTransform.Draw(scrCross4, new Bgr(Color.Red), 2);
-
-            //imgImageBox.Image = imageTransform;//.Resize(_frameWidth, _frameHeight);
-
 
         }
 
@@ -237,6 +209,9 @@ namespace EmguCVTest
             imageBoxPers.Image = new Image<Bgr, byte>(_frameWidth, _frameHeight, new Bgr(0, 0, 0));
             //CvInvoke.cvWarpAffine(imgImageBox.Image.Ptr, imageBoxPers.Image.Ptr, warpMat, 0, fillvar);
             CvInvoke.cvWarpPerspective(imgImageBox.Image.Ptr, imageBoxPers.Image.Ptr, warpMat, 0, fillvar);
+            //CvInvoke.cvWarpPerspective(imgImageBox.Image.Ptr, imagePerspective.Ptr, warpMat, 0, fillvar);
+            imagePerspective = new Image<Bgr,byte>(imageBoxPers.Image.Bitmap);
+            //imageBoxPers.Image = imagePerspective;
         }
     }
 }

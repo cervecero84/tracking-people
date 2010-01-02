@@ -70,6 +70,7 @@
             this.imageBoxPers.Size = new System.Drawing.Size(400, 300);
             this.imageBoxPers.TabIndex = 8;
             this.imageBoxPers.TabStop = false;
+            this.imageBoxPers.MouseClick += new System.Windows.Forms.MouseEventHandler(this.imageBoxPers_MouseClick);
             // 
             // btnDrawPnt
             // 
