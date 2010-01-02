@@ -120,7 +120,7 @@ namespace EmguCVTest
                 Matrix<double> leftSideTransformed = new Matrix<double>(3, 1);
                 CvInvoke.cvPerspectiveTransform(leftSidePtr, leftSideTransformed, warpMat);
 
-                Cross2DF scrCrossTest2 = new Cross2DF(rightSide[0], 5, 5);
+                Cross2DF scrCrossTest2 = new Cross2DF(leftSideTransformed, 5, 5);
                 imagePerspective.Draw(scrCrossTest2, new Bgr(Color.Green), 2);
                 imageBoxPers.Image = imagePerspective;//.Resize(_frameWidth, _frameHeight);
 
