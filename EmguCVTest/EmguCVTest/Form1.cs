@@ -117,7 +117,6 @@ namespace EmguCVTest
             // Get the current frame from the camera - color and gray
             Image<Bgr, Byte> originalFrame = _capture.QueryFrame();
             
-
             // This usually occurs when using a video file - after the last frame is read
             // the next frame is null
             if (originalFrame == null)
@@ -127,24 +126,54 @@ namespace EmguCVTest
                 originalFrame = _capture.QueryFrame();
             }
 
-#region Covariance Matrix
-            double CbMean = 107.9649 / 255;
-            double CrMean = 140.8913 / 255;
-            //covariance matrix taken from matlab skin detection demo mdl
-            double K1 = 1.8328501e+03;
-            double K2 = 2.2506719e+03;
-            double K3 = 2.2506719e+03;
-            double K4 = 6.8658257e+03;
-#endregion Covariance Matrix
+            #region Covariance Matrix
 
-            //convert to YCbCr colourspace
+            double CbMean = 0.386090697709818;
+            double CrMean = 0.606079492993334;
+
+            Matrix<Double>E=new Matrix<double>(2,1);
+            E[0,0]=CbMean; E[1,0]=CrMean;
+
+            //covariance matrix taken from matlab skin detection demo mdl
+            double K1 = 4662.55882477405;
+            double K2 = 4050.89761683218;
+            double K3 = 4050.89761683218;
+            double K4 = 5961.62013605372;
+
+            Matrix<double>K=new Matrix<double>(2,2);
+            K [0,0]=K1;
+            K [1,0]=K2;
+            K [0,1]=K3;
+            K [0,0]=K4;
+
+
+            /*double K1 = 1832.85009482496;	
+            double K2 = 2250.67197529579;	
+            double K3 = 2250.67197529579;	
+            double K4 =	6865.825444635298*/
+
+
+            #endregion Covariance Matrix
+
+            //capture image
             Image<Bgr, Byte> image = originalFrame.Resize(_frameWidth, _frameHeight);
             capturedImageBox.Image = image;
+
+            //Image<Bgr, Byte> smoothImage = new Image<Bgr, byte>(_frameWidth, _frameHeight);
+            //CvInvoke.cvSmooth(image, smoothImage, SMOOTH_TYPE.CV_BILATERAL, 7, 7, 0.5, 0.5);
+           
+            //convert to YCbCr colourspace
             Image<Ycc, Byte> yccImage = new Image<Ycc, byte>(_frameWidth, _frameHeight);
             CvInvoke.cvCvtColor(image, yccImage, COLOR_CONVERSION.CV_BGR2YCrCb);
 
-            Image<Gray, Byte> yccBlob = new Image<Gray, byte>(_frameWidth, _frameHeight);
+            Image<Gray, Byte> yccBlob = new Image<Gray, Byte>(_frameWidth, _frameHeight);
+            
+            //Image<Gray, Byte>[] channels = yccImage.Split();
+            //Image<Gray, Double> Cr = channels[1].Convert<Gray, Double>();
+            //Image<Gray, Double> Cb = channels[2].Convert<Gray, Double>();
+            //Matrix<Double> x =new Matrix<double>(2,1);
 
+            //calculation of the likelihood of pixel being skin
             for (int j = 0; j < yccImage.Width; j++)
             {
                 for (int i = 0; i < yccImage.Height; i++)
@@ -153,26 +182,30 @@ namespace EmguCVTest
                     double Cr = yccImage[i, j].Cr / 255.0;
                     Cb -= CbMean;
                     Cr -= CrMean;
+                    //x[0,0]= Cb[i,j].Intensity/255;
+                    //x[1,0]= Cr[i,j].Intensity/255;
+                    //double dist = CvInvoke.cvMahalanobis(x, E, K);
                     double CbDist = Cb * (K1 * Cb + K3 * Cr);
                     double CrDist = Cr * (K2 * Cb + K4 * Cr);
                     double dist = CbDist + CrDist;
-                    yccBlob[i,j] = new Gray(dist);
-
+                    yccBlob[i, j] = new Gray(dist);
                 }
             }
-
+            
+            //display likelihood of skin in grayImageBox
             grayImageBox.Image = yccBlob;
 
-            Image<Gray, Byte> thresholded = new Image<Gray, byte>(_frameWidth, _frameHeight);
+            Image<Gray, Byte> dilated = yccBlob.Dilate(1);
 
+            //inverse thresholding the likelihood to get a binary image
+            Image<Gray, Byte> thresholded = dilated.ThresholdBinaryInv(new Gray(dilated.GetAverage().Intensity*0.5),new Gray(255));
             //Double minVal, maxVal;
             //Point minLoc, maxLoc;
 
-            
-            CvInvoke.cvThreshold(yccBlob, thresholded, 15, 255, THRESH.CV_THRESH_BINARY);
+
 
             // Perform erosion to remove camera noise
-            Image<Gray, Byte> eroded = new Image<Gray, byte>(_frameWidth, _frameHeight);
+            Image<Gray, Byte> eroded = new Image<Gray, Byte>(_frameWidth, _frameHeight);
             CvInvoke.cvErode(thresholded, eroded, IntPtr.Zero, 2);
 
             motionImageBox.Image = eroded;
@@ -194,7 +227,7 @@ namespace EmguCVTest
             }
             
             // Actual background capture
-            _backgroundImage = _capture.QueryGrayFrame().Resize(_frameWidth,_frameHeight);
+            _backgroundImage = _capture.QueryGrayFrame().Resize(_frameWidth, _frameHeight);
             backgroundImage.Image = _backgroundImage.Resize(backgroundImage.Width, backgroundImage.Height);
             MessageBox.Show("Background capture complete");
         }
@@ -220,7 +253,7 @@ namespace EmguCVTest
 
             CvInvoke.cvAddWeighted(src, 1.0 - movementFactor, ovr, movementFactor, 0, res);
         }
-       
+
         /// <summary>
         /// Initializes the camera resource, *if it does not currently exist*
         /// </summary>
@@ -275,7 +308,7 @@ namespace EmguCVTest
             ImageViewer viewer = new ImageViewer();
             // Show the background image
             viewer.Image = _backgroundImage;
-            backgroundImage.Image = _backgroundImage.Resize(177,177);
+            backgroundImage.Image = _backgroundImage.Resize(177, 177);
 
             viewer.ShowDialog();
         }
@@ -288,7 +321,7 @@ namespace EmguCVTest
         /// </summary>
         /// <param name="img">Grayscale image where rectangles would be located</param>
         /// <param name="original">Original (colour) image where the rectangle borders will be drawn</param>
-        private void drawBoxes(Emgu.CV.Image<Gray, Byte> img,Emgu.CV.Image<Bgr,Byte> original)
+        private void drawBoxes(Emgu.CV.Image<Gray, Byte> img, Emgu.CV.Image<Bgr, Byte> original)
         {
 
             Gray cannyThreshold = new Gray(180);
