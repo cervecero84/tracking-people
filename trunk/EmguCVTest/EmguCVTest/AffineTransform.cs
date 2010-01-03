@@ -10,6 +10,7 @@ using Emgu.CV;
 using Emgu.CV.UI;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
+using GroupLab.Networking;
 
 
 namespace EmguCVTest
@@ -87,6 +88,8 @@ namespace EmguCVTest
 
         private void imgImageBox_MouseClick(object sender, MouseEventArgs e)
         {
+            
+            //Guid currentCoordinates;
             if (lblCurrentPoint.Text == "Draw Point")
             {
                 if (ptCounter == 4)
@@ -101,6 +104,9 @@ namespace EmguCVTest
                     srcpt[ptCounter].X = e.X; //* _orgFrameWidth/_frameWidth;
                     srcpt[ptCounter].Y = e.Y; //* _orgFrameHeight/_frameHeight;
 
+                    sd["/coordinates/pts"] = new SharedDictionary.Vector();
+                    sd["/coordinates/pts#0"] = new Point(e.X, e.Y);
+
                     Cross2DF scrCrossTest = new Cross2DF(srcpt[ptCounter], 5, 5);
                     imageTransform.Draw(scrCrossTest, new Bgr(Color.Red), 2);
                     imgImageBox.Image = imageTransform;//.Resize(_frameWidth, _frameHeight);
@@ -112,6 +118,11 @@ namespace EmguCVTest
             {
                 lblCurrentPoint.Text = "Draw Point";
                 //lblCurrentPoint.Text = "Click on left side";
+                //currentCoordinates = Guid.NewGuid();
+                sd["/coordinates/pts"] = new SharedDictionary.Vector();
+                sd["/coordinates/pts#0"] = new Point ( e.X, e.Y );
+                //sd["/coordinates#-0"] = currentCoordinates;
+
                 leftSide[0].X = e.X; //* _orgFrameWidth/_frameWidth;
                 leftSide[0].Y = e.Y; //* _orgFrameHeight/_frameHeight;
                 
@@ -220,6 +231,25 @@ namespace EmguCVTest
             //CvInvoke.cvWarpPerspective(imgImageBox.Image.Ptr, imagePerspective.Ptr, warpMat, 0, fillvar);
             imagePerspective = new Image<Bgr,byte>(imageBoxPers.Image.Bitmap);
             //imageBoxPers.Image = imagePerspective;
+        }
+
+        private void subscription1_Notified(object sender, SubscriptionEventArgs e)
+        {
+            if (e.Reason == SubscriptionNotification.Add)
+            {
+
+            }
+        }
+
+        private void AffineTransform_Load(object sender, EventArgs e)
+        {
+            sd["/coordinates"] = new SharedDictionary.Vector();
+            sd.Open();
+        }
+
+        private void sd_Opened(object sender, EventArgs e)
+        {
+            this.Refresh();
         }
     }
 }
