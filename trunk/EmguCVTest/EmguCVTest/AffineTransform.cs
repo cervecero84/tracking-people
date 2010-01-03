@@ -20,7 +20,7 @@ namespace EmguCVTest
         PointF[] dstpt = new PointF[4];
 
         PointF[] leftSide = new PointF[1];
-        //PointF[] leftSideTransform = new PointF[1];
+        PointF[] leftSideT = new PointF[1];
         PointF[] rightSide = new PointF[1];
         //PointF[] rightSideTransform = new PointF[0];
 
@@ -34,8 +34,8 @@ namespace EmguCVTest
         int _orgFrameHeight = 480;
         Capture _capture;
 
-        IntPtr warpMat = CvInvoke.cvCreateMat(3, 3, MAT_DEPTH.CV_64F);
-        IntPtr invWarpMat = CvInvoke.cvCreateMat(3, 3, MAT_DEPTH.CV_64F);
+        Matrix<double> warpMat = new Matrix<double>(3, 3);// CvInvoke.cvCreateMat(3, 3, MAT_DEPTH.CV_64F);
+        Matrix<double> invWarpMat = new Matrix<double>(3, 3); //CvInvoke.cvCreateMat(3, 3, MAT_DEPTH.CV_64F);
 
         IntPtr leftSideM = CvInvoke.cvCreateMat(3, 1, MAT_DEPTH.CV_64F);
         //IntPtr leftSideTransform = CvInvoke.cvCreateMat(3, 1, MAT_DEPTH.CV_64F);
@@ -115,12 +115,20 @@ namespace EmguCVTest
                 leftSide[0].X = e.X; //* _orgFrameWidth/_frameWidth;
                 leftSide[0].Y = e.Y; //* _orgFrameHeight/_frameHeight;
                 
-                double[] data = { leftSide[0].X, leftSide[0].Y, 1 };
+                double[] data = { leftSide[0].X, leftSide[0].Y, 1};
                 Matrix<double> leftSidePtr = new Matrix<double>(data);
                 Matrix<double> leftSideTransformed = new Matrix<double>(3, 1);
-                CvInvoke.cvPerspectiveTransform(leftSidePtr, leftSideTransformed, warpMat);
+                //Matrix<double> leftSidePtrT = new Matrix<double>();
+                //Matrix<double> wMat = new Matrix<double>(warpMat);
+                //CvInvoke.cvTranspose(leftSidePtr, leftSidePtrT);
+                //CvInvoke.cvTranspose(leftSideTransformed, leftSideTransformed);
+                CvInvoke.cvPerspectiveTransform(leftSidePtr.Ptr, leftSideTransformed.Ptr, warpMat.Ptr);
+                
 
-                Cross2DF scrCrossTest2 = new Cross2DF(leftSideTransformed, 5, 5);
+                leftSideT[0].X = (float)leftSideTransformed[1, 1];
+                leftSideT[0].Y = (float)leftSideTransformed[1, 2];
+
+                Cross2DF scrCrossTest2 = new Cross2DF(leftSideT[0], 5, 5);
                 imagePerspective.Draw(scrCrossTest2, new Bgr(Color.Green), 2);
                 imageBoxPers.Image = imagePerspective;//.Resize(_frameWidth, _frameHeight);
 
