@@ -36,8 +36,13 @@
             this.btnTransform = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
             this.lblCurrentPoint = new System.Windows.Forms.Label();
+            this.sd = new GroupLab.Networking.SharedDictionary(this.components);
+            this.subscription1 = new GroupLab.Networking.Subscription(this.components);
+            this.subscription2 = new GroupLab.Networking.Subscription(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.imgImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBoxPers)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.subscription1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.subscription2)).BeginInit();
             this.SuspendLayout();
             // 
             // btnCapture
@@ -110,6 +115,23 @@
             this.lblCurrentPoint.TabIndex = 12;
             this.lblCurrentPoint.Text = "Draw Point";
             // 
+            // sd
+            // 
+            this.sd.SynchronizingObject = this;
+            this.sd.Url = "tcp://localhost:shareD";
+            this.sd.Opened += new System.EventHandler(this.sd_Opened);
+            // 
+            // subscription1
+            // 
+            this.subscription1.Dictionary = this.sd;
+            this.subscription1.Pattern = "/coordinates/pts";
+            this.subscription1.Notified += new GroupLab.Networking.SubscriptionEventHandler(this.subscription1_Notified);
+            // 
+            // subscription2
+            // 
+            this.subscription2.Dictionary = this.sd;
+            this.subscription2.Pattern = "/coordinates";
+            // 
             // AffineTransform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -124,8 +146,11 @@
             this.Controls.Add(this.btnCapture);
             this.Name = "AffineTransform";
             this.Text = "AffineTransform";
+            this.Load += new System.EventHandler(this.AffineTransform_Load);
             ((System.ComponentModel.ISupportInitialize)(this.imgImageBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBoxPers)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.subscription1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.subscription2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -140,5 +165,8 @@
         private System.Windows.Forms.Button btnTransform;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Label lblCurrentPoint;
+        private GroupLab.Networking.SharedDictionary sd;
+        private GroupLab.Networking.Subscription subscription1;
+        private GroupLab.Networking.Subscription subscription2;
     }
 }
