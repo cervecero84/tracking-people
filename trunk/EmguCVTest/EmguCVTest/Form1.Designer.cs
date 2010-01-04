@@ -42,8 +42,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.lblBgAdaptationRate = new System.Windows.Forms.Label();
             this.btnAdaptiveBackground = new System.Windows.Forms.Button();
-            this.DetectSkin = new System.Windows.Forms.Button();
+            this.btnDetectSkin = new System.Windows.Forms.Button();
             this.btnAffineTranform = new System.Windows.Forms.Button();
+            this.btnColorSample = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.capturedImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.motionImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.backgroundImage)).BeginInit();
@@ -178,15 +179,15 @@
             this.btnAdaptiveBackground.UseVisualStyleBackColor = true;
             this.btnAdaptiveBackground.Click += new System.EventHandler(this.btnAdaptiveBackground_Click);
             // 
-            // DetectSkin
+            // btnDetectSkin
             // 
-            this.DetectSkin.Location = new System.Drawing.Point(12, 384);
-            this.DetectSkin.Name = "DetectSkin";
-            this.DetectSkin.Size = new System.Drawing.Size(177, 51);
-            this.DetectSkin.TabIndex = 13;
-            this.DetectSkin.Text = "Detect Skin";
-            this.DetectSkin.UseVisualStyleBackColor = true;
-            this.DetectSkin.Click += new System.EventHandler(this.DetectSkin_Click);
+            this.btnDetectSkin.Location = new System.Drawing.Point(108, 375);
+            this.btnDetectSkin.Name = "btnDetectSkin";
+            this.btnDetectSkin.Size = new System.Drawing.Size(81, 51);
+            this.btnDetectSkin.TabIndex = 13;
+            this.btnDetectSkin.Text = "Detect Skin";
+            this.btnDetectSkin.UseVisualStyleBackColor = true;
+            this.btnDetectSkin.Click += new System.EventHandler(this.DetectSkin_Click);
             // 
             // btnAffineTranform
             // 
@@ -198,12 +199,23 @@
             this.btnAffineTranform.UseVisualStyleBackColor = true;
             this.btnAffineTranform.Click += new System.EventHandler(this.btnAffineTranform_Click);
             // 
+            // btnColorSample
+            // 
+            this.btnColorSample.Location = new System.Drawing.Point(12, 375);
+            this.btnColorSample.Name = "btnColorSample";
+            this.btnColorSample.Size = new System.Drawing.Size(90, 51);
+            this.btnColorSample.TabIndex = 14;
+            this.btnColorSample.Text = "Sample Colour";
+            this.btnColorSample.UseVisualStyleBackColor = true;
+            this.btnColorSample.Click += new System.EventHandler(this.btnColorSample_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1004, 631);
-            this.Controls.Add(this.DetectSkin);
+            this.Controls.Add(this.btnColorSample);
+            this.Controls.Add(this.btnDetectSkin);
             this.Controls.Add(this.btnAffineTranform);
             this.Controls.Add(this.btnAdaptiveBackground);
             this.Controls.Add(this.lblBgAdaptationRate);
@@ -246,8 +258,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblBgAdaptationRate;
         private System.Windows.Forms.Button btnAdaptiveBackground;
-        private System.Windows.Forms.Button DetectSkin;
+        private System.Windows.Forms.Button btnDetectSkin;
         private System.Windows.Forms.Button btnAffineTranform;
+        private System.Windows.Forms.Button btnColorSample;
     }
 }
 

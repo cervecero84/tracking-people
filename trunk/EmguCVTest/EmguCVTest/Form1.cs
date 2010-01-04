@@ -36,7 +36,8 @@ namespace EmguCVTest
         // Specify video source
         VideoSource _source = VideoSource.Camera;
         // If video source is "Video", where is the file located
-        String _videoName = "TestVideos\\color_test1.avi";
+        //String _videoName = "TestVideos\\color_test1.avi";
+        String _videoName = "C:\\Users\\darthmimi\\Documents\\Visual Studio 2008\\Projects\\EmguCVTest\\EmguCVTest\\EmguCVTest\\TestVideos\\color_test1.avi";
 
         Capture _capture;
 
@@ -437,6 +438,12 @@ namespace EmguCVTest
         private void btnAffineTranform_Click(object sender, EventArgs e)
         {
             AffineTransform form = new AffineTransform(_capture);
+            form.ShowDialog();
+        }
+
+        private void btnColorSample_Click(object sender, EventArgs e)
+        {
+            ColorSampleForm form = new ColorSampleForm(_capture);
             form.ShowDialog();
         }
     }
