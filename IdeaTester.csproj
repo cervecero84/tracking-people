@@ -99,6 +99,7 @@
     <Content Include="dll\zlib.net.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="template\OrangeBand-D.jpg" />
     <Content Include="template\OrangeBand.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
