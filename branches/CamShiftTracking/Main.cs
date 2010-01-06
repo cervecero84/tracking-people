@@ -55,6 +55,11 @@ namespace IdeaTester
 
         private void btnCamera_Click(object sender, EventArgs e)
         {
+            if (_camera != null)
+            {
+                _camera.Dispose();
+            }
+
             _camera = new Capture(0);
             lblVideoSource.Text = "Camera";
         }
@@ -93,6 +98,7 @@ namespace IdeaTester
         private void performOperation()
         {
             Image<Bgr, Byte> source = _camera.QueryFrame();
+            Image<Bgr, Byte> result = new Image<Bgr,byte>(source.Size);
             
             // Reached the last frame in the source - happens in video files
             if (source == null)
@@ -108,39 +114,40 @@ namespace IdeaTester
             }
 
             source = source.Resize(400, 300, INTER.CV_INTER_CUBIC);
-            Image<Ycc, Byte> bandTemplate = new Image<Ycc, byte>("template/OrangeBand.jpg");
+            Image<Bgr, Byte> bandImage = new Image<Bgr, byte>("template/OrangeBand.jpg");
 
-            int kSize;
-            if (!Int32.TryParse(txtKernelSize.Text.ToString(), out kSize)) kSize = 3;
-            int cSigma;
-            if (!Int32.TryParse(txtColorSigma.Text.ToString(), out cSigma)) cSigma = 15;
-            int sSigma;
-            if (!Int32.TryParse(txtSpaceSigma.Text.ToString(), out sSigma)) sSigma = 5;
-            txtKernelSize.Text = kSize.ToString();
-            txtColorSigma.Text = cSigma.ToString();
-            txtSpaceSigma.Text = sSigma.ToString();
+            Image<Gray, Byte>[] bandImageChannels = bandImage.Convert<Ycc, Byte>().Split();
+            Image<Gray, Byte>[] sourceChannels = source.Convert<Ycc, Byte>().Split();
+            // Use the whole image
+            Image<Gray, Byte> mask = new Image<Gray, byte>(bandImage.Width, bandImage.Height, new Gray(255));
 
-            Image<Bgr, Byte> result;
-            if (cbxFilterType.SelectedText == "Blur")
-            {
-                 result = source.SmoothBlur(kSize, cSigma);
-            }
-            else if (cbxFilterType.SelectedText == "Gaussian")
-            {
-                result = source.SmoothGaussian(kSize);
-            }
-            else if (cbxFilterType.SelectedText == "Median")
-            {
-                result = source.SmoothMedian(kSize);
-            }
-            else
-            {
-                result = source.SmoothBilatral(kSize, cSigma, sSigma);
-            }
-            lblStatus.Text = cbxFilterType.SelectedText + " smoothing being applied: (" + kSize.ToString() + ", " + cSigma.ToString() + ", " + sSigma.ToString() + ")";
+            // Initialization
+            int channelIndex;
+            IntPtr[] bandImageChannelsPtr = new IntPtr[1];
+            IntPtr[] sourcePtr = new IntPtr[1];
+            DenseHistogram hist = new DenseHistogram(16, new RangeF(0,255));
 
+            // Use the Cb-channel
+            channelIndex = 1;
+            bandImageChannelsPtr[0] = bandImageChannels[channelIndex];
+            sourcePtr[0] = sourceChannels[channelIndex];
+
+            CvInvoke.cvCalcHist(bandImageChannelsPtr, hist, false, mask);
+            Image<Gray, Byte> backProjectCb = new Image<Gray,byte>(source.Size);
+            CvInvoke.cvCalcBackProject(sourcePtr, backProjectCb, hist);
+
+            // Use the Cr-channel
+            channelIndex = 2;
+            bandImageChannelsPtr[0] = bandImageChannels[channelIndex];
+            sourcePtr[0] = sourceChannels[channelIndex];
+
+            CvInvoke.cvCalcHist(bandImageChannelsPtr, hist, false, mask);
+            Image<Gray, Byte> backProjectCr = new Image<Gray, byte>(source.Size);
+            CvInvoke.cvCalcBackProject(sourcePtr, backProjectCr, hist);
+            
+            // Output the source and the result
             ibxSource.Image = source;
-            ibxOutput.Image = result;
+            ibxOutput.Image = backProjectCb.And(backProjectCr).ThresholdBinary(new Gray(200), new Gray(255)).Erode(1).Dilate(5);
         }
 
         private void btnProcess_Click(object sender, EventArgs e)
