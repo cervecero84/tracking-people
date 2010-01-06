@@ -98,12 +98,49 @@ namespace IdeaTester
             if (source == null)
             {
                 cbxVideo.Checked = false;
-                return;
+                _camera = new Capture(ofdSourceVideo.FileName);
+                source = _camera.QueryFrame();
+                if (source == null)
+                {
+                    lblStatus.Text = "Video source no longer available";
+                    return;
+                }
             }
 
             source = source.Resize(400, 300, INTER.CV_INTER_CUBIC);
+            Image<Ycc, Byte> bandTemplate = new Image<Ycc, byte>("template/OrangeBand.jpg");
+
+            int kSize;
+            if (!Int32.TryParse(txtKernelSize.Text.ToString(), out kSize)) kSize = 3;
+            int cSigma;
+            if (!Int32.TryParse(txtColorSigma.Text.ToString(), out cSigma)) cSigma = 15;
+            int sSigma;
+            if (!Int32.TryParse(txtSpaceSigma.Text.ToString(), out sSigma)) sSigma = 5;
+            txtKernelSize.Text = kSize.ToString();
+            txtColorSigma.Text = cSigma.ToString();
+            txtSpaceSigma.Text = sSigma.ToString();
+
+            Image<Bgr, Byte> result;
+            if (cbxFilterType.SelectedText == "Blur")
+            {
+                 result = source.SmoothBlur(kSize, cSigma);
+            }
+            else if (cbxFilterType.SelectedText == "Gaussian")
+            {
+                result = source.SmoothGaussian(kSize);
+            }
+            else if (cbxFilterType.SelectedText == "Median")
+            {
+                result = source.SmoothMedian(kSize);
+            }
+            else
+            {
+                result = source.SmoothBilatral(kSize, cSigma, sSigma);
+            }
+            lblStatus.Text = cbxFilterType.SelectedText + " smoothing being applied: (" + kSize.ToString() + ", " + cSigma.ToString() + ", " + sSigma.ToString() + ")";
+
             ibxSource.Image = source;
-            ibxOutput.Image = source.Convert<Gray, Byte>();
+            ibxOutput.Image = result;
         }
 
         private void btnProcess_Click(object sender, EventArgs e)

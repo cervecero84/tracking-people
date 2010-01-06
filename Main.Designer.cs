@@ -40,13 +40,21 @@
             this.cbxVideo = new System.Windows.Forms.CheckBox();
             this.txtFrameLimit = new System.Windows.Forms.TextBox();
             this.btnSetFrameLimit = new System.Windows.Forms.Button();
+            this.txtKernelSize = new System.Windows.Forms.TextBox();
+            this.txtColorSigma = new System.Windows.Forms.TextBox();
+            this.txtSpaceSigma = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lblStatus = new System.Windows.Forms.Label();
+            this.cbxFilterType = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.ibxSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ibxOutput)).BeginInit();
             this.SuspendLayout();
             // 
             // btnProcess
             // 
-            this.btnProcess.Location = new System.Drawing.Point(21, 318);
+            this.btnProcess.Location = new System.Drawing.Point(184, 366);
             this.btnProcess.Name = "btnProcess";
             this.btnProcess.Size = new System.Drawing.Size(156, 32);
             this.btnProcess.TabIndex = 3;
@@ -119,7 +127,7 @@
             // cbxVideo
             // 
             this.cbxVideo.AutoSize = true;
-            this.cbxVideo.Location = new System.Drawing.Point(183, 327);
+            this.cbxVideo.Location = new System.Drawing.Point(21, 327);
             this.cbxVideo.Name = "cbxVideo";
             this.cbxVideo.Size = new System.Drawing.Size(119, 17);
             this.cbxVideo.TabIndex = 10;
@@ -129,14 +137,14 @@
             // 
             // txtFrameLimit
             // 
-            this.txtFrameLimit.Location = new System.Drawing.Point(308, 325);
+            this.txtFrameLimit.Location = new System.Drawing.Point(146, 325);
             this.txtFrameLimit.Name = "txtFrameLimit";
             this.txtFrameLimit.Size = new System.Drawing.Size(32, 20);
             this.txtFrameLimit.TabIndex = 11;
             // 
             // btnSetFrameLimit
             // 
-            this.btnSetFrameLimit.Location = new System.Drawing.Point(346, 318);
+            this.btnSetFrameLimit.Location = new System.Drawing.Point(184, 318);
             this.btnSetFrameLimit.Name = "btnSetFrameLimit";
             this.btnSetFrameLimit.Size = new System.Drawing.Size(75, 32);
             this.btnSetFrameLimit.TabIndex = 12;
@@ -144,11 +152,89 @@
             this.btnSetFrameLimit.UseVisualStyleBackColor = true;
             this.btnSetFrameLimit.Click += new System.EventHandler(this.btnSetFrameLimit_Click);
             // 
+            // txtKernelSize
+            // 
+            this.txtKernelSize.Location = new System.Drawing.Point(23, 373);
+            this.txtKernelSize.Name = "txtKernelSize";
+            this.txtKernelSize.Size = new System.Drawing.Size(45, 20);
+            this.txtKernelSize.TabIndex = 13;
+            // 
+            // txtColorSigma
+            // 
+            this.txtColorSigma.Location = new System.Drawing.Point(74, 373);
+            this.txtColorSigma.Name = "txtColorSigma";
+            this.txtColorSigma.Size = new System.Drawing.Size(45, 20);
+            this.txtColorSigma.TabIndex = 14;
+            // 
+            // txtSpaceSigma
+            // 
+            this.txtSpaceSigma.Location = new System.Drawing.Point(125, 373);
+            this.txtSpaceSigma.Name = "txtSpaceSigma";
+            this.txtSpaceSigma.Size = new System.Drawing.Size(45, 20);
+            this.txtSpaceSigma.TabIndex = 15;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(23, 351);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(36, 13);
+            this.label1.TabIndex = 16;
+            this.label1.Text = "kernel";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(71, 351);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(30, 13);
+            this.label2.TabIndex = 17;
+            this.label2.Text = "color";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(122, 351);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(36, 13);
+            this.label3.TabIndex = 18;
+            this.label3.Text = "space";
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Location = new System.Drawing.Point(457, 366);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(126, 13);
+            this.lblStatus.TabIndex = 19;
+            this.lblStatus.Text = "Status messages go here";
+            // 
+            // cbxFilterType
+            // 
+            this.cbxFilterType.FormattingEnabled = true;
+            this.cbxFilterType.Items.AddRange(new object[] {
+            "Blur",
+            "Gaussian",
+            "Median",
+            "Bilateral"});
+            this.cbxFilterType.Location = new System.Drawing.Point(266, 328);
+            this.cbxFilterType.Name = "cbxFilterType";
+            this.cbxFilterType.Size = new System.Drawing.Size(74, 21);
+            this.cbxFilterType.TabIndex = 20;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 362);
+            this.ClientSize = new System.Drawing.Size(884, 405);
+            this.Controls.Add(this.cbxFilterType);
+            this.Controls.Add(this.lblStatus);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.txtSpaceSigma);
+            this.Controls.Add(this.txtColorSigma);
+            this.Controls.Add(this.txtKernelSize);
             this.Controls.Add(this.btnSetFrameLimit);
             this.Controls.Add(this.txtFrameLimit);
             this.Controls.Add(this.cbxVideo);
@@ -182,6 +268,14 @@
         private System.Windows.Forms.CheckBox cbxVideo;
         private System.Windows.Forms.TextBox txtFrameLimit;
         private System.Windows.Forms.Button btnSetFrameLimit;
+        private System.Windows.Forms.TextBox txtKernelSize;
+        private System.Windows.Forms.TextBox txtColorSigma;
+        private System.Windows.Forms.TextBox txtSpaceSigma;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.ComboBox cbxFilterType;
     }
 }
 
