@@ -353,6 +353,25 @@ namespace EmguCVTest
             img.Draw(crossToDraw, new Bgr(Color.Purple), 3);
             imageBoxPers.Image = img;
 
+            Matrix<double> m = new Matrix<double>(1, 1, 2);
+            Matrix<double> n = new Matrix<double>(1, 1, 2);
+
+            //double[] data = { pointToDraw.X, pointToDraw.Y };
+            m.Data[0, 0] = pointToDraw.X;
+            m.Data[0, 1] = pointToDraw.Y;
+
+            CvInvoke.cvPerspectiveTransform(m, n, invWarpMat.Ptr);
+
+            PointF pointToDrawT = new PointF();
+
+            pointToDrawT.X = (float)n.Data[0, 0];
+            pointToDrawT.Y = (float)n.Data[0, 1];
+
+            Cross2DF scrCrossTest2 = new Cross2DF(pointToDrawT, 5, 5);
+            imageTransform.Draw(scrCrossTest2, new Bgr(Color.Purple), 2);
+            imgImageBox.Image = imageTransform;//.Resize(_frameWidth, _frameHeight);
+
+
         }
     }
 }
