@@ -47,11 +47,12 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.textBoxSat = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
             this.textBoxHue = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.btnYccParam = new System.Windows.Forms.Button();
             this.btnAvgHS = new System.Windows.Forms.Button();
+            this.btnWPcalib = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.sampleImageBox)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -244,6 +245,14 @@
             this.textBoxSat.Size = new System.Drawing.Size(57, 20);
             this.textBoxSat.TabIndex = 27;
             // 
+            // textBoxHue
+            // 
+            this.textBoxHue.Location = new System.Drawing.Point(68, 35);
+            this.textBoxHue.Name = "textBoxHue";
+            this.textBoxHue.ReadOnly = true;
+            this.textBoxHue.Size = new System.Drawing.Size(57, 20);
+            this.textBoxHue.TabIndex = 25;
+            // 
             // label9
             // 
             this.label9.AutoSize = true;
@@ -253,14 +262,6 @@
             this.label9.Size = new System.Drawing.Size(23, 13);
             this.label9.TabIndex = 26;
             this.label9.Text = "Sat";
-            // 
-            // textBoxHue
-            // 
-            this.textBoxHue.Location = new System.Drawing.Point(68, 35);
-            this.textBoxHue.Name = "textBoxHue";
-            this.textBoxHue.ReadOnly = true;
-            this.textBoxHue.Size = new System.Drawing.Size(57, 20);
-            this.textBoxHue.TabIndex = 25;
             // 
             // label10
             // 
@@ -280,6 +281,7 @@
             this.btnYccParam.TabIndex = 26;
             this.btnYccParam.Text = "YCbCr Param";
             this.btnYccParam.UseVisualStyleBackColor = true;
+            this.btnYccParam.Click += new System.EventHandler(this.btnYccParam_Click);
             // 
             // btnAvgHS
             // 
@@ -291,11 +293,22 @@
             this.btnAvgHS.UseVisualStyleBackColor = true;
             this.btnAvgHS.Click += new System.EventHandler(this.btnAvgHS_Click);
             // 
+            // btnWPcalib
+            // 
+            this.btnWPcalib.Location = new System.Drawing.Point(215, 306);
+            this.btnWPcalib.Name = "btnWPcalib";
+            this.btnWPcalib.Size = new System.Drawing.Size(95, 30);
+            this.btnWPcalib.TabIndex = 28;
+            this.btnWPcalib.Text = "WP calibration";
+            this.btnWPcalib.UseVisualStyleBackColor = true;
+            this.btnWPcalib.Click += new System.EventHandler(this.btnWPcalib_Click);
+            // 
             // ColorSampleForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(726, 339);
+            this.Controls.Add(this.btnWPcalib);
             this.Controls.Add(this.btnAvgHS);
             this.Controls.Add(this.btnYccParam);
             this.Controls.Add(this.groupBox2);
@@ -337,5 +350,6 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button btnYccParam;
         private System.Windows.Forms.Button btnAvgHS;
+        private System.Windows.Forms.Button btnWPcalib;
     }
 }
