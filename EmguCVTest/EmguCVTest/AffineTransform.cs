@@ -17,6 +17,7 @@ namespace EmguCVTest
 {
     public partial class AffineTransform : Form
     {
+
         PointF[] srcpt = new PointF[4];
         PointF[] dstpt = new PointF[4];
 
@@ -53,33 +54,53 @@ namespace EmguCVTest
         
         Image<Bgr, Byte> imagePerspective;
 
+        [Serializable]
+        struct touchInfo
+        {
+            public int X;
+            public int Y;
+            public bool Exists;
+            public string UID;
+            public int timeIn;
+            public int timeOut;
+            public int orientation;
+            public int handPlacement;
+        };
+
 
         public AffineTransform(Capture c)
         {
             InitializeComponent();
+
+            
+            /////CODE FOR NETWORKING////////////
+            this.sharedDictionary1.Url = "tcp://localhost:shareD";
+
+            // connect the shared dictionary to some default server, it will spawn a server or client
+            this.sharedDictionary1.Open();
+
+            // signal beginning of initialization for subscription1
+            this.subscription1.BeginInit();
+            // register the pattern with the shared dictionary server
+            this.subscription1.Pattern = "/pointOne";
+            // register the event handler
+            this.subscription1.Notified += new SubscriptionEventHandler(subscr_notified);
+            // signal the end of initialization
+            this.subscription1.EndInit();
+ 
+
+
+
+            ////////End Code Networking////////////
+            
+
+
+
+
+
+
+
             _capture = c;
-
-
-
-
-            this.subscription1.BeginInit();
-            this.subscription1.Pattern = "/coordinates";
-
-            // this next line creates an event handler that will fire when a notification is received
-            this.subscription1.Notified += new SubscriptionEventHandler(subscription1_Notified);
-
-            this.subscription1.EndInit();
-
-            this.subscription1.BeginInit();
-            this.subscription1.Pattern = "/coordinates/pts";
-
-            // this next line creates an event handler that will fire when a notification is received
-            this.subscription1.Notified += new SubscriptionEventHandler(subscription1_Notified);
-
-            this.subscription1.EndInit();
-
-            this.sd.Url = "tcp://localhost:shareD";
-            this.sd.Open();
 
 
             imageTransform = _capture.QueryFrame();
@@ -135,7 +156,7 @@ namespace EmguCVTest
                     //sd["/coordinates/pts#0"] = new Point(e.X, e.Y);
                     ////this.sd["/coordinate/pts"] = new SharedDictionary.Vector();
                     ////this.sd["/coordinate/pts#0"] = e.X.ToString();
-                    this.sd["/value"] = 5;
+                    //this.sd["/value"] = 5;
 
                     Cross2DF scrCrossTest = new Cross2DF(srcpt[ptCounter], 5, 5);
                     imageTransform.Draw(scrCrossTest, new Bgr(Color.Red), 2);
@@ -296,30 +317,15 @@ namespace EmguCVTest
             //imageBoxPers.Image = imagePerspective;
         }
 
-        private void subscription1_Notified(object sender, SubscriptionEventArgs e)
-        {
-            int x = (int)e.Entry.Value;
-            lblCurrentPoint.Text = x.ToString();
-        }
 
         private void AffineTransform_Load(object sender, EventArgs e)
         {
-            //this.sd.Url = "tcp://localhost:shareD";
-            //this.sd.Open();
-            this.sd["/coordinates"] = 6;
-
-            //sd["/coordinates"] = new SharedDictionary.Vector();
-            //sd.Open();
         }
 
-        private void sd_Opened(object sender, EventArgs e)
-        {
-            this.Refresh();
-        }
 
         private void AffineTransform_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.sd.Close();
+ 
         }
 
         private void btnOpenImage_Click(object sender, EventArgs e)
@@ -373,5 +379,37 @@ namespace EmguCVTest
 
 
         }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            touchInfo t = new touchInfo();
+            t.X = 2;
+            t.Y = 4;
+
+            this.sharedDictionary1["/pointOne"] = t;
+            /*
+            // check if we have an entry in the dictionary that matches the pattern
+            if (!this.sharedDictionary1.Contains("/pointOne"))
+                this.sharedDictionary1["/pointOne"] = 0; // then we create one and set its value to 0
+            else
+                // increment the existing value
+                this.sharedDictionary1["/pointOne"] = (int)this.sharedDictionary1.GetEntry("/pointOne").Value + 1;
+             */
+        }
+
+        private void subscr_notified(object sender, SubscriptionEventArgs args)
+        {
+            // get the value from the dictionary
+            touchInfo v = (touchInfo) sharedDictionary1["/pointOne"];
+            txtPtX.Text = v.X.ToString();
+            txtPtY.Text = v.Y.ToString();
+
+            //int valx = (int)this.sharedDictionary1.GetEntry("/pointOne/xcoord").Value;
+            //int valy = (int)this.sharedDictionary1.GetEntry("/pointOne/ycoord").Value;
+            //this.btnClear.Text = "Increment " + valx.ToString(); // and display it on the button
+            //this.txtPtX.Text = valx.ToString();
+            //this.txtPtY.Text = valy.ToString();
+        }
+    
     }
 }
