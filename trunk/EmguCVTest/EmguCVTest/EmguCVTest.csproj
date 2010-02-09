@@ -45,7 +45,7 @@
     </Reference>
     <Reference Include="GroupLab.Networking, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ccf0f5f5bb87072c">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\networking\GroupLab.Networking.dll</HintPath>
+      <HintPath>..\..\GroupLab.Networking.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

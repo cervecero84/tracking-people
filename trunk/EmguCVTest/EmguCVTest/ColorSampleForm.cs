@@ -11,7 +11,7 @@ using Emgu.CV;
 using Emgu.CV.UI;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
-using GroupLab.Networking;
+//using GroupLab.Networking;
 
 
 

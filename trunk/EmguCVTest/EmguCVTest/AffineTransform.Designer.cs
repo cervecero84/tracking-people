@@ -36,9 +36,6 @@
             this.btnTransform = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
             this.lblCurrentPoint = new System.Windows.Forms.Label();
-            this.sd = new GroupLab.Networking.SharedDictionary(this.components);
-            this.subscription1 = new GroupLab.Networking.Subscription(this.components);
-            this.subscription2 = new GroupLab.Networking.Subscription(this.components);
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.btnOpenImage = new System.Windows.Forms.Button();
             this.lblBL = new System.Windows.Forms.Label();
@@ -49,10 +46,11 @@
             this.txtPtX = new System.Windows.Forms.TextBox();
             this.txtPtY = new System.Windows.Forms.TextBox();
             this.btnDrawPt = new System.Windows.Forms.Button();
+            this.sharedDictionary1 = new GroupLab.Networking.SharedDictionary(this.components);
+            this.subscription1 = new GroupLab.Networking.Subscription(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.imgImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBoxPers)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.subscription1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.subscription2)).BeginInit();
             this.SuspendLayout();
             // 
             // btnCapture
@@ -111,12 +109,13 @@
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(790, 13);
+            this.btnClear.Location = new System.Drawing.Point(774, 16);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(26, 23);
+            this.btnClear.Size = new System.Drawing.Size(55, 23);
             this.btnClear.TabIndex = 11;
-            this.btnClear.Text = "Clear";
+            this.btnClear.Text = "Connect";
             this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // lblCurrentPoint
             // 
@@ -126,23 +125,6 @@
             this.lblCurrentPoint.Size = new System.Drawing.Size(59, 13);
             this.lblCurrentPoint.TabIndex = 12;
             this.lblCurrentPoint.Text = "Draw Point";
-            // 
-            // sd
-            // 
-            this.sd.SynchronizingObject = this;
-            this.sd.Url = "tcp://localhost:shareD";
-            this.sd.Opened += new System.EventHandler(this.sd_Opened);
-            // 
-            // subscription1
-            // 
-            this.subscription1.Dictionary = this.sd;
-            this.subscription1.Pattern = "/coordinates/pts";
-            this.subscription1.Notified += new GroupLab.Networking.SubscriptionEventHandler(this.subscription1_Notified);
-            // 
-            // subscription2
-            // 
-            this.subscription2.Dictionary = this.sd;
-            this.subscription2.Pattern = "/coordinates";
             // 
             // openFileDialog1
             // 
@@ -227,11 +209,19 @@
             this.btnDrawPt.UseVisualStyleBackColor = true;
             this.btnDrawPt.Click += new System.EventHandler(this.btnDrawPt_Click);
             // 
+            // sharedDictionary1
+            // 
+            this.sharedDictionary1.SynchronizingObject = this;
+            // 
+            // subscription1
+            // 
+            this.subscription1.Dictionary = this.sharedDictionary1;
+            // 
             // AffineTransform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(828, 348);
+            this.ClientSize = new System.Drawing.Size(829, 348);
             this.Controls.Add(this.btnDrawPt);
             this.Controls.Add(this.txtPtY);
             this.Controls.Add(this.txtPtX);
@@ -255,7 +245,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.imgImageBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imageBoxPers)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.subscription1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.subscription2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -270,9 +259,6 @@
         private System.Windows.Forms.Button btnTransform;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Label lblCurrentPoint;
-        private GroupLab.Networking.SharedDictionary sd;
-        private GroupLab.Networking.Subscription subscription1;
-        private GroupLab.Networking.Subscription subscription2;
         private System.Windows.Forms.Button btnOpenImage;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Label lblBL;
@@ -283,5 +269,7 @@
         private System.Windows.Forms.TextBox txtPtY;
         private System.Windows.Forms.TextBox txtPtX;
         private System.Windows.Forms.Button btnDrawPt;
+        private GroupLab.Networking.SharedDictionary sharedDictionary1;
+        private GroupLab.Networking.Subscription subscription1;
     }
 }
