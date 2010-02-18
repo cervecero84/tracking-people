@@ -93,6 +93,7 @@
     <Content Include="dll\Emgu.Util.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="dll\WiimoteLib.dll" />
     <Content Include="dll\ZedGraph.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
