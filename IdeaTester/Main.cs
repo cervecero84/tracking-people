@@ -35,7 +35,6 @@ namespace IdeaTester
         Warper _cameraReverseWarper = new Warper();
 
         Capture _camera;
-        int _msPerFrame = (int)(1000.0 / 30);
         
         int _screenWidth = 1024;
         int _screenHeight = 768;
@@ -55,7 +54,6 @@ namespace IdeaTester
 
             _irViewAreaGraphics = Graphics.FromImage(_irViewAreaBitmap);
             _videoProcessingTimer = new Stopwatch();
-            //_cameraViewAreaGraphics = Graphics.FromImage(_cameraViewAreaBitmap);
         }
 
         private void Main_Load(object sender, EventArgs e)
@@ -68,7 +66,6 @@ namespace IdeaTester
             {
                 //connect to wii remote
                 wm.Connect();
-                wm.WiimoteChanged += wm_WiimoteChanged; 
 
                 //set what features you want to enable for the remote, look at Wiimote.InputReport for options
                 wm.SetReportType(InputReport.IRAccel, true);
@@ -85,13 +82,11 @@ namespace IdeaTester
         }
 
         #region Wiimote processing
-        void wm_WiimoteChanged(object sender, WiimoteChangedEventArgs args)
-        {
-            //mut.WaitOne();
-            
-            WiimoteState ws = args.WiimoteState;
+        void checkWiimoteStatus()
+        {   
+            WiimoteState ws = wm.WiimoteState;
 
-            lock (_irViewAreaGraphics) _irViewAreaGraphics.Clear(Color.Black);
+            _irViewAreaGraphics.Clear(Color.Black);
 
             // Draw the calibration markers
             for (int i = 0; i < Math.Min(_irCalibrationState, 4); i++)
@@ -111,8 +106,6 @@ namespace IdeaTester
 
             _imgOutput.Bitmap = _irViewAreaBitmap;
             ibxOutput.Image = _imgOutput;
-            //pictureBox1.Image = _irViewAreaBitmap;
-            //mut.ReleaseMutex();
         }
 
         public void irDrawEllipse(Color color, int x, int y, int size)
@@ -124,8 +117,7 @@ namespace IdeaTester
         {
             if (irSensor.Found)
             {
-                //BeginInvoke((MethodInvoker)delegate() { lblStatus.Text = "IR source found with color = " + color.ToString(); });
-                lock (_irViewAreaGraphics) _irViewAreaGraphics.DrawEllipse(new Pen(color),
+                _irViewAreaGraphics.DrawEllipse(new Pen(color),
                     (int)(irSensor.RawPosition.X * 400 / 1024),
                     (int)(irSensor.RawPosition.Y * 300 / 768),
                     irSensor.Size + 1,
@@ -316,7 +308,9 @@ namespace IdeaTester
             }
 
             ibxSource.Image = source;
-            //ibxOutput.Image = source.Convert<Gray, Byte>();
+
+            // Check IR readings from wiimote and perform necessary action
+            checkWiimoteStatus();
         }
 
         private void btnProcess_Click(object sender, EventArgs e)
