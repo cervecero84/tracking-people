@@ -141,17 +141,20 @@ namespace EmguCVTest
             double K3 = 4050.89761683218;
             double K4 = 5961.62013605372;
 
+           
+
+
+            /*double K1 = 1832.85009482496;	
+            double K2 = 2250.67197529579;	
+            double K3 = 2250.67197529579;
+            double K4 = 6865.825444635298;*/
+            
+            
             Matrix<double>K=new Matrix<double>(2,2);
             K [0,0]=K1;
             K [1,0]=K2;
             K [0,1]=K3;
             K [0,0]=K4;
-
-
-            /*double K1 = 1832.85009482496;	
-            double K2 = 2250.67197529579;	
-            double K3 = 2250.67197529579;	
-            double K4 =	6865.825444635298*/
 
 
             #endregion Covariance Matrix
@@ -199,7 +202,7 @@ namespace EmguCVTest
             Image<Gray, Byte> dilated = yccBlob.Dilate(1);
 
             //inverse thresholding the likelihood to get a binary image
-            Image<Gray, Byte> thresholded = dilated.ThresholdBinaryInv(new Gray(dilated.GetAverage().Intensity*0.5),new Gray(255));
+            Image<Gray, Byte> thresholded = dilated.ThresholdBinaryInv(new Gray(dilated.GetAverage().Intensity*0.25),new Gray(255));
             //Double minVal, maxVal;
             //Point minLoc, maxLoc;
 
@@ -212,6 +215,84 @@ namespace EmguCVTest
             motionImageBox.Image = eroded;
 
         }
+
+
+        private void SkinThresh(object sender, EventArgs e)
+        {
+            // Get the current frame from the camera - color and gray
+            Image<Bgr, Byte> originalFrame = _capture.QueryFrame();
+
+            // This usually occurs when using a video file - after the last frame is read
+            // the next frame is null
+            if (originalFrame == null)
+            {
+                // Reset the camera since no frame was captured - for videos, restart the video playback
+                ResetCamera();
+                originalFrame = _capture.QueryFrame();
+            }
+
+            Image<Bgr, Byte> image = originalFrame.Resize(_frameWidth, _frameHeight);
+            capturedImageBox.Image = image;
+
+            motionImageBox.Image = SkinDetect(image);
+
+        }
+
+        public Image<Gray, byte> SkinDetect(Image<Bgr, byte> Img)
+        {
+            Image<Gray, byte> R = new Image<Gray, byte>(Img.Width, Img.Height);
+            Image<Gray, byte> G = new Image<Gray, byte>(Img.Width, Img.Height);
+            Image<Gray, byte> B = new Image<Gray, byte>(Img.Width, Img.Height);
+
+            CvInvoke.cvSplit(Img, B, G, R, IntPtr.Zero);
+
+            Image<Gray, byte> S = new Image<Gray, byte>(Img.Width, Img.Height);
+            Image<Gray, byte> skin = new Image<Gray, byte>(Img.Width, Img.Height);
+
+            /* convert RGB color space to IRgBy color space using this formula:
+            http://www.cs.hmc.edu/~fleck/naked-skin.html
+            I = L(G)
+            Rg = L(R) - L(G)
+            By = L(B) - [L(G) +L(R)] / 2
+            					
+            to calculate the hue:
+            hue = atan2(Rg,By) * (180 / 3.141592654f)
+            Saturation = sqrt(Rg^2 + By^2)
+            */
+           
+            for (int j = 0; j < skin.Width; j++)
+            {
+                for (int i = 0; i < skin.Height; i++)
+                {
+                    //double I_val = (Math.Log(R[i, j].Intensity) + Math.Log(B[i, j].Intensity) + Math.Log(G[i, j].Intensity)) / 3;
+                    //I[i, j] = new Gray(G[i, j].Intensity);
+
+                    double Rg = Math.Log(R[i, j].Intensity) - Math.Log(G[i, j].Intensity);
+                    double By = Math.Log(B[i, j].Intensity) - (Math.Log(G[i, j].Intensity) + Math.Log(R[i, j].Intensity)) / 2;
+                    
+                    double hue_val= Math.Atan2(Rg, By) * (180 / Math.PI);
+                    double sat_val = Math.Sqrt(Rg*Rg+ By *By);
+
+
+                    if (sat_val * 255 >= 20 && sat_val * 255 <= 130 && hue_val >= 110 && hue_val <= 170) //I simplified the naked people filter's two overlapping criteria
+					{
+                        S[i, j] = new Gray(255);
+					} 
+					else
+					{
+                        S[i, j] = new Gray(0);
+					}
+                }
+            }
+
+
+            //skin = S.Erode(1);
+            skin = S.SmoothMedian(15); // median filter is used so that the image will be kept black and white
+
+            return skin;
+
+        }
+
 
         private void btnBgCapture_Click(object sender, EventArgs e)
         {
@@ -296,7 +377,7 @@ namespace EmguCVTest
             InitializeCamera();
             if (_capture != null)
             {
-                Application.Idle -= new EventHandler(SkinLikelihood);
+                Application.Idle -= new EventHandler(SkinThresh);
                 // Unregister the event handler *in case* it was already registed (reclick of this button)
                 Application.Idle -= new EventHandler(ProcessFrame);
                 // Register the event handler
@@ -429,9 +510,9 @@ namespace EmguCVTest
         {
             Application.Idle -= new EventHandler(ProcessFrame);
             // Unregister the event handler *in case* it was already registed (reclick of this button)
-            Application.Idle -= new EventHandler(SkinLikelihood);
+            Application.Idle -= new EventHandler(SkinThresh);
             // Register the event handler
-            Application.Idle += new EventHandler(SkinLikelihood);
+            Application.Idle += new EventHandler(SkinThresh);
  
         }
 

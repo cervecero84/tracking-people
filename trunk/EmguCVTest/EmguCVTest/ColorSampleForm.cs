@@ -67,7 +67,7 @@ namespace EmguCVTest
                     roiImg = sampleImg.Clone();
                     CvInvoke.cvSetImageROI(roiImg, sampleRect);
 
-                    ptCounter = 0;
+                    ptCounter = 0; // reset the counter
                     _rectBottom = 0;
                     _rectLeft = 0;
                     _rectRight = 0;
@@ -99,12 +99,9 @@ namespace EmguCVTest
         {
             
             double[] AdjXYZ = new double[3];
-            Xyz WP = new Xyz(95.05, 100.00, 108.88);
+            Xyz WP = new Xyz(95.05, 100.00, 108.88); // this uses the D65 WP value
             AdjWP(roiImg, WP, AdjXYZ);
-            
-            //Bgr white = new Bgr(Color.White);
-            //CvInvoke.cvCvtColor(white, wp, COLOR_CONVERSION.CV_BGR2XYZ);
-            
+
 
             Image<Xyz, byte> XYZimg = new Image<Xyz, byte>(sampleImg.Width, sampleImg.Height);
             CvInvoke.cvCvtColor(sampleImg, XYZimg, COLOR_CONVERSION.CV_BGR2XYZ);
