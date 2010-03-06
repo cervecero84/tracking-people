@@ -45,8 +45,15 @@
             this.cbxFlipHorizontal = new System.Windows.Forms.CheckBox();
             this.btnCameraCalibrate = new System.Windows.Forms.Button();
             this.lblFPS = new System.Windows.Forms.Label();
+            this.cbxSecondaryCamera = new System.Windows.Forms.CheckBox();
+            this.touchSubscription = new GroupLab.Networking.Subscription(this.components);
+            this.cbxDrawIRPoints = new System.Windows.Forms.CheckBox();
+            this.cbxDrawCalibrationMarkers = new System.Windows.Forms.CheckBox();
+            this.btnColorCalibrate = new System.Windows.Forms.Button();
+            this.touchDictionary = new GroupLab.Networking.SharedDictionary(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.ibxSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ibxOutput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.touchSubscription)).BeginInit();
             this.SuspendLayout();
             // 
             // btnProcess
@@ -190,7 +197,7 @@
             this.btnCameraCalibrate.Name = "btnCameraCalibrate";
             this.btnCameraCalibrate.Size = new System.Drawing.Size(156, 32);
             this.btnCameraCalibrate.TabIndex = 18;
-            this.btnCameraCalibrate.Text = "Camera Calibrate";
+            this.btnCameraCalibrate.Text = "Camera Coordinate Calibrate";
             this.btnCameraCalibrate.UseVisualStyleBackColor = true;
             this.btnCameraCalibrate.Click += new System.EventHandler(this.btnCameraCalibrate_Click);
             // 
@@ -203,11 +210,64 @@
             this.lblFPS.TabIndex = 19;
             this.lblFPS.Text = "FPS";
             // 
+            // cbxSecondaryCamera
+            // 
+            this.cbxSecondaryCamera.AutoSize = true;
+            this.cbxSecondaryCamera.Location = new System.Drawing.Point(701, 365);
+            this.cbxSecondaryCamera.Name = "cbxSecondaryCamera";
+            this.cbxSecondaryCamera.Size = new System.Drawing.Size(116, 17);
+            this.cbxSecondaryCamera.TabIndex = 20;
+            this.cbxSecondaryCamera.Text = "Secondary Camera";
+            this.cbxSecondaryCamera.UseVisualStyleBackColor = true;
+            // 
+            // touchSubscription
+            // 
+            this.touchSubscription.Dictionary = this.touchDictionary;
+            this.touchSubscription.Notified += new GroupLab.Networking.SubscriptionEventHandler(this.touchSubscription_Notified);
+            // 
+            // cbxDrawIRPoints
+            // 
+            this.cbxDrawIRPoints.AutoSize = true;
+            this.cbxDrawIRPoints.Location = new System.Drawing.Point(184, 408);
+            this.cbxDrawIRPoints.Name = "cbxDrawIRPoints";
+            this.cbxDrawIRPoints.Size = new System.Drawing.Size(97, 17);
+            this.cbxDrawIRPoints.TabIndex = 21;
+            this.cbxDrawIRPoints.Text = "Draw IR Points";
+            this.cbxDrawIRPoints.UseVisualStyleBackColor = true;
+            // 
+            // cbxDrawCalibrationMarkers
+            // 
+            this.cbxDrawCalibrationMarkers.AutoSize = true;
+            this.cbxDrawCalibrationMarkers.Location = new System.Drawing.Point(287, 408);
+            this.cbxDrawCalibrationMarkers.Name = "cbxDrawCalibrationMarkers";
+            this.cbxDrawCalibrationMarkers.Size = new System.Drawing.Size(144, 17);
+            this.cbxDrawCalibrationMarkers.TabIndex = 22;
+            this.cbxDrawCalibrationMarkers.Text = "Draw Calibration Markers";
+            this.cbxDrawCalibrationMarkers.UseVisualStyleBackColor = true;
+            // 
+            // btnColorCalibrate
+            // 
+            this.btnColorCalibrate.Location = new System.Drawing.Point(21, 432);
+            this.btnColorCalibrate.Name = "btnColorCalibrate";
+            this.btnColorCalibrate.Size = new System.Drawing.Size(156, 32);
+            this.btnColorCalibrate.TabIndex = 23;
+            this.btnColorCalibrate.Text = "Color Calibrate";
+            this.btnColorCalibrate.UseVisualStyleBackColor = true;
+            this.btnColorCalibrate.Click += new System.EventHandler(this.btnColorCalibrate_Click);
+            // 
+            // touchDictionary
+            // 
+            this.touchDictionary.SynchronizingObject = this;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 435);
+            this.ClientSize = new System.Drawing.Size(884, 489);
+            this.Controls.Add(this.btnColorCalibrate);
+            this.Controls.Add(this.cbxDrawCalibrationMarkers);
+            this.Controls.Add(this.cbxDrawIRPoints);
+            this.Controls.Add(this.cbxSecondaryCamera);
             this.Controls.Add(this.lblFPS);
             this.Controls.Add(this.btnCameraCalibrate);
             this.Controls.Add(this.cbxFlipHorizontal);
@@ -228,6 +288,7 @@
             this.Load += new System.EventHandler(this.Main_Load);
             ((System.ComponentModel.ISupportInitialize)(this.ibxSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ibxOutput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.touchSubscription)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -251,6 +312,12 @@
         private System.Windows.Forms.CheckBox cbxFlipHorizontal;
         private System.Windows.Forms.Button btnCameraCalibrate;
         private System.Windows.Forms.Label lblFPS;
+        private System.Windows.Forms.CheckBox cbxSecondaryCamera;
+        private GroupLab.Networking.SharedDictionary touchDictionary;
+        private GroupLab.Networking.Subscription touchSubscription;
+        private System.Windows.Forms.CheckBox cbxDrawIRPoints;
+        private System.Windows.Forms.CheckBox cbxDrawCalibrationMarkers;
+        private System.Windows.Forms.Button btnColorCalibrate;
     }
 }
 
