@@ -14,6 +14,8 @@ using Emgu.CV.CvEnum;
 using WiimoteLib;
 using System.Diagnostics;
 using System.Drawing.Imaging;
+using GroupLab.Networking;
+using TableCamCommunicator;
 
 namespace IdeaTester
 {
@@ -46,15 +48,37 @@ namespace IdeaTester
         WiimoteLib.PointF[] _webCameraSrcPoints = new WiimoteLib.PointF[4];
         WiimoteLib.PointF[] _irCameraSrcPoints = new WiimoteLib.PointF[4];
         bool _calibrated = false;
-        Mutex mut = new Mutex();
+
+
+        WiimoteLib.PointF[] _irPointsInTableTopCoords = new WiimoteLib.PointF[4];
+        ColorCalibrationState[] _colorCalibrationInformation = new ColorCalibrationState[4];
 
         public Main()
         {
             InitializeComponent();
 
+            #region Networking Initialization Code
+            /////CODE FOR NETWORKING////////////
+            this.touchDictionary.Url = "tcp://localhost:shareD";
+
+            // connect the shared dictionary to some default server, it will spawn a server or client
+            this.touchDictionary.Open();
+
+            // signal beginning of initialization for subscription1
+            this.touchSubscription.BeginInit();
+            // register the pattern with the shared dictionary server
+            this.touchSubscription.Pattern = "/pointOne";
+            // register the event handler
+            this.touchSubscription.Notified += new SubscriptionEventHandler(touchSubscription_Notified);
+            // signal the end of initialization
+            this.touchSubscription.EndInit();
+            #endregion
+
             _irViewAreaGraphics = Graphics.FromImage(_irViewAreaBitmap);
             _videoProcessingTimer = new Stopwatch();
         }
+
+
 
         private void Main_Load(object sender, EventArgs e)
         {
@@ -88,47 +112,69 @@ namespace IdeaTester
 
             _irViewAreaGraphics.Clear(Color.Black);
 
-            // Draw the calibration markers
-            for (int i = 0; i < Math.Min(_irCalibrationState, 4); i++)
+            if (cbxDrawCalibrationMarkers.Checked)
             {
-                _irViewAreaGraphics.DrawEllipse(new Pen(Color.Cyan), 
-                    _irCameraSrcPoints[i].X,
-                    _irCameraSrcPoints[i].Y, 
-                    2,
-                    2
-                    );
+                // Draw the calibration markers
+                for (int i = 0; i < Math.Min(_irCalibrationState, 4); i++)
+                {
+                    _irViewAreaGraphics.DrawEllipse(new Pen(Color.Cyan),
+                        _irCameraSrcPoints[i].X,
+                        _irCameraSrcPoints[i].Y,
+                        2,
+                        2
+                        );
+                }
             }
             
-            UpdateIR(ws.IRState.IRSensors[0], Color.Red);
-            UpdateIR(ws.IRState.IRSensors[1], Color.Wheat);
-            UpdateIR(ws.IRState.IRSensors[2], Color.Yellow);
-            UpdateIR(ws.IRState.IRSensors[3], Color.Orange);
+            ComputeCameraCoordinatesForIR(ws.IRState.IRSensors[0], 0);
+            ComputeCameraCoordinatesForIR(ws.IRState.IRSensors[1], 1);
+            ComputeCameraCoordinatesForIR(ws.IRState.IRSensors[2], 2);
+            ComputeCameraCoordinatesForIR(ws.IRState.IRSensors[3], 3);
 
             _imgOutput.Bitmap = _irViewAreaBitmap;
             ibxOutput.Image = _imgOutput;
         }
 
-        public void irDrawEllipse(Color color, int x, int y, int size)
-        {
-            _irViewAreaGraphics.DrawEllipse(new Pen(color), x, y, size, size);
-        }
+        Color[] _wiiSensorColors = { Color.Red, Color.Wheat, Color.Yellow, Color.Orange };
 
-        private void UpdateIR(IRSensor irSensor, Color color)
+        private void ComputeCameraCoordinatesForIR(IRSensor irSensor, int sensorNumber)
         {
+            Color color = _wiiSensorColors[sensorNumber];
+
+            // Initialize each time to clear old values; -1 to indicate IR Sensor NOT FOUND
+            _irPointsInTableTopCoords[sensorNumber].X = -1;
+            _irPointsInTableTopCoords[sensorNumber].Y = -1;
+
             if (irSensor.Found)
             {
-                _irViewAreaGraphics.DrawEllipse(new Pen(color),
-                    (int)(irSensor.RawPosition.X * 400 / 1024),
-                    (int)(irSensor.RawPosition.Y * 300 / 768),
-                    irSensor.Size + 1,
-                    irSensor.Size + 1);
 
                 WiimoteLib.PointF dst = new WiimoteLib.PointF();
 
                 // Compute normalized coordinates
                 dst = _irWarper.warp(irSensor.RawPosition.X * 400 / 1024, irSensor.RawPosition.Y * 300 / 768);
-                
-                showIRPointInCam(color, dst);
+
+                WiimoteLib.PointF camDst = _cameraReverseWarper.warp(dst.X, dst.Y);
+                // Record the current position of the IR band in the screen coordinates
+                _irPointsInTableTopCoords[sensorNumber] = dst;
+
+
+                if (cbxDrawIRPoints.Checked)
+                {
+                    _irViewAreaGraphics.DrawEllipse(new Pen(color),
+                        (int)(irSensor.RawPosition.X * 400 / 1024),
+                        (int)(irSensor.RawPosition.Y * 300 / 768),
+                        irSensor.Size + 1,
+                        irSensor.Size + 1);
+
+                    if (_camCalibrationState > 3)
+                    {
+                        _cameraViewAreaGraphics.DrawEllipse(new Pen(color),
+                            camDst.X,
+                            camDst.Y,
+                            5,
+                            5);
+                    }
+                }
             }
         }
         #endregion
@@ -198,25 +244,12 @@ namespace IdeaTester
                         lblStatus.Text += " in (" + e.X.ToString() + ", " + e.Y.ToString() + ")";
                         lblStatus.Text += " => " + dst.ToString();
 
-                        showIRPointInCam(Color.PeachPuff, dst);
+                        //showIRPointInCam(Color.PeachPuff, dst);
                     }
                     break;
             }
         }
         #endregion
-
-        public void showIRPointInCam(Color c, WiimoteLib.PointF dst)
-        {
-            if (_camCalibrationState > 3)
-            {
-                WiimoteLib.PointF camDst = _cameraReverseWarper.warp(dst.X, dst.Y);
-                _cameraViewAreaGraphics.DrawEllipse(new Pen(c),
-                    camDst.X,
-                    camDst.Y,
-                    5,
-                    5);
-            }
-        }
 
         #region Video Processing
         private void btnVideo_Click(object sender, EventArgs e)
@@ -243,7 +276,7 @@ namespace IdeaTester
 
         private void btnCamera_Click(object sender, EventArgs e)
         {
-            _camera = new Capture(0);
+            _camera = new Capture((cbxSecondaryCamera.Checked) ? 1 : 0);
             lblVideoSource.Text = "Camera";
         }
 
@@ -309,6 +342,7 @@ namespace IdeaTester
 
             ibxSource.Image = source;
 
+            //ibxOutput.Image = SkinDetect(source);
             // Check IR readings from wiimote and perform necessary action
             checkWiimoteStatus();
         }
@@ -331,6 +365,7 @@ namespace IdeaTester
         }
         #endregion
 
+        #region Camera calibration
         private void ibxSource_MouseClick(object sender, MouseEventArgs e)
         {
             // Select point (0,0)
@@ -403,6 +438,108 @@ namespace IdeaTester
         {
             _camCalibrationState = 0;
             lblStatus.Text = "WebCam Calibration: Click TL point";
+        }
+        #endregion
+
+        private void touchSubscription_Notified(object sender, SubscriptionEventArgs e)
+        {
+            TouchInfo v = (TouchInfo)touchDictionary["/pointOne"];
+            checkWiimoteStatus();
+
+            Image<Bgr, Byte> source = _camera.QueryFrame();
+            Image<Ycc, Byte> sourceYcc = source.Convert<Ycc, Byte>();
+
+            // Sort the IR points according to camera distance to the touch point
+            
+            List<KeyValuePair<WiimoteLib.PointF, double>> sensorDistancesFromPoint = new List<KeyValuePair<WiimoteLib.PointF,double>>();
+
+            double dist;
+            for (int i = 0; i < 4; i++)
+            {
+                dist = (_irPointsInTableTopCoords[i].X == -1) ? Double.MaxValue : 
+                    Math.Sqrt(Math.Pow(_irPointsInTableTopCoords[i].X - v.X, 2) + Math.Pow(_irPointsInTableTopCoords[i].Y - v.Y, 2));
+                sensorDistancesFromPoint.Add(new KeyValuePair<WiimoteLib.PointF, double>(_irPointsInTableTopCoords[i], dist));
+            }
+
+            sensorDistancesFromPoint.Sort(
+                delegate(KeyValuePair<WiimoteLib.PointF, double> firstPair, KeyValuePair<WiimoteLib.PointF, double> secondPair)
+                {
+                    return firstPair.Value.CompareTo(secondPair.Value);
+                });
+
+            // Now sensorDistancesFromPoint is sorted by distance
+            // Look for the color of the closest point
+            double colorProb = 0;
+            double maxProb = 0;
+            int bestColorIdx = -1;
+            for (int i = 0; i < 4; i++)
+            {
+                WiimoteLib.PointF closestTableTopPoint = sensorDistancesFromPoint[0].Key;
+                // Convert the screen coordinate to Camera coordinate
+                WiimoteLib.PointF closestPointCamera = new WiimoteLib.PointF();
+                closestPointCamera = _cameraReverseWarper.warp(closestTableTopPoint.X, closestTableTopPoint.Y);
+                // Take a region around the camera coordinate and look at the color of the region
+                int sideBuffer = 10;
+                Rectangle roi = new Rectangle((int)Math.Max(closestPointCamera.X - sideBuffer, 0),
+                        (int)Math.Max(closestPointCamera.Y - sideBuffer, 0), 2 * sideBuffer, 2 * sideBuffer);
+
+                // SIGH: This doesn't seem to work for some reason. Need to fix it.
+                sourceYcc = sourceYcc.GetSubRect(roi);
+
+                colorProb = ColorCalibrationState.findProbabilityOfBand(sourceYcc, _colorCalibrationInformation[i]);
+                if (colorProb > maxProb)
+                {
+                    bestColorIdx = i;
+                    maxProb = colorProb;
+                }
+            }
+        }
+
+        int B = 0, G = 1, R = 2;
+
+        public Image<Gray, Byte> SkinDetect(Image<Bgr, Byte> Img)
+        {
+            
+            int w = Img.Width, h = Img.Height;
+            Image<Gray, byte> S = new Image<Gray, byte>(w, h);
+            
+            byte[,,] data = Img.Data;
+            byte[, ,] sdata = S.Data;
+
+            for (int j = w; j-- > 0; )
+            {
+                for (int i = h; i-- > 0; )
+                {
+
+                    double Rg = Math.Log(data[i, j, R]) - Math.Log(data[i, j, G]);
+                    double By = Math.Log(data[i, j, B]) - (Math.Log(data[i, j, G]) + Math.Log(data[i, j, R])) / 2;
+
+                    double hue_val = Math.Atan2(Rg, By) * (180 / Math.PI);
+                    double sat_val = Math.Sqrt(Rg * Rg + By * By);
+
+
+                    if (sat_val * 255 >= 20 && sat_val * 255 <= 130 && hue_val >= 110 && hue_val <= 170) //I simplified the naked people filter's two overlapping criteria
+                    {
+                        sdata[i, j, 0] = 255;
+                    }
+                    else
+                    {
+                        sdata[i, j, 0] = 0;
+                    }
+                }
+            }
+            return S.Erode(1).SmoothMedian(15);
+            /*
+            AdaptiveSkinDetector a = new AdaptiveSkinDetector(5, AdaptiveSkinDetector.MorphingMethod.ERODE_DILATE);
+            a.Process(Img, S);
+            return S;*/
+        }
+
+
+        private void btnColorCalibrate_Click(object sender, EventArgs e)
+        {
+            ColorCalibrator c = new ColorCalibrator(_colorCalibrationInformation);
+            c.Show();
         }
     }
 }
