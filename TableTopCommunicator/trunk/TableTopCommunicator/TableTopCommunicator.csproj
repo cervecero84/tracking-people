@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GroupLab.Networking, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ccf0f5f5bb87072c">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\FinalSolution\FinalSolution\dll\GroupLab.Networking.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -45,8 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Communicator.cs" />
     <Compile Include="TouchInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TouchEventArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
