@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace FinalSolution
 {
-    class CalibrationPoints
+    public class CalibrationPoints
     {
         public PointF TL { get; set; }
         public PointF TR { get; set; }

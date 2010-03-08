@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FinalSolution
 {
-    class ColorStateSet
+    public class ColorStateSet
     {
         public ColorState Red { get; set; }
         public ColorState Green { get; set; }

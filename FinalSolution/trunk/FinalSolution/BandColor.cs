@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FinalSolution
 {
-    enum BandColor
+    public enum BandColor
     {
         Red,
         Green,

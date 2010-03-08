@@ -4,7 +4,7 @@ using System.Text;
 
 namespace FinalSolution
 {
-    class Warper
+    public class Warper
     {
         float[] srcX = new float[4];
 	    float[] srcY = new float[4];
