@@ -62,7 +62,7 @@ namespace TableTopCommunicator
                 // In the other thread, the notitifier sets the resent event to set
 
                 // Wait till this gets set - gets set, when resolved
-                resetEvent.WaitOne();
+                resetEvent.WaitOne(5000);
             }
             else
             {
