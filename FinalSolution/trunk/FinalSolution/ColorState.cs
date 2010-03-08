@@ -7,7 +7,7 @@ using Emgu.CV.Structure;
 
 namespace FinalSolution
 {
-    class ColorState
+    public class ColorState
     {
         public DenseHistogram CbHist { get; set; }
         public DenseHistogram CrHist { get; set; }
@@ -53,6 +53,19 @@ namespace FinalSolution
             result = result.Dilate(state.DilationValue);
 
             return ((double)(result.CountNonzero())[0] / (result.Size.Height * result.Size.Width)); ;
+        }
+
+        public static BandColor FindBand(Image<Ycc, Byte> img, ColorStateSet colors)
+        {
+            List<KeyValuePair<BandColor, double>> colorProbs = new List<KeyValuePair<BandColor,double>>();
+            colorProbs.Add(new KeyValuePair<BandColor, double>(BandColor.Red, FindProbabilityOfBand(img, colors.Red)));
+            colorProbs.Add(new KeyValuePair<BandColor, double>(BandColor.Green, FindProbabilityOfBand(img, colors.Green)));
+            colorProbs.Add(new KeyValuePair<BandColor, double>(BandColor.Blue, FindProbabilityOfBand(img, colors.Blue)));
+            colorProbs.Add(new KeyValuePair<BandColor, double>(BandColor.Yellow, FindProbabilityOfBand(img, colors.Yellow)));
+
+            colorProbs.Sort((firstPair, nextPair) => { return firstPair.Value.CompareTo(nextPair.Value); });
+
+            return colorProbs[0].Key;
         }
 
         public void Learn(Image<Ycc, Byte> img)
