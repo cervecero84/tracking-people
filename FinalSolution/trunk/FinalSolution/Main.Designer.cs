@@ -33,6 +33,7 @@
             this.ibxSource = new Emgu.CV.UI.ImageBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.btnCalibrate = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ibxOutput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ibxSource)).BeginInit();
             this.SuspendLayout();
@@ -77,11 +78,22 @@
             this.label1.TabIndex = 15;
             this.label1.Text = "Camera";
             // 
+            // btnCalibrate
+            // 
+            this.btnCalibrate.Location = new System.Drawing.Point(29, 359);
+            this.btnCalibrate.Name = "btnCalibrate";
+            this.btnCalibrate.Size = new System.Drawing.Size(75, 23);
+            this.btnCalibrate.TabIndex = 17;
+            this.btnCalibrate.Text = "Calibrate";
+            this.btnCalibrate.UseVisualStyleBackColor = true;
+            this.btnCalibrate.Click += new System.EventHandler(this.btnCalibrate_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(907, 394);
+            this.Controls.Add(this.btnCalibrate);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.ibxOutput);
@@ -101,6 +113,7 @@
         private Emgu.CV.UI.ImageBox ibxSource;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnCalibrate;
     }
 }
 
