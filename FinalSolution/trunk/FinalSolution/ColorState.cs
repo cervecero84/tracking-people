@@ -31,22 +31,19 @@ namespace FinalSolution
             // Use the whole image
 
             // Initialization
-            int channelIndex;
             IntPtr[] regionPtr = new IntPtr[1];
 
-            // Use the Cb-channel
-            channelIndex = 1;
-            regionPtr[0] = regionChannels[channelIndex];
-
-            Image<Gray, Byte> backProjectCb = new Image<Gray, byte>(region.Size);
-            CvInvoke.cvCalcBackProject(regionPtr, backProjectCb, state.CbHist);
-
             // Use the Cr-channel
-            channelIndex = 2;
-            regionPtr[0] = regionChannels[channelIndex];
+            regionPtr[0] = regionChannels[1];
 
             Image<Gray, Byte> backProjectCr = new Image<Gray, byte>(region.Size);
             CvInvoke.cvCalcBackProject(regionPtr, backProjectCr, state.CrHist);
+
+            // Use the Cb-channel
+            regionPtr[0] = regionChannels[2];
+
+            Image<Gray, Byte> backProjectCb = new Image<Gray, byte>(region.Size);
+            CvInvoke.cvCalcBackProject(regionPtr, backProjectCb, state.CbHist);
 
             // Change color of the detected band in the output image
             Image<Gray, Byte> result = backProjectCr.And(backProjectCb);
@@ -56,6 +53,22 @@ namespace FinalSolution
             result = result.Dilate(state.DilationValue);
 
             return ((double)(result.CountNonzero())[0] / (result.Size.Height * result.Size.Width)); ;
+        }
+
+        public void Learn(Image<Ycc, Byte> img)
+        {
+            Image<Gray, Byte>[] bandImageChannels = img.Split();
+            IntPtr[] bandImageChannelsPtr = new IntPtr[1];
+            // Use the whole image
+            Image<Gray, Byte> mask = new Image<Gray, byte>(img.Width, img.Height, new Gray(255));
+
+            // Use the Cr-channel
+            bandImageChannelsPtr[0] = bandImageChannels[1];
+            CvInvoke.cvCalcHist(bandImageChannelsPtr, CrHist, false, mask);
+
+            // Use the Cb-channel
+            bandImageChannelsPtr[0] = bandImageChannels[2];
+            CvInvoke.cvCalcHist(bandImageChannelsPtr, CbHist, false, mask);
         }
     }
 }
