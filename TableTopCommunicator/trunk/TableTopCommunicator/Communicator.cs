@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using GroupLab.Networking;
 
 namespace TableTopCommunicator
@@ -19,8 +20,10 @@ namespace TableTopCommunicator
         public delegate void TouchReceivedHandler(object sender, TouchEventArgs e);
         public event TouchReceivedHandler TouchReceived;
 
-        public delegate void TouchResolvedHandler(object sender, TouchEventArgs e);
-        public event TouchResolvedHandler TouchResolved;
+        //public delegate void TouchResolvedHandler(object sender, TouchEventArgs e);
+        //public event TouchResolvedHandler TouchResolved;
+
+        private ManualResetEvent resetEvent = new ManualResetEvent(false);
 
         public Communicator()
         {
@@ -42,15 +45,24 @@ namespace TableTopCommunicator
 
         // Should only be called by the program asking for resolution, not the resolved
         // Resolving program should call "UpdateTouchInfo" instead
-        public void SetPoint(TouchInfo value)
+        public void EvalPoint(TouchInfo value)
         {
             // If the last point was the default or it was resolved
             if (_lastPoint.X == Int32.MinValue || _lastPoint.isResolved())
             {
+                // Unset the wait
+                resetEvent.Reset();
+                
                 // Set current point as last point
                 _lastPoint = value;
-                // Put the current point in the dictionary for resolution
-                _dictionary[_key] = value;
+                
+                // CHECK: I hope this triggers the notifier in the other thread as well!
+                Action updateDictionary = new Action(delegate() { _dictionary[_key] = value; });
+                updateDictionary.BeginInvoke(null, null);
+                // In the other thread, the notitifier sets the resent event to set
+
+                // Wait till this gets set - gets set, when resolved
+                resetEvent.WaitOne();
             }
             else
             {
@@ -82,10 +94,11 @@ namespace TableTopCommunicator
                 }
                 else if (t.isResolved())
                 {
-                    if (this.TouchResolved != null)
-                    {
-                        this.TouchResolved(this, new TouchEventArgs(t));
-                    }
+                    //if (this.TouchResolved != null)
+                    //{
+                        resetEvent.Set();
+                        //this.TouchResolved(this, new TouchEventArgs(t));
+                    //}
                 }
             }
         }
