@@ -14,7 +14,7 @@ namespace TableTopCommunicator
     {
         SharedDictionary _dictionary = new SharedDictionary();
         Subscription _subscriber = new Subscription();
-        String _key = "/pointOne";
+        String _key = "/pointone";
         TouchInfo _lastPoint = new TouchInfo(Int32.MinValue, Int32.MinValue);
 
         public delegate void TouchReceivedHandler(object sender, TouchEventArgs e);
@@ -45,8 +45,9 @@ namespace TableTopCommunicator
 
         // Should only be called by the program asking for resolution, not the resolved
         // Resolving program should call "UpdateTouchInfo" instead
-        public void EvalPoint(TouchInfo value)
+        public TouchInfo EvalPoint(int x, int y)
         {
+            TouchInfo value = new TouchInfo(x, y);
             // If the last point was the default or it was resolved
             if (_lastPoint.X == Int32.MinValue || _lastPoint.isResolved())
             {
@@ -62,7 +63,9 @@ namespace TableTopCommunicator
                 // In the other thread, the notitifier sets the resent event to set
 
                 // Wait till this gets set - gets set, when resolved
-                resetEvent.WaitOne(5000);
+                resetEvent.WaitOne();
+                _lastPoint = (TouchInfo)_dictionary[_key];
+                return _lastPoint;
             }
             else
             {

@@ -15,9 +15,6 @@ namespace TableTopCommunicator
         private int _Y;
         // Color or unique-id representing person
         private string color;
-        // Time in/out of current instance before it was resolved: NOT IMPLEMENTED
-        private int timeIn;
-        private int timeOut;
         // Orientation of the hand that made the touch: angle in degrees relative to 0,0:1024,0 baseline
         private double orientation;
         // Current state
@@ -30,21 +27,10 @@ namespace TableTopCommunicator
             state = State.Received;
         }
 
-        public int X
-        {
-            get
-            {
-                return _X;
-            }
-        }
-
-        public int Y
-        {
-            get
-            {
-                return _Y;
-            }
-        }
+        public int X { get { return _X; } }
+        public int Y { get { return _Y; } }
+        public string Color { get { return color; } }
+        public double Orientation { get { return orientation; } }
 
         // Has it been resolved?
         public bool isResolved()
