@@ -7,6 +7,7 @@ namespace FinalSolution
 {
     public enum BandColor
     {
+        NotFound,
         Red,
         Green,
         Yellow,

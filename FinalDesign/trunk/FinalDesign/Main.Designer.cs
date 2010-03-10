@@ -33,7 +33,8 @@
             this.ibxSource = new Emgu.CV.UI.ImageBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.btnCalibrate = new System.Windows.Forms.Button();
+            this.btnSettings = new System.Windows.Forms.Button();
+            this.lblStatus = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.ibxOutput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ibxSource)).BeginInit();
             this.SuspendLayout();
@@ -78,22 +79,32 @@
             this.label1.TabIndex = 15;
             this.label1.Text = "Camera";
             // 
-            // btnCalibrate
+            // btnSettings
             // 
-            this.btnCalibrate.Location = new System.Drawing.Point(29, 359);
-            this.btnCalibrate.Name = "btnCalibrate";
-            this.btnCalibrate.Size = new System.Drawing.Size(75, 23);
-            this.btnCalibrate.TabIndex = 17;
-            this.btnCalibrate.Text = "Calibrate";
-            this.btnCalibrate.UseVisualStyleBackColor = true;
-            this.btnCalibrate.Click += new System.EventHandler(this.btnCalibrate_Click);
+            this.btnSettings.Location = new System.Drawing.Point(32, 335);
+            this.btnSettings.Name = "btnSettings";
+            this.btnSettings.Size = new System.Drawing.Size(75, 23);
+            this.btnSettings.TabIndex = 17;
+            this.btnSettings.Text = "Settings";
+            this.btnSettings.UseVisualStyleBackColor = true;
+            this.btnSettings.Click += new System.EventHandler(this.btnSettings_Click);
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Location = new System.Drawing.Point(129, 340);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(37, 13);
+            this.lblStatus.TabIndex = 18;
+            this.lblStatus.Text = "Status";
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(907, 394);
-            this.Controls.Add(this.btnCalibrate);
+            this.Controls.Add(this.lblStatus);
+            this.Controls.Add(this.btnSettings);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.ibxOutput);
@@ -113,7 +124,8 @@
         private Emgu.CV.UI.ImageBox ibxSource;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button btnCalibrate;
+        private System.Windows.Forms.Button btnSettings;
+        private System.Windows.Forms.Label lblStatus;
     }
 }
 
