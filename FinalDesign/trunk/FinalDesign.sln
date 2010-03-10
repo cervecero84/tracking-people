@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinalSolution", "FinalSolution\FinalSolution.csproj", "{4837908C-1550-4D89-914A-40AD9FAE2CC5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinalDesign", "FinalDesign\FinalDesign.csproj", "{4837908C-1550-4D89-914A-40AD9FAE2CC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
