@@ -68,6 +68,10 @@ namespace FinalSolution
             return colorProbs[0].Key;
         }
 
+        /// <summary>
+        /// Pass in the image representing the current color for the state to store the color information
+        /// </summary>
+        /// <param name="img">Image representing the current color</param>
         public void Learn(Image<Ycc, Byte> img)
         {
             Image<Gray, Byte>[] bandImageChannels = img.Split();
@@ -82,6 +86,57 @@ namespace FinalSolution
             // Use the Cb-channel
             bandImageChannelsPtr[0] = bandImageChannels[2];
             CvInvoke.cvCalcHist(bandImageChannelsPtr, CbHist, false, mask);
+        }
+
+        /// <summary>
+        /// Get the probability of the current color for a given image
+        /// </summary>
+        /// <param name="img">The image which is to be evaluated for current color</param>
+        /// <returns></returns>
+        public Image<Gray, Byte> GetProbabilityImage(Image<Ycc, Byte> img)
+        {
+            Image<Gray, Byte>[] sourceChannels = img.Split();
+
+            // Initialization
+            int channelIndex;
+            IntPtr[] sourcePtr = new IntPtr[1];
+
+            // Use the Cr-channel
+            channelIndex = 1;
+            sourcePtr[0] = sourceChannels[channelIndex];
+
+            Image<Gray, Byte> backProjectCr = new Image<Gray, byte>(img.Size);
+            CvInvoke.cvCalcBackProject(sourcePtr, backProjectCr, CrHist);
+
+            // Use the Cb-channel
+            channelIndex = 2;
+            sourcePtr[0] = sourceChannels[channelIndex];
+
+            Image<Gray, Byte> backProjectCb = new Image<Gray, byte>(img.Size);
+            CvInvoke.cvCalcBackProject(sourcePtr, backProjectCb, CbHist);
+
+            // Change color of the detected band in the output image
+            Image<Gray, Byte> result = backProjectCr.And(backProjectCb);
+
+            result = result.ThresholdBinary(new Gray(ThresholdValue), new Gray(255))
+                .Erode(ErosionValue)
+                .Dilate(DilationValue);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the probability image in a particular color
+        /// </summary>
+        /// <param name="img">The source image which is to be converted to the current color probability image</param>
+        /// <param name="color">HSV value to show when 100% color match</param>
+        /// <returns></returns>
+        public Image<Hsv, Byte> GetProbabilityImage(Image<Ycc, Byte> img, Hsv color)
+        {
+            Image<Gray, Byte> gray = GetProbabilityImage(img);
+            Image<Hsv, Byte> hsv = new Image<Hsv, byte>(img.Width, img.Height);
+            CvInvoke.cvMerge(gray.Mul(color.Hue), gray.Mul(color.Satuation), gray.Mul(color.Value), IntPtr.Zero, hsv);
+            return hsv;
         }
     }
 }

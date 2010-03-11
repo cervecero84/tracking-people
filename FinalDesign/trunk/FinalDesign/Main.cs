@@ -110,6 +110,8 @@ namespace FinalSolution
                 return firstPair.SkinProbability.CompareTo(nextPair.SkinProbability);
             });
 
+            Random r = new Random();
+
             // If no IR points were found, set Band Color to NotFound
             Utility.ResolvedIRPoints resolvedPoint;
             if (resolvedIrPoints.Count > 0)
@@ -118,7 +120,7 @@ namespace FinalSolution
             }
             else
             {
-                resolvedPoint = new Utility.ResolvedIRPoints(new WiimoteLib.PointF(), new WiimoteLib.PointF(), -1, BandColor.NotFound, -1);
+                resolvedPoint = new Utility.ResolvedIRPoints(new WiimoteLib.PointF(), new WiimoteLib.PointF(), -1, (BandColor) r.Next(0,5), -1);
             }
 
             // Update the touch
