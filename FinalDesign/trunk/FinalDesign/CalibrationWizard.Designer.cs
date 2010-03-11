@@ -120,6 +120,7 @@
             this.wiiCalibOutput.Size = new System.Drawing.Size(400, 300);
             this.wiiCalibOutput.TabIndex = 11;
             this.wiiCalibOutput.TabStop = false;
+            this.wiiCalibOutput.MouseClick += new System.Windows.Forms.MouseEventHandler(this.wiiCalibOutput_MouseClick);
             // 
             // cameraCalibOutput
             // 
@@ -214,6 +215,7 @@
             this.tkbBlueThreshold.Size = new System.Drawing.Size(104, 42);
             this.tkbBlueThreshold.TabIndex = 17;
             this.tkbBlueThreshold.Value = 200;
+            this.tkbBlueThreshold.Scroll += new System.EventHandler(this.tkbBlueThreshold_Scroll);
             // 
             // lblBlueDilation
             // 
@@ -241,6 +243,7 @@
             this.tkbBlueDilation.Size = new System.Drawing.Size(104, 42);
             this.tkbBlueDilation.TabIndex = 16;
             this.tkbBlueDilation.Value = 1;
+            this.tkbBlueDilation.Scroll += new System.EventHandler(this.tkbBlueDilation_Scroll);
             // 
             // label10
             // 
@@ -259,6 +262,7 @@
             this.tkbBlueErosion.Size = new System.Drawing.Size(104, 42);
             this.tkbBlueErosion.TabIndex = 12;
             this.tkbBlueErosion.Value = 1;
+            this.tkbBlueErosion.Scroll += new System.EventHandler(this.tkbBlueErosion_Scroll);
             // 
             // label11
             // 
@@ -314,6 +318,7 @@
             this.tkbOrangeThreshold.Size = new System.Drawing.Size(104, 42);
             this.tkbOrangeThreshold.TabIndex = 13;
             this.tkbOrangeThreshold.Value = 200;
+            this.tkbOrangeThreshold.Scroll += new System.EventHandler(this.tkbOrangeThreshold_Scroll);
             // 
             // lblOrangeDilation
             // 
@@ -341,6 +346,7 @@
             this.tkbOrangeDilation.Size = new System.Drawing.Size(104, 42);
             this.tkbOrangeDilation.TabIndex = 12;
             this.tkbOrangeDilation.Value = 1;
+            this.tkbOrangeDilation.Scroll += new System.EventHandler(this.tkbOrangeDilation_Scroll);
             // 
             // label8
             // 
@@ -359,6 +365,7 @@
             this.tkbOrangeErosion.Size = new System.Drawing.Size(104, 42);
             this.tkbOrangeErosion.TabIndex = 8;
             this.tkbOrangeErosion.Value = 1;
+            this.tkbOrangeErosion.Scroll += new System.EventHandler(this.tkbOrangeErosion_Scroll);
             // 
             // label9
             // 
@@ -414,6 +421,7 @@
             this.tkbGreenThreshold.Size = new System.Drawing.Size(104, 42);
             this.tkbGreenThreshold.TabIndex = 11;
             this.tkbGreenThreshold.Value = 200;
+            this.tkbGreenThreshold.Scroll += new System.EventHandler(this.tkbGreenThreshold_Scroll);
             // 
             // lblGreenDilation
             // 
@@ -441,6 +449,7 @@
             this.tkbGreenDilation.Size = new System.Drawing.Size(104, 42);
             this.tkbGreenDilation.TabIndex = 8;
             this.tkbGreenDilation.Value = 1;
+            this.tkbGreenDilation.Scroll += new System.EventHandler(this.tkbGreenDilation_Scroll);
             // 
             // label6
             // 
@@ -459,6 +468,7 @@
             this.tkbGreenErosion.Size = new System.Drawing.Size(104, 42);
             this.tkbGreenErosion.TabIndex = 4;
             this.tkbGreenErosion.Value = 1;
+            this.tkbGreenErosion.Scroll += new System.EventHandler(this.tkbGreenErosion_Scroll);
             // 
             // label7
             // 
@@ -514,6 +524,7 @@
             this.tkbRedThreshold.Size = new System.Drawing.Size(104, 42);
             this.tkbRedThreshold.TabIndex = 6;
             this.tkbRedThreshold.Value = 200;
+            this.tkbRedThreshold.Scroll += new System.EventHandler(this.tkbRedThreshold_Scroll);
             // 
             // lblRedDilation
             // 
@@ -550,6 +561,7 @@
             this.tkbRedDilation.Size = new System.Drawing.Size(104, 42);
             this.tkbRedDilation.TabIndex = 2;
             this.tkbRedDilation.Value = 1;
+            this.tkbRedDilation.Scroll += new System.EventHandler(this.tkbRedDilation_Scroll);
             // 
             // label4
             // 
@@ -569,6 +581,7 @@
             this.tkbRedErosion.Size = new System.Drawing.Size(104, 42);
             this.tkbRedErosion.TabIndex = 0;
             this.tkbRedErosion.Value = 1;
+            this.tkbRedErosion.Scroll += new System.EventHandler(this.tkbRedErosion_Scroll);
             // 
             // cbxShowBlue
             // 
@@ -686,6 +699,7 @@
             this.btnWiimoteCalibrate.TabIndex = 42;
             this.btnWiimoteCalibrate.Text = "Wiimote IR Calibrate";
             this.btnWiimoteCalibrate.UseVisualStyleBackColor = true;
+            this.btnWiimoteCalibrate.Click += new System.EventHandler(this.btnWiimoteCalibrate_Click);
             // 
             // btnCalibWizard
             // 
