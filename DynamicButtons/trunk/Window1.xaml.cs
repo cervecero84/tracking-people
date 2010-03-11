@@ -9,6 +9,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Navigation;
 using TableTopCommunicator;
 using System.Windows.Threading;
+using Multitouch.Framework.WPF;
 
 namespace DynamicButtons
 {
@@ -18,7 +19,9 @@ namespace DynamicButtons
         DispatcherTimer timer = new DispatcherTimer();
         int redScore = 0;
         int blueScore = 0;
-        int time = 10;
+        int yellowScore = 0;
+        int greenScore = 0;
+        int time = 60;
 
 		public Window1()
 		{
@@ -38,7 +41,9 @@ namespace DynamicButtons
             time -= 1;
             lblTimer.Content = time;
             lblRedScore.Content = redScore;
+            lblYellowScore.Content = yellowScore;
             lblBlueScore.Content = blueScore;
+            lblGreenScore.Content = greenScore;
             if (time == 0)
             {
                 timer.Stop();
@@ -56,10 +61,12 @@ namespace DynamicButtons
 
             for (int i = 0; i < 100; i++)
             {
-                Button foo = new Button();
+                
+                Multitouch.Framework.WPF.Controls.Button foo = new Multitouch.Framework.WPF.Controls.Button();
+                //Button foo = new Button();
                 //Style buttonStyle = Window.Resources["CurvedButton"] as Style;
 
-                int sizeValue = ranNum.Next(20,80);
+                int sizeValue = ranNum.Next(20,100);
 
                 foo.BorderThickness = new Thickness(0);
                 foo.Width = sizeValue;
@@ -93,12 +100,16 @@ namespace DynamicButtons
                 switch (t.Color)
                 {
                     case "Red":
-                    case "Yellow":
                         b = Brushes.Red;
                         break;
+                    case "Yellow":
+                        b = Brushes.Yellow;
+                        break;
                     case "Blue":
-                    case "Green":
                         b = Brushes.Blue;
+                        break;
+                    case "Green":
+                        b = Brushes.Green;
                         break;
                     default:
                         b = Brushes.Olive;
@@ -106,9 +117,13 @@ namespace DynamicButtons
                 }
                 if (clicked.Background == Brushes.Red) redScore -= 1;
                 if (clicked.Background == Brushes.Blue) blueScore -= 1;
+                if (clicked.Background == Brushes.Yellow) yellowScore -= 1;
+                if (clicked.Background == Brushes.Green) greenScore -= 1;
                 clicked.Background = b;
                 if (clicked.Background == Brushes.Red) redScore += 1;
                 if (clicked.Background == Brushes.Blue) blueScore += 1;
+                if (clicked.Background == Brushes.Yellow) yellowScore += 1;
+                if (clicked.Background == Brushes.Green) greenScore += 1;
             }
         }
 	}
