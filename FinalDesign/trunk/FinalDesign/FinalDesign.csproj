@@ -31,9 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="comEnPicBox, Version=1.0.3722.41653, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="Emgu.CV, Version=2.1.0.728, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL" />
     <Reference Include="Emgu.CV.UI, Version=2.1.0.728, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL" />
     <Reference Include="Emgu.Util, Version=2.1.0.728, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -104,6 +106,8 @@
     <Compile Include="Warper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="dll\comEnPicBox.dll">
+    </Content>
     <Content Include="dll\Emgu.CV.dll" />
     <Content Include="dll\Emgu.CV.UI.dll" />
     <Content Include="dll\Emgu.Util.dll" />

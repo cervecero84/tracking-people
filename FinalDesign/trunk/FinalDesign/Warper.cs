@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Drawing;
 
 namespace FinalSolution
 {
@@ -52,6 +53,19 @@ namespace FinalSolution
             dirty = true;
         }
 
+        public void setSource(PointF TL, PointF TR, PointF BL, PointF BR)
+        {
+            srcX[0] = TL.X;
+            srcY[0] = TL.Y;
+            srcX[1] = TR.X;
+            srcY[1] = TR.Y;
+            srcX[2] = BL.X;
+            srcY[2] = BL.Y;
+            srcX[3] = BR.X;
+            srcY[3] = BR.Y;
+            dirty = true;
+        }
+
         public void setDestination(float x0,
 							        float y0, 
 							        float x1, 
@@ -68,6 +82,19 @@ namespace FinalSolution
 	        dstY[2] = y2;
 	        dstX[3] = x3;
 	        dstY[3] = y3;
+            dirty = true;
+        }
+
+        public void setDestination(PointF TL, PointF TR, PointF BL, PointF BR)
+        {
+            dstX[0] = TL.X;
+            dstY[0] = TL.Y;
+            dstX[1] = TR.X;
+            dstY[1] = TR.Y;
+            dstX[2] = BL.X;
+            dstY[2] = BL.Y;
+            dstX[3] = BR.X;
+            dstY[3] = BR.Y;
             dirty = true;
         }
 

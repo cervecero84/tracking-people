@@ -35,8 +35,8 @@ namespace FinalSolution
             comm.TouchReceived += new Communicator.TouchReceivedHandler(comm_TouchReceived);
             try
             {
-                wiimote.Connect();
-                wiimote.SetReportType(InputReport.IRAccel, true);
+                //wiimote.Connect();
+                //wiimote.SetReportType(InputReport.IRAccel, true);
             }
             catch (Exception ex)
             {
@@ -132,7 +132,7 @@ namespace FinalSolution
         private void btnSettings_Click(object sender, EventArgs e)
         {
             CalibrationWizard wizard = new CalibrationWizard(camera, wiimote, irCalibrationPoints, camCalibrationPoints, 
-                colors, irToScreenWarper, screenToCamWarper, irToCamWarper);
+                colors, irToScreenWarper, screenToCamWarper, irToCamWarper, 1024, 768);
             wizard.Show();
         }
     }

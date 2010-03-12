@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Emgu.CV;
+using Emgu.CV.Structure;
+using Emgu.CV.CvEnum;
 using WiimoteLib;
 
 namespace FinalSolution
@@ -18,18 +20,22 @@ namespace FinalSolution
         CalibrationPoints irCalibrationPoints = new CalibrationPoints();
         CalibrationPoints camCalibrationPoints = new CalibrationPoints();
         ColorStateSet colors = new ColorStateSet();
-        Warper irToScreenWarper = new Warper();
+        //Warper irToScreenWarper = new Warper();
         Warper screenToCamWarper = new Warper();
         Warper irToCamWarper = new Warper();
+        int screenWidth = 1024;
+        int screenHeight = 768;
+        Graphics cameraViewGraphics;
+        Graphics irViewGraphics;
 
 
         // States 0 - 3: indicate point number (TL, TR, BL, BR)
         // Anything else means program is in non-calibration mode
-        int _irCalibrationState = 4;
-        int _camCalibrationState = 4;
+        int _irCalibrationState = -1;
+        int _camCalibrationState = -1;
 
         public CalibrationWizard(Capture c, Wiimote w, CalibrationPoints irCP, CalibrationPoints camCP, 
-            ColorStateSet cs, Warper ir2S, Warper s2Cam, Warper ir2Cam)
+            ColorStateSet cs, Warper ir2S, Warper s2Cam, Warper ir2Cam,int scrW, int scrH)
         {
             InitializeComponent();
             camera = c;
@@ -37,9 +43,48 @@ namespace FinalSolution
             irCalibrationPoints = irCP;
             camCalibrationPoints = camCP;
             colors = cs;
-            irToScreenWarper = ir2S;
+            //irToScreenWarper = ir2S;
             screenToCamWarper = s2Cam;
             irToCamWarper = ir2Cam;
+            screenWidth = scrW;
+            screenHeight = scrH;
+
+            Application.Idle += new EventHandler(ProcessFrame);
+        }
+
+        private void ProcessFrame(object sender, EventArgs e)
+        {
+            cameraCalibOutput.SourceImage = camera.QueryFrame().Resize(cameraCalibOutput.Width,cameraCalibOutput.Height, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR).ToBitmap();
+
+            Image<Bgr, Byte> source = camera.QueryFrame();
+
+            // Reached the last frame in the source - happens in video files
+            if (source == null)
+            {
+                cbxVideo.Checked = false;
+                camera = new Capture(ofdSourceVideo.FileName);
+                source = camera.QueryFrame();
+                if (source == null)
+                {
+                    lblInstructions.Text = "Video source no longer available";
+                    return;
+                }
+            }
+
+            source = source.Resize(400, 300, INTER.CV_INTER_CUBIC);
+
+            cameraViewGraphics = Graphics.FromImage(cameraCalibOutput.SourceImage);
+            //irViewGraphics = Graphics.FromImage(wiiCalibOutput.SourceImage);
+            for (int i = 0; i < _camCalibrationState; i++)
+            {
+                cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), camCalibrationPoints.TL.X, camCalibrationPoints.TL.Y, 3, 3);
+            }
+
+            for (int i = 0; i < _irCalibrationState; i++)
+            {
+                cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), irCalibrationPoints.TL.X, irCalibrationPoints.TL.Y, 3, 3);
+            }
+
         }
 
         #region Web Camera Calibration
@@ -47,74 +92,6 @@ namespace FinalSolution
         {
             _camCalibrationState = 0;
             lblInstructions.Text = "WebCam Calibration: Click TopLeft point";
-        }
-
-        private void cameraCalibOutput_MouseClick(object sender, MouseEventArgs e)
-        {
-            // Select point (0,0)
-            // Select point (screenWidth, 0)
-            // Select point (0, screenHeight)
-            // Select point (screenWidth, screenHeight)
-
-            // Draw the calibration screen markers
-            if (_camCalibrationState >= 0 && _camCalibrationState <= 3)
-            {
-                _cameraViewAreaGraphics.DrawEllipse(new Pen(Color.Cyan), new Rectangle(new System.Drawing.Point(e.X, e.Y), new Size(2, 2)));
-            }
-
-            switch (_camCalibrationState)
-            {
-                case 0:
-                    camCalibrationPoints.TL.X = e.X;
-                    camCalibrationPoints.TL.Y = e.Y;
-                    _camCalibrationState += 1;
-                    lblInstructions.Text = "WebCam Calibration: Click TopRight point";
-                    break;
-                case 1:
-                    camCalibrationPoints.TR.X = e.X;
-                    camCalibrationPoints.TR.Y = e.Y;
-                    _camCalibrationState += 1;
-                    lblInstructions.Text = "WebCam Calibration: Click BottomLeft point";
-                    break;
-                case 2:
-                    camCalibrationPoints.BL.X = e.X;
-                    camCalibrationPoints.BL.Y = e.Y;
-                    _camCalibrationState += 1;
-                    lblInstructions.Text = "WebCam Calibration: Click BottomRight point";
-                    break;
-                case 3:
-                    camCalibrationPoints.BR.X = e.X;
-                    camCalibrationPoints.BR.Y = e.Y;
-                    _camCalibrationState += 1;
-                    lblInstructions.Text = "WebCam Calibration: Complete";
-                    // Calibration data acquired. Compute warp for camera
-                    _cameraWarper.setDestination(0, 0, _screenWidth, 0, 0, _screenHeight, _screenWidth, _screenHeight);
-                    _cameraWarper.setSource(camCalibrationPoints.TL.X, camCalibrationPoints.TL.Y,
-                        camCalibrationPoints.TR.X, camCalibrationPoints.TR.Y,
-                        camCalibrationPoints.BL.X, camCalibrationPoints.BL.Y,
-                        camCalibrationPoints.BR.X, camCalibrationPoints.BR.Y);
-                    _cameraWarper.computeWarp();
-                    // Calculate the reverse warp matrix
-                    _cameraReverseWarper.setDestination(_webCameraSrcPoints[0].X, _webCameraSrcPoints[0].Y,
-                        _webCameraSrcPoints[1].X, _webCameraSrcPoints[1].Y,
-                        _webCameraSrcPoints[2].X, _webCameraSrcPoints[2].Y,
-                        _webCameraSrcPoints[3].X, _webCameraSrcPoints[3].Y);
-                    _cameraReverseWarper.setSource(0, 0, _screenWidth, 0, 0, _screenHeight, _screenWidth, _screenHeight);
-                    _cameraReverseWarper.computeWarp();
-
-                    _calibrated = true;
-                    lblInstructions.Text = "WebCam Calibration: Complete - Warp computed";
-                    break;
-                default:
-                    if (_calibrated)
-                    {
-                        lblInstructions.Text = "WebCam Viewer Clicked @ " + DateTime.Now.ToLongTimeString();
-                        WiimoteLib.PointF dst = _cameraWarper.warp(e.X, e.Y);
-                        lblInstructions.Text += " in (" + e.X.ToString() + ", " + e.Y.ToString() + ")";
-                        lblInstructions.Text += " => " + dst.ToString();
-                    }
-                    break;
-            }
         }
 
         #endregion
@@ -131,47 +108,40 @@ namespace FinalSolution
             switch (_irCalibrationState)
             {
                 case 0:
-                    irCalibrationPoints.TL.X = e.X;
-                    irCalibrationPoints.TL.Y = e.Y;
+                    irCalibrationPoints.TL = new System.Drawing.PointF(e.X, e.Y);
                     _irCalibrationState += 1;
                     lblInstructions.Text = "InfraRed Calibration: Click TopRight point";
                     break;
                 case 1:
-                    irCalibrationPoints.TR.X = e.X;
-                    irCalibrationPoints.TR.Y = e.Y;
+                    irCalibrationPoints.TR = new System.Drawing.PointF(e.X, e.Y);
                     _irCalibrationState += 1;
                     lblInstructions.Text = "InfraRed Calibration: Click BottomLeft point";
                     break;
                 case 2:
-                    irCalibrationPoints.BL.X = e.X;
-                    irCalibrationPoints.BL.Y = e.Y;
+                    irCalibrationPoints.BL = new System.Drawing.PointF(e.X, e.Y);
                     _irCalibrationState += 1;
                     lblInstructions.Text = "InfraRed Calibration: Click BottomRight point";
                     break;
                 case 3:
-                    irCalibrationPoints.BR.X = e.X;
-                    irCalibrationPoints.BR.Y = e.Y;
+                    irCalibrationPoints.BR = new System.Drawing.PointF(e.X, e.Y);
                     _irCalibrationState += 1;
                     // Save a copy of the image with the calibration markers - create a new object using Clone
                     lblInstructions.Text = "IR Calibration: Complete";
                     // Calibration data acquired. Compute warp
-                    _irWarper.setDestination(0, 0, _screenWidth, 0, 0, _screenHeight, _screenWidth, _screenHeight);
-                    _irWarper.setSource(irCalibrationPoints.TL.X, irCalibrationPoints.TL.Y,
-                        irCalibrationPoints.TR.X, irCalibrationPoints.TR.Y,
-                        irCalibrationPoints.BL.X, irCalibrationPoints.BL.Y,
-                        irCalibrationPoints.BR.X, irCalibrationPoints.BR.Y);
-                    _irWarper.computeWarp();
-                    _calibrated = true;
-                    lblStatus.Text = "IR Calibration: Complete - Warp computed";
+                    irToCamWarper.setDestination(camCalibrationPoints.TL, camCalibrationPoints.TR, camCalibrationPoints.BL, camCalibrationPoints.BR);
+                    irToCamWarper.setSource(irCalibrationPoints.TL, irCalibrationPoints.TR, irCalibrationPoints.BL, irCalibrationPoints.BR);
+                    irToCamWarper.computeWarp();
+
+                    lblInstructions.Text = "IR Calibration: Complete - Warp computed";
                     break;
                 default:
-                    if (_calibrated)
+                    if (_irCalibrationState == 4)
                     {
-                        lblStatus.Text = "IR Clicked @ " + DateTime.Now.ToShortTimeString();
+                        lblInstructions.Text = "IR Clicked @ " + DateTime.Now.ToShortTimeString();
                         // Compute normalized coordinate
-                        WiimoteLib.PointF dst = _irWarper.warp(e.X, e.Y);
-                        lblStatus.Text += " in (" + e.X.ToString() + ", " + e.Y.ToString() + ")";
-                        lblStatus.Text += " => " + dst.ToString();
+                        WiimoteLib.PointF dst = irToCamWarper.warp(e.X, e.Y);
+                        lblInstructions.Text += " in (" + e.X.ToString() + ", " + e.Y.ToString() + ")";
+                        lblInstructions.Text += " => " + dst.ToString();
 
                         //showIRPointInCam(Color.PeachPuff, dst);
                     }
@@ -299,6 +269,68 @@ namespace FinalSolution
             }
         }
         #endregion
+
+        private void cameraCalibOutput_MouseClick(object sender, MouseEventArgs e)
+        {
+            lblInstructions.Text = "You clicked!";
+            // Select point (0,0)
+            // Select point (screenWidth, 0)
+            // Select point (0, screenHeight)
+            // Select point (screenWidth, screenHeight)
+
+            // Draw the calibration screen markers
+            if (_camCalibrationState >= 0 && _camCalibrationState <= 3)
+            {
+                //_cameraViewAreaGraphics.DrawEllipse(new Pen(Color.Cyan), new Rectangle(new System.Drawing.Point(e.X, e.Y), new Size(2, 2)));
+            }
+
+            switch (_camCalibrationState)
+            {
+                case 0:
+                    camCalibrationPoints.TL = new System.Drawing.PointF(e.X, e.Y);
+                    _camCalibrationState += 1;
+                    lblInstructions.Text = "WebCam Calibration: Click TopRight point";
+                    break;
+                case 1:
+                    camCalibrationPoints.TR = new System.Drawing.PointF(e.X, e.Y);
+                    _camCalibrationState += 1;
+                    lblInstructions.Text = "WebCam Calibration: Click BottomLeft point";
+                    break;
+                case 2:
+                    camCalibrationPoints.BL = new System.Drawing.PointF(e.X, e.Y);
+                    _camCalibrationState += 1;
+                    lblInstructions.Text = "WebCam Calibration: Click BottomRight point";
+                    break;
+                case 3:
+                    camCalibrationPoints.BR = new System.Drawing.PointF(e.X, e.Y);
+                    _camCalibrationState += 1;
+                    lblInstructions.Text = "WebCam Calibration: Complete";
+                    // Calibration data acquired. Compute warp for camera
+                    //_cameraWarper.setDestination(0, 0, _screenWidth, 0, 0, _screenHeight, _screenWidth, _screenHeight);
+                    //_cameraWarper.setSource(camCalibrationPoints.TL.X, camCalibrationPoints.TL.Y,
+                    //    camCalibrationPoints.TR.X, camCalibrationPoints.TR.Y,
+                    //    camCalibrationPoints.BL.X, camCalibrationPoints.BL.Y,
+                    //    camCalibrationPoints.BR.X, camCalibrationPoints.BR.Y);
+                    //_cameraWarper.computeWarp();
+                    // Calculate the reverse warp matrix
+                    screenToCamWarper.setDestination(camCalibrationPoints.TL, camCalibrationPoints.TR, camCalibrationPoints.BL, camCalibrationPoints.BR);
+                    screenToCamWarper.setSource(0, 0, screenWidth, 0, 0, screenHeight, screenWidth, screenHeight);
+                    screenToCamWarper.computeWarp();
+
+                    //_calibrated = true;
+                    lblInstructions.Text = "WebCam Calibration: Complete - Warp computed";
+                    break;
+                default:
+                    //    if (_camCalibrationState == 4)
+                    //    {
+                    //        lblInstructions.Text = "WebCam Viewer Clicked @ " + DateTime.Now.ToLongTimeString();
+                    //        WiimoteLib.PointF dst = screenToCamWarper.warp(e.X, e.Y);
+                    //        lblInstructions.Text += " in (" + e.X.ToString() + ", " + e.Y.ToString() + ")";
+                    //        lblInstructions.Text += " => " + dst.ToString();
+                    //    }
+                    break;
+            }
+        }
 
 
 
