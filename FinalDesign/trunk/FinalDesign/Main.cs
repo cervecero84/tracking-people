@@ -29,14 +29,16 @@ namespace FinalSolution
         Warper screenToCamWarper = new Warper();
         Warper irToCamWarper = new Warper();
 
+        const int TOUCH_MIN_DIST = 20;
+
         public Main()
         {
             InitializeComponent();
             comm.TouchReceived += new Communicator.TouchReceivedHandler(comm_TouchReceived);
             try
             {
-                //wiimote.Connect();
-                //wiimote.SetReportType(InputReport.IRAccel, true);
+                wiimote.Connect();
+                wiimote.SetReportType(InputReport.IRAccel, true);
             }
             catch (Exception ex)
             {
@@ -84,8 +86,11 @@ namespace FinalSolution
 
                 // Compute Distance of point to touch
                 double dist = Math.Pow(irPoints[i].X - currTouch.X, 2) + Math.Pow(irPoints[i].Y - currTouch.Y, 2);                
+                // Compute color of point
                 BandColor bc = ColorState.FindBand(cameraImageYcc.GetSubRect(roi), colors);
-                double prob = SkinDetector.SkinConnectedProb(cameraImage, camTouchPt, camIrPt);
+                // Compute skin connection probability
+                int pixel2cmRatio = 1; // to be calculated by Jesse or Aishwar!!!!!!!!
+                double prob = HandProb.SkinConnectedProb(cameraImage, camTouchPt, camIrPt, pixel2cmRatio);
 
                 resolvedIrPoints.Add(new Utility.ResolvedIRPoints(camIrPt, camTouchPt, dist, bc, prob));
             }
@@ -110,18 +115,7 @@ namespace FinalSolution
                 return firstPair.SkinProbability.CompareTo(nextPair.SkinProbability);
             });
 
-            Random r = new Random();
-
-            // If no IR points were found, set Band Color to NotFound
-            Utility.ResolvedIRPoints resolvedPoint;
-            if (resolvedIrPoints.Count > 0)
-            {
-                resolvedPoint = resolvedIrPoints[0];
-            }
-            else
-            {
-                resolvedPoint = new Utility.ResolvedIRPoints(new WiimoteLib.PointF(), new WiimoteLib.PointF(), -1, (BandColor) r.Next(0,5), -1);
-            }
+            Utility.ResolvedIRPoints resolvedPoint = resolvedIrPoints[0];
 
             // Update the touch
             currTouch.setInfo(Enum.GetName(typeof(BandColor), resolvedPoint.Color), 
@@ -129,10 +123,10 @@ namespace FinalSolution
             comm.UpdateTouchInfo(currTouch);
         }
 
-        private void btnSettings_Click(object sender, EventArgs e)
+        private void btnCalibrate_Click(object sender, EventArgs e)
         {
-            CalibrationWizard wizard = new CalibrationWizard(camera, wiimote, irCalibrationPoints, camCalibrationPoints, 
-                colors, irToScreenWarper, screenToCamWarper, irToCamWarper, 1024, 768);
+            CalibrationWizard wizard = new CalibrationWizard(irCalibrationPoints, camCalibrationPoints, colors,
+                irToScreenWarper, screenToCamWarper, irToCamWarper);
             wizard.Show();
         }
     }
