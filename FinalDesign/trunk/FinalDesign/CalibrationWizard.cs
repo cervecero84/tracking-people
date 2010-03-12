@@ -42,8 +42,84 @@ namespace FinalSolution
             irToCamWarper = ir2Cam;
         }
 
+        #region Web Camera Calibration
+        private void btnCameraCalibrate_Click(object sender, EventArgs e)
+        {
+            _camCalibrationState = 0;
+            lblInstructions.Text = "WebCam Calibration: Click TopLeft point";
+        }
 
+        private void cameraCalibOutput_MouseClick(object sender, MouseEventArgs e)
+        {
+            // Select point (0,0)
+            // Select point (screenWidth, 0)
+            // Select point (0, screenHeight)
+            // Select point (screenWidth, screenHeight)
 
+            // Draw the calibration screen markers
+            if (_camCalibrationState >= 0 && _camCalibrationState <= 3)
+            {
+                _cameraViewAreaGraphics.DrawEllipse(new Pen(Color.Cyan), new Rectangle(new System.Drawing.Point(e.X, e.Y), new Size(2, 2)));
+            }
+
+            switch (_camCalibrationState)
+            {
+                case 0:
+                    camCalibrationPoints.TL.X = e.X;
+                    camCalibrationPoints.TL.Y = e.Y;
+                    _camCalibrationState += 1;
+                    lblInstructions.Text = "WebCam Calibration: Click TopRight point";
+                    break;
+                case 1:
+                    camCalibrationPoints.TR.X = e.X;
+                    camCalibrationPoints.TR.Y = e.Y;
+                    _camCalibrationState += 1;
+                    lblInstructions.Text = "WebCam Calibration: Click BottomLeft point";
+                    break;
+                case 2:
+                    camCalibrationPoints.BL.X = e.X;
+                    camCalibrationPoints.BL.Y = e.Y;
+                    _camCalibrationState += 1;
+                    lblInstructions.Text = "WebCam Calibration: Click BottomRight point";
+                    break;
+                case 3:
+                    camCalibrationPoints.BR.X = e.X;
+                    camCalibrationPoints.BR.Y = e.Y;
+                    _camCalibrationState += 1;
+                    lblInstructions.Text = "WebCam Calibration: Complete";
+                    // Calibration data acquired. Compute warp for camera
+                    _cameraWarper.setDestination(0, 0, _screenWidth, 0, 0, _screenHeight, _screenWidth, _screenHeight);
+                    _cameraWarper.setSource(camCalibrationPoints.TL.X, camCalibrationPoints.TL.Y,
+                        camCalibrationPoints.TR.X, camCalibrationPoints.TR.Y,
+                        camCalibrationPoints.BL.X, camCalibrationPoints.BL.Y,
+                        camCalibrationPoints.BR.X, camCalibrationPoints.BR.Y);
+                    _cameraWarper.computeWarp();
+                    // Calculate the reverse warp matrix
+                    _cameraReverseWarper.setDestination(_webCameraSrcPoints[0].X, _webCameraSrcPoints[0].Y,
+                        _webCameraSrcPoints[1].X, _webCameraSrcPoints[1].Y,
+                        _webCameraSrcPoints[2].X, _webCameraSrcPoints[2].Y,
+                        _webCameraSrcPoints[3].X, _webCameraSrcPoints[3].Y);
+                    _cameraReverseWarper.setSource(0, 0, _screenWidth, 0, 0, _screenHeight, _screenWidth, _screenHeight);
+                    _cameraReverseWarper.computeWarp();
+
+                    _calibrated = true;
+                    lblInstructions.Text = "WebCam Calibration: Complete - Warp computed";
+                    break;
+                default:
+                    if (_calibrated)
+                    {
+                        lblInstructions.Text = "WebCam Viewer Clicked @ " + DateTime.Now.ToLongTimeString();
+                        WiimoteLib.PointF dst = _cameraWarper.warp(e.X, e.Y);
+                        lblInstructions.Text += " in (" + e.X.ToString() + ", " + e.Y.ToString() + ")";
+                        lblInstructions.Text += " => " + dst.ToString();
+                    }
+                    break;
+            }
+        }
+
+        #endregion
+
+        #region Infrared Camera Calibration
         private void btnWiimoteCalibrate_Click(object sender, EventArgs e)
         {
             _irCalibrationState = 0;
@@ -102,7 +178,9 @@ namespace FinalSolution
                     break;
             }
         }
+        #endregion
 
+        #region Eriosion Dilation and Threshold events
         private void tkbRedErosion_Scroll(object sender, EventArgs e)
         {
             lblRedErosion.Text = tkbRedErosion.Value.ToString();
@@ -162,5 +240,67 @@ namespace FinalSolution
         {
             lblBlueThreshold.Text = tkbBlueThreshold.Value.ToString();
         }
+        #endregion
+
+        #region Camera/Video choice
+        private void btnCamera_Click(object sender, EventArgs e)
+        {
+            if (camera != null)
+            {
+                camera.Dispose();
+            }
+            try
+            {
+                camera = new Capture(0);
+                lblVideoSource.Text = "Live Web Camera 1";
+            }
+            catch (Exception)
+            {
+                camera = new Capture(1);
+                lblVideoSource.Text = "Live Web Camera 2";
+            }
+            
+        }
+
+        private void btnVideo_Click(object sender, EventArgs e)
+        {
+            String videoSourceFileName = "";
+            if (ofdSourceVideo.ShowDialog() == DialogResult.OK)
+            {
+                videoSourceFileName = ofdSourceVideo.FileName;
+                Capture tmp = camera;
+                try
+                {
+                    tmp = new Capture(videoSourceFileName);
+                }
+                catch (NullReferenceException)
+                {
+                    // This exception happens when the file that was tried to be opened
+                    // was not a readable video file
+                    MessageBox.Show("Unreadable video file. No action taken.");
+                }
+                camera = tmp;
+                lblVideoSource.Text = "Video File";
+            }
+        }
+
+        private void ckbSwitchCamera_CheckedChanged(object sender, EventArgs e)
+        {
+            if (camera != null) camera.Dispose();
+            if (ckbSwitchCamera.Checked)
+            {
+                camera = new Capture(1);
+                lblVideoSource.Text = "Live Web Camera 2";
+            }
+            else
+            {
+                camera = new Capture(0);
+                lblVideoSource.Text = "Live Web Camera 1";
+            }
+        }
+        #endregion
+
+
+
     }
 }
