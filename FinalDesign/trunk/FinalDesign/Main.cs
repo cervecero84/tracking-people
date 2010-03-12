@@ -114,8 +114,23 @@ namespace FinalSolution
             {
                 return firstPair.SkinProbability.CompareTo(nextPair.SkinProbability);
             });
+            Utility.ResolvedIRPoints resolvedPoint;
 
-            Utility.ResolvedIRPoints resolvedPoint = resolvedIrPoints[0];
+            Random r = new Random();
+
+            // If no IR points were found, set Band Color to NotFound
+            
+            if (resolvedIrPoints.Count > 0)
+            {
+                resolvedPoint = resolvedIrPoints[0];
+            }
+            else
+            {
+                resolvedPoint = new Utility.ResolvedIRPoints(new WiimoteLib.PointF(), new WiimoteLib.PointF(), -1, (BandColor)r.Next(0, 5), -1);
+            }
+
+
+            
 
             // Update the touch
             currTouch.setInfo(Enum.GetName(typeof(BandColor), resolvedPoint.Color), 
@@ -123,10 +138,10 @@ namespace FinalSolution
             comm.UpdateTouchInfo(currTouch);
         }
 
-        private void btnCalibrate_Click(object sender, EventArgs e)
+        private void btnSettings_Click(object sender, EventArgs e)
         {
-            CalibrationWizard wizard = new CalibrationWizard(irCalibrationPoints, camCalibrationPoints, colors,
-                irToScreenWarper, screenToCamWarper, irToCamWarper);
+            CalibrationWizard wizard = new CalibrationWizard(camera, wiimote, irCalibrationPoints, camCalibrationPoints, colors,
+                irToScreenWarper, screenToCamWarper, irToCamWarper, 1024, 768);
             wizard.Show();
         }
     }

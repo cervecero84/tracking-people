@@ -35,6 +35,10 @@
     <Reference Include="Emgu.CV, Version=2.1.0.728, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL" />
     <Reference Include="Emgu.CV.UI, Version=2.1.0.728, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL" />
     <Reference Include="Emgu.Util, Version=2.1.0.728, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL" />
+    <Reference Include="EnhancedEmguImageBox, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>dll\EnhancedEmguImageBox.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -108,8 +112,7 @@
     <Compile Include="Warper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="dll\comEnPicBox.dll">
-    </Content>
+    <Content Include="dll\comEnPicBox.dll" />
     <Content Include="dll\Emgu.CV.dll" />
     <Content Include="dll\Emgu.CV.UI.dll" />
     <Content Include="dll\Emgu.Util.dll" />

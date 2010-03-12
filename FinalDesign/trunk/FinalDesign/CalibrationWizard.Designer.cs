@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.btnLearnRed = new System.Windows.Forms.Button();
             this.btnLearnGreen = new System.Windows.Forms.Button();
             this.btnLearnOrange = new System.Windows.Forms.Button();
@@ -76,7 +77,7 @@
             this.cbxShowOrange = new System.Windows.Forms.CheckBox();
             this.cbxShowGreen = new System.Windows.Forms.CheckBox();
             this.cbxShowRed = new System.Windows.Forms.CheckBox();
-            this.btnSaveHistograms = new System.Windows.Forms.Button();
+            this.btnSaveCalibration = new System.Windows.Forms.Button();
             this.ckbThreshold = new System.Windows.Forms.CheckBox();
             this.ckbDilate = new System.Windows.Forms.CheckBox();
             this.ckbErosion = new System.Windows.Forms.CheckBox();
@@ -84,17 +85,18 @@
             this.cbxDrawIRPoints = new System.Windows.Forms.CheckBox();
             this.btnCameraCalibrate = new System.Windows.Forms.Button();
             this.btnWiimoteCalibrate = new System.Windows.Forms.Button();
-            this.btnCalibWizard = new System.Windows.Forms.Button();
             this.lblInstructions = new System.Windows.Forms.Label();
             this.ofdSourceVideo = new System.Windows.Forms.OpenFileDialog();
-            this.ckbSwitchCamera = new System.Windows.Forms.CheckBox();
-            this.btnCamera = new System.Windows.Forms.Button();
             this.lblVideoSource = new System.Windows.Forms.Label();
             this.lblPlayingFrom = new System.Windows.Forms.Label();
-            this.btnVideo = new System.Windows.Forms.Button();
             this.cbxVideo = new System.Windows.Forms.CheckBox();
-            this.wiiCalibOutput = new comEnPicBox.comEnPiBox();
-            this.cameraCalibOutput = new comEnPicBox.comEnPiBox();
+            this.ckbSwitchCamera = new System.Windows.Forms.CheckBox();
+            this.btnCamera = new System.Windows.Forms.Button();
+            this.btnVideo = new System.Windows.Forms.Button();
+            this.cameraCalibOutput = new EnhancedEmguImageBox.EImageBox();
+            this.wiiCalibOutput = new EnhancedEmguImageBox.EImageBox();
+            this.imBoxSelection = new EnhancedEmguImageBox.EImageBox();
+            this.lblSelection = new System.Windows.Forms.Label();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tkbBlueThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tkbBlueDilation)).BeginInit();
@@ -111,6 +113,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.tkbRedThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tkbRedDilation)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tkbRedErosion)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cameraCalibOutput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.wiiCalibOutput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBoxSelection)).BeginInit();
             this.SuspendLayout();
             // 
             // btnLearnRed
@@ -121,6 +126,7 @@
             this.btnLearnRed.TabIndex = 12;
             this.btnLearnRed.Text = "Learn Red";
             this.btnLearnRed.UseVisualStyleBackColor = true;
+            this.btnLearnRed.Click += new System.EventHandler(this.btnLearnRed_Click);
             // 
             // btnLearnGreen
             // 
@@ -130,6 +136,7 @@
             this.btnLearnGreen.TabIndex = 13;
             this.btnLearnGreen.Text = "Learn Green";
             this.btnLearnGreen.UseVisualStyleBackColor = true;
+            this.btnLearnGreen.Click += new System.EventHandler(this.btnLearnGreen_Click);
             // 
             // btnLearnOrange
             // 
@@ -139,6 +146,7 @@
             this.btnLearnOrange.TabIndex = 14;
             this.btnLearnOrange.Text = "Learn Orange";
             this.btnLearnOrange.UseVisualStyleBackColor = true;
+            this.btnLearnOrange.Click += new System.EventHandler(this.btnLearnOrange_Click);
             // 
             // btnLearnBlue
             // 
@@ -148,6 +156,7 @@
             this.btnLearnBlue.TabIndex = 15;
             this.btnLearnBlue.Text = "Learn Blue";
             this.btnLearnBlue.UseVisualStyleBackColor = true;
+            this.btnLearnBlue.Click += new System.EventHandler(this.btnLearnBlue_Click);
             // 
             // groupBox4
             // 
@@ -602,14 +611,14 @@
             this.cbxShowRed.Text = "View";
             this.cbxShowRed.UseVisualStyleBackColor = true;
             // 
-            // btnSaveHistograms
+            // btnSaveCalibration
             // 
-            this.btnSaveHistograms.Location = new System.Drawing.Point(716, 2);
-            this.btnSaveHistograms.Name = "btnSaveHistograms";
-            this.btnSaveHistograms.Size = new System.Drawing.Size(119, 31);
-            this.btnSaveHistograms.TabIndex = 38;
-            this.btnSaveHistograms.Text = "Save Learning";
-            this.btnSaveHistograms.UseVisualStyleBackColor = true;
+            this.btnSaveCalibration.Location = new System.Drawing.Point(716, 2);
+            this.btnSaveCalibration.Name = "btnSaveCalibration";
+            this.btnSaveCalibration.Size = new System.Drawing.Size(119, 31);
+            this.btnSaveCalibration.TabIndex = 38;
+            this.btnSaveCalibration.Text = "Save Learning";
+            this.btnSaveCalibration.UseVisualStyleBackColor = true;
             // 
             // ckbThreshold
             // 
@@ -681,19 +690,10 @@
             this.btnWiimoteCalibrate.UseVisualStyleBackColor = true;
             this.btnWiimoteCalibrate.Click += new System.EventHandler(this.btnWiimoteCalibrate_Click);
             // 
-            // btnCalibWizard
-            // 
-            this.btnCalibWizard.Location = new System.Drawing.Point(13, 10);
-            this.btnCalibWizard.Name = "btnCalibWizard";
-            this.btnCalibWizard.Size = new System.Drawing.Size(75, 23);
-            this.btnCalibWizard.TabIndex = 46;
-            this.btnCalibWizard.Text = "Run Wizard";
-            this.btnCalibWizard.UseVisualStyleBackColor = true;
-            // 
             // lblInstructions
             // 
             this.lblInstructions.AutoSize = true;
-            this.lblInstructions.Location = new System.Drawing.Point(103, 20);
+            this.lblInstructions.Location = new System.Drawing.Point(12, 20);
             this.lblInstructions.Name = "lblInstructions";
             this.lblInstructions.Size = new System.Drawing.Size(100, 13);
             this.lblInstructions.TabIndex = 47;
@@ -702,27 +702,6 @@
             // ofdSourceVideo
             // 
             this.ofdSourceVideo.FileName = "openFileDialog1";
-            // 
-            // ckbSwitchCamera
-            // 
-            this.ckbSwitchCamera.AutoSize = true;
-            this.ckbSwitchCamera.Location = new System.Drawing.Point(683, 393);
-            this.ckbSwitchCamera.Name = "ckbSwitchCamera";
-            this.ckbSwitchCamera.Size = new System.Drawing.Size(80, 17);
-            this.ckbSwitchCamera.TabIndex = 52;
-            this.ckbSwitchCamera.Text = "Alt. Camera";
-            this.ckbSwitchCamera.UseVisualStyleBackColor = true;
-            this.ckbSwitchCamera.CheckedChanged += new System.EventHandler(this.ckbSwitchCamera_CheckedChanged);
-            // 
-            // btnCamera
-            // 
-            this.btnCamera.Location = new System.Drawing.Point(679, 355);
-            this.btnCamera.Name = "btnCamera";
-            this.btnCamera.Size = new System.Drawing.Size(75, 32);
-            this.btnCamera.TabIndex = 51;
-            this.btnCamera.Text = "Camera";
-            this.btnCamera.UseVisualStyleBackColor = true;
-            this.btnCamera.Click += new System.EventHandler(this.btnCamera_Click);
             // 
             // lblVideoSource
             // 
@@ -742,19 +721,11 @@
             this.lblPlayingFrom.TabIndex = 49;
             this.lblPlayingFrom.Text = "Playing from: ";
             // 
-            // btnVideo
-            // 
-            this.btnVideo.Location = new System.Drawing.Point(760, 355);
-            this.btnVideo.Name = "btnVideo";
-            this.btnVideo.Size = new System.Drawing.Size(75, 32);
-            this.btnVideo.TabIndex = 48;
-            this.btnVideo.Text = "Video (...)";
-            this.btnVideo.UseVisualStyleBackColor = true;
-            this.btnVideo.Click += new System.EventHandler(this.btnVideo_Click);
-            // 
             // cbxVideo
             // 
             this.cbxVideo.AutoSize = true;
+            this.cbxVideo.Checked = true;
+            this.cbxVideo.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbxVideo.Location = new System.Drawing.Point(299, 345);
             this.cbxVideo.Name = "cbxVideo";
             this.cbxVideo.Size = new System.Drawing.Size(119, 17);
@@ -762,39 +733,96 @@
             this.cbxVideo.Text = "Continuous Capture";
             this.cbxVideo.UseVisualStyleBackColor = true;
             // 
-            // wiiCalibOutput
+            // ckbSwitchCamera
             // 
-            this.wiiCalibOutput.BackColor = System.Drawing.SystemColors.Control;
-            this.wiiCalibOutput.Location = new System.Drawing.Point(430, 39);
-            this.wiiCalibOutput.Name = "wiiCalibOutput";
-            this.wiiCalibOutput.Size = new System.Drawing.Size(400, 300);
-            this.wiiCalibOutput.SourceImage = null;
-            this.wiiCalibOutput.TabIndex = 54;
+            this.ckbSwitchCamera.AutoSize = true;
+            this.ckbSwitchCamera.Location = new System.Drawing.Point(679, 383);
+            this.ckbSwitchCamera.Name = "ckbSwitchCamera";
+            this.ckbSwitchCamera.Size = new System.Drawing.Size(80, 17);
+            this.ckbSwitchCamera.TabIndex = 58;
+            this.ckbSwitchCamera.Text = "Alt. Camera";
+            this.ckbSwitchCamera.UseVisualStyleBackColor = true;
+            this.ckbSwitchCamera.CheckedChanged += new System.EventHandler(this.ckbSwitchCamera_CheckedChanged);
+            // 
+            // btnCamera
+            // 
+            this.btnCamera.Location = new System.Drawing.Point(679, 345);
+            this.btnCamera.Name = "btnCamera";
+            this.btnCamera.Size = new System.Drawing.Size(75, 32);
+            this.btnCamera.TabIndex = 57;
+            this.btnCamera.Text = "Camera";
+            this.btnCamera.UseVisualStyleBackColor = true;
+            this.btnCamera.Click += new System.EventHandler(this.btnCamera_Click);
+            // 
+            // btnVideo
+            // 
+            this.btnVideo.Location = new System.Drawing.Point(760, 345);
+            this.btnVideo.Name = "btnVideo";
+            this.btnVideo.Size = new System.Drawing.Size(75, 32);
+            this.btnVideo.TabIndex = 56;
+            this.btnVideo.Text = "Video (...)";
+            this.btnVideo.UseVisualStyleBackColor = true;
+            this.btnVideo.Click += new System.EventHandler(this.btnVideo_Click);
             // 
             // cameraCalibOutput
             // 
-            this.cameraCalibOutput.BackColor = System.Drawing.SystemColors.Control;
-            this.cameraCalibOutput.Location = new System.Drawing.Point(12, 39);
+            this.cameraCalibOutput.BackColor = System.Drawing.SystemColors.ControlText;
+            this.cameraCalibOutput.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
+            this.cameraCalibOutput.Location = new System.Drawing.Point(13, 40);
             this.cameraCalibOutput.Name = "cameraCalibOutput";
+            this.cameraCalibOutput.SelectedArea = new System.Drawing.Rectangle(0, 0, 0, 0);
             this.cameraCalibOutput.Size = new System.Drawing.Size(400, 300);
-            this.cameraCalibOutput.SourceImage = null;
-            this.cameraCalibOutput.TabIndex = 53;
+            this.cameraCalibOutput.TabIndex = 2;
+            this.cameraCalibOutput.TabStop = false;
             this.cameraCalibOutput.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cameraCalibOutput_MouseClick);
+            this.cameraCalibOutput.MouseUp += new System.Windows.Forms.MouseEventHandler(this.cameraCalibOutput_MouseUp);
+            // 
+            // wiiCalibOutput
+            // 
+            this.wiiCalibOutput.BackColor = System.Drawing.SystemColors.ControlText;
+            this.wiiCalibOutput.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
+            this.wiiCalibOutput.Location = new System.Drawing.Point(424, 40);
+            this.wiiCalibOutput.Name = "wiiCalibOutput";
+            this.wiiCalibOutput.SelectedArea = new System.Drawing.Rectangle(0, 0, 0, 0);
+            this.wiiCalibOutput.Size = new System.Drawing.Size(400, 300);
+            this.wiiCalibOutput.TabIndex = 2;
+            this.wiiCalibOutput.TabStop = false;
+            this.wiiCalibOutput.MouseClick += new System.Windows.Forms.MouseEventHandler(this.wiiCalibOutput_MouseClick);
+            // 
+            // imBoxSelection
+            // 
+            this.imBoxSelection.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
+            this.imBoxSelection.Location = new System.Drawing.Point(489, 346);
+            this.imBoxSelection.Name = "imBoxSelection";
+            this.imBoxSelection.SelectedArea = new System.Drawing.Rectangle(0, 0, 0, 0);
+            this.imBoxSelection.Size = new System.Drawing.Size(105, 46);
+            this.imBoxSelection.TabIndex = 2;
+            this.imBoxSelection.TabStop = false;
+            // 
+            // lblSelection
+            // 
+            this.lblSelection.AutoSize = true;
+            this.lblSelection.Location = new System.Drawing.Point(517, 387);
+            this.lblSelection.Name = "lblSelection";
+            this.lblSelection.Size = new System.Drawing.Size(51, 13);
+            this.lblSelection.TabIndex = 59;
+            this.lblSelection.Text = "Selection";
             // 
             // CalibrationWizard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(846, 625);
-            this.Controls.Add(this.cbxVideo);
+            this.Controls.Add(this.lblSelection);
+            this.Controls.Add(this.imBoxSelection);
             this.Controls.Add(this.wiiCalibOutput);
             this.Controls.Add(this.ckbSwitchCamera);
             this.Controls.Add(this.btnCamera);
+            this.Controls.Add(this.btnVideo);
+            this.Controls.Add(this.cbxVideo);
             this.Controls.Add(this.lblVideoSource);
             this.Controls.Add(this.lblPlayingFrom);
-            this.Controls.Add(this.btnVideo);
             this.Controls.Add(this.lblInstructions);
-            this.Controls.Add(this.btnCalibWizard);
             this.Controls.Add(this.cbxDrawCalibrationMarkers);
             this.Controls.Add(this.cbxDrawIRPoints);
             this.Controls.Add(this.btnCameraCalibrate);
@@ -802,7 +830,7 @@
             this.Controls.Add(this.ckbThreshold);
             this.Controls.Add(this.ckbDilate);
             this.Controls.Add(this.ckbErosion);
-            this.Controls.Add(this.btnSaveHistograms);
+            this.Controls.Add(this.btnSaveCalibration);
             this.Controls.Add(this.cbxShowBlue);
             this.Controls.Add(this.cbxShowOrange);
             this.Controls.Add(this.cbxShowGreen);
@@ -838,6 +866,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.tkbRedThreshold)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tkbRedDilation)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tkbRedErosion)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cameraCalibOutput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.wiiCalibOutput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBoxSelection)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -893,7 +924,7 @@
         private System.Windows.Forms.CheckBox cbxShowOrange;
         private System.Windows.Forms.CheckBox cbxShowGreen;
         private System.Windows.Forms.CheckBox cbxShowRed;
-        private System.Windows.Forms.Button btnSaveHistograms;
+        private System.Windows.Forms.Button btnSaveCalibration;
         private System.Windows.Forms.CheckBox ckbThreshold;
         private System.Windows.Forms.CheckBox ckbDilate;
         private System.Windows.Forms.CheckBox ckbErosion;
@@ -901,16 +932,17 @@
         private System.Windows.Forms.CheckBox cbxDrawIRPoints;
         private System.Windows.Forms.Button btnCameraCalibrate;
         private System.Windows.Forms.Button btnWiimoteCalibrate;
-        private System.Windows.Forms.Button btnCalibWizard;
         private System.Windows.Forms.Label lblInstructions;
         private System.Windows.Forms.OpenFileDialog ofdSourceVideo;
-        private System.Windows.Forms.CheckBox ckbSwitchCamera;
-        private System.Windows.Forms.Button btnCamera;
         private System.Windows.Forms.Label lblVideoSource;
         private System.Windows.Forms.Label lblPlayingFrom;
-        private System.Windows.Forms.Button btnVideo;
-        private comEnPicBox.comEnPiBox cameraCalibOutput;
-        private comEnPicBox.comEnPiBox wiiCalibOutput;
         private System.Windows.Forms.CheckBox cbxVideo;
+        private System.Windows.Forms.CheckBox ckbSwitchCamera;
+        private System.Windows.Forms.Button btnCamera;
+        private System.Windows.Forms.Button btnVideo;
+        private EnhancedEmguImageBox.EImageBox cameraCalibOutput;
+        private EnhancedEmguImageBox.EImageBox wiiCalibOutput;
+        private EnhancedEmguImageBox.EImageBox imBoxSelection;
+        private System.Windows.Forms.Label lblSelection;
     }
 }
