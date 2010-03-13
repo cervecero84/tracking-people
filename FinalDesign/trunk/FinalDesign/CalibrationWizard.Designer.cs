@@ -97,6 +97,7 @@
             this.wiiCalibOutput = new EnhancedEmguImageBox.EImageBox();
             this.imBoxSelection = new EnhancedEmguImageBox.EImageBox();
             this.lblSelection = new System.Windows.Forms.Label();
+            this.imBoxProbImages = new EnhancedEmguImageBox.EImageBox();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tkbBlueThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tkbBlueDilation)).BeginInit();
@@ -116,6 +117,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.cameraCalibOutput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.wiiCalibOutput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBoxSelection)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBoxProbImages)).BeginInit();
             this.SuspendLayout();
             // 
             // btnLearnRed
@@ -619,6 +621,7 @@
             this.btnSaveCalibration.TabIndex = 38;
             this.btnSaveCalibration.Text = "Save Learning";
             this.btnSaveCalibration.UseVisualStyleBackColor = true;
+            this.btnSaveCalibration.Click += new System.EventHandler(this.btnSaveCalibration_Click);
             // 
             // ckbThreshold
             // 
@@ -781,7 +784,7 @@
             // 
             this.wiiCalibOutput.BackColor = System.Drawing.SystemColors.ControlText;
             this.wiiCalibOutput.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
-            this.wiiCalibOutput.Location = new System.Drawing.Point(424, 40);
+            this.wiiCalibOutput.Location = new System.Drawing.Point(825, 39);
             this.wiiCalibOutput.Name = "wiiCalibOutput";
             this.wiiCalibOutput.SelectedArea = new System.Drawing.Rectangle(0, 0, 0, 0);
             this.wiiCalibOutput.Size = new System.Drawing.Size(400, 300);
@@ -808,11 +811,23 @@
             this.lblSelection.TabIndex = 59;
             this.lblSelection.Text = "Selection";
             // 
+            // imBoxProbImages
+            // 
+            this.imBoxProbImages.BackColor = System.Drawing.SystemColors.ControlText;
+            this.imBoxProbImages.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
+            this.imBoxProbImages.Location = new System.Drawing.Point(419, 39);
+            this.imBoxProbImages.Name = "imBoxProbImages";
+            this.imBoxProbImages.SelectedArea = new System.Drawing.Rectangle(0, 0, 0, 0);
+            this.imBoxProbImages.Size = new System.Drawing.Size(400, 300);
+            this.imBoxProbImages.TabIndex = 60;
+            this.imBoxProbImages.TabStop = false;
+            // 
             // CalibrationWizard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(846, 625);
+            this.ClientSize = new System.Drawing.Size(1228, 625);
+            this.Controls.Add(this.imBoxProbImages);
             this.Controls.Add(this.lblSelection);
             this.Controls.Add(this.imBoxSelection);
             this.Controls.Add(this.wiiCalibOutput);
@@ -869,6 +884,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.cameraCalibOutput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.wiiCalibOutput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBoxSelection)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBoxProbImages)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -944,5 +960,6 @@
         private EnhancedEmguImageBox.EImageBox wiiCalibOutput;
         private EnhancedEmguImageBox.EImageBox imBoxSelection;
         private System.Windows.Forms.Label lblSelection;
+        private EnhancedEmguImageBox.EImageBox imBoxProbImages;
     }
 }

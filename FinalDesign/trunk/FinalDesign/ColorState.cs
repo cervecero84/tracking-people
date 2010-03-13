@@ -15,6 +15,13 @@ namespace FinalSolution
         public int ErosionValue { get; set; }
         public int DilationValue { get; set; }
 
+        public ColorState()
+        {
+            CbHist = new DenseHistogram(16, new RangeF(0, 255));
+            CrHist = new DenseHistogram(16, new RangeF(0, 255));
+            ThresholdValue = ErosionValue = DilationValue = 0;
+        }
+
         public ColorState(DenseHistogram cbHist, DenseHistogram crHist,
             double thresholdValue, int erosionValue, int dilationValue)
         {

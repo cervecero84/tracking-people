@@ -28,13 +28,15 @@ namespace FinalSolution
         Graphics cameraViewGraphics;
         Graphics irViewGraphics;
 
-        Image<Bgr, byte> lastSelectedImage;
+        Image<Ycc, byte> lastSelectedImage;
         // States 0 - 3: indicate point number (TL, TR, BL, BR)
         // Anything else means program is in non-calibration mode
         int _irCalibrationState = -1;
         int _camCalibrationState = -1;
-        bool _statusWaitingForBandRegionSelection = false;
-        string mode = "uncalibrated";
+        //bool _statusWaitingForBandRegionSelection = false;
+        
+        Color colorUncalibrated = Color.Salmon;
+        Color colorCalibrated = Color.ForestGreen;
 
         public CalibrationWizard(Capture c, Wiimote w, CalibrationPoints irCP, CalibrationPoints camCP, 
             ColorStateSet cs, Warper ir2S, Warper s2Cam, Warper ir2Cam,int scrW, int scrH)
@@ -51,6 +53,13 @@ namespace FinalSolution
             screenWidth = scrW;
             screenHeight = scrH;
 
+            btnCameraCalibrate.BackColor = colorUncalibrated;
+            btnWiimoteCalibrate.BackColor = colorUncalibrated;
+            btnLearnRed.BackColor = colorUncalibrated;
+            btnLearnOrange.BackColor = colorUncalibrated;
+            btnLearnGreen.BackColor = colorUncalibrated;
+            btnLearnBlue.BackColor = colorUncalibrated;
+
             Application.Idle += new EventHandler(ProcessFrame);
         }
 
@@ -59,16 +68,16 @@ namespace FinalSolution
         {
             if (cbxVideo.Checked)
             {
-                cameraCalibOutput.Image = camera.QueryFrame().Resize(cameraCalibOutput.Width, cameraCalibOutput.Height, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR);
+                //cameraCalibOutput.Image = camera.QueryFrame().Resize(cameraCalibOutput.Width, cameraCalibOutput.Height, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR);
 
-                Image<Bgr, Byte> source = camera.QueryFrame();
+                Image<Ycc, Byte> source = camera.QueryFrame().Convert<Ycc, byte>();
 
                 // Reached the last frame in the source - happens in video files
                 if (source == null)
                 {
                     cbxVideo.Checked = false;
                     camera = new Capture(ofdSourceVideo.FileName);
-                    source = camera.QueryFrame();
+                    source = camera.QueryFrame().Convert<Ycc, byte>();
                     if (source == null)
                     {
                         lblInstructions.Text = "Video source no longer available";
@@ -77,21 +86,32 @@ namespace FinalSolution
                 }
 
 
-                source = source.Resize(400, 300, INTER.CV_INTER_CUBIC);
-            }
-            cameraViewGraphics = Graphics.FromImage(cameraCalibOutput.Image.Bitmap);
-            //irViewGraphics = Graphics.FromImage(wiiCalibOutput.SourceImage);
-         
-            cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), camCalibrationPoints.TL.X, camCalibrationPoints.TL.Y, 3, 3);
-            cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), camCalibrationPoints.TR.X, camCalibrationPoints.TR.Y, 3, 3);
-            cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), camCalibrationPoints.BL.X, camCalibrationPoints.BL.Y, 3, 3);
-            cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), camCalibrationPoints.BR.X, camCalibrationPoints.BR.Y, 3, 3);
-            
+                source = source.Resize(cameraCalibOutput.Size.Width, cameraCalibOutput.Size.Height, INTER.CV_INTER_CUBIC);
 
-            cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), irCalibrationPoints.TL.X, irCalibrationPoints.TL.Y, 3, 3);
-            cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), irCalibrationPoints.TR.X, irCalibrationPoints.TR.Y, 3, 3);
-            cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), irCalibrationPoints.BL.X, irCalibrationPoints.BL.Y, 3, 3);
-            cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), irCalibrationPoints.BR.X, irCalibrationPoints.BR.Y, 3, 3);
+                cameraCalibOutput.Image = source;
+
+                cameraViewGraphics = Graphics.FromImage(cameraCalibOutput.Image.Bitmap);
+                //irViewGraphics = Graphics.FromImage(wiiCalibOutput.SourceImage);
+
+                cameraViewGraphics.DrawEllipse(new Pen(Color.Azure), camCalibrationPoints.TL.X, camCalibrationPoints.TL.Y, 3, 3);
+                cameraViewGraphics.DrawEllipse(new Pen(Color.Azure), camCalibrationPoints.TR.X, camCalibrationPoints.TR.Y, 3, 3);
+                cameraViewGraphics.DrawEllipse(new Pen(Color.Azure), camCalibrationPoints.BL.X, camCalibrationPoints.BL.Y, 3, 3);
+                cameraViewGraphics.DrawEllipse(new Pen(Color.Azure), camCalibrationPoints.BR.X, camCalibrationPoints.BR.Y, 3, 3);
+
+
+                cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), irCalibrationPoints.TL.X, irCalibrationPoints.TL.Y, 3, 3);
+                cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), irCalibrationPoints.TR.X, irCalibrationPoints.TR.Y, 3, 3);
+                cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), irCalibrationPoints.BL.X, irCalibrationPoints.BL.Y, 3, 3);
+                cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), irCalibrationPoints.BR.X, irCalibrationPoints.BR.Y, 3, 3);
+
+                Image<Hsv, Byte> result = new Image<Hsv, byte>(source.Size);
+                if (cbxShowBlue.Checked) result = result.Or(colors.Blue.GetProbabilityImage(source, new Hsv(0,4,1)));
+                if (cbxShowOrange.Checked) result = result.Or(colors.Yellow.GetProbabilityImage(source, new Hsv(0.1, 1, 1)));
+                if (cbxShowRed.Checked) result = result.Or(colors.Red.GetProbabilityImage(source, new Hsv(0, 1, 1)));
+                if (cbxShowGreen.Checked) result = result.Or(colors.Green.GetProbabilityImage(source, new Hsv(0.3, 1, 1)));
+                imBoxProbImages.Image = result;
+            }
+            
             
 
         }
@@ -133,7 +153,8 @@ namespace FinalSolution
                     camCalibrationPoints.BR = new System.Drawing.PointF(e.X, e.Y);
                     _camCalibrationState += 1;
                     lblInstructions.Text = "WebCam Calibration: Complete";
-                    mode = "cameraCalibrationComplete";
+                    btnCameraCalibrate.BackColor = colorCalibrated;
+                    btnSaveCalibration.BackColor = colorUncalibrated;
                     // Calibration data acquired. Compute warp for camera
                     //_cameraWarper.setDestination(0, 0, _screenWidth, 0, 0, _screenHeight, _screenWidth, _screenHeight);
                     //_cameraWarper.setSource(camCalibrationPoints.TL.X, camCalibrationPoints.TL.Y,
@@ -161,13 +182,23 @@ namespace FinalSolution
             }
 
         }
+
+        private void cameraCalibOutput_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (cameraCalibOutput.SelectedArea.Size.Height >= 3 && cameraCalibOutput.SelectedArea.Size.Width >= 3)
+            {
+                lastSelectedImage = new Image<Ycc, byte>(cameraCalibOutput.SelectedArea.Size);
+                CvInvoke.cvGetSubRect(cameraCalibOutput.Image.Ptr, lastSelectedImage.Ptr, cameraCalibOutput.SelectedArea);
+                imBoxSelection.Image = lastSelectedImage.Resize(imBoxSelection.Width, imBoxSelection.Height);
+            }
+        }
         #endregion
 
         #region Web Camera Calibration
         private void btnCameraCalibrate_Click(object sender, EventArgs e)
         {
             _camCalibrationState = 0;
-            mode = "cameraCalibration";
+            
             lblInstructions.Text = "WebCam Calibration: Click TopLeft point";
             
         }
@@ -180,7 +211,7 @@ namespace FinalSolution
         private void btnWiimoteCalibrate_Click(object sender, EventArgs e)
         {
             _irCalibrationState = 0;
-            mode = "irCalibration";
+            
             lblInstructions.Text = "InfraRed Calibration: Click TopLeft point";
         }
 
@@ -208,7 +239,8 @@ namespace FinalSolution
                     _irCalibrationState += 1;
                     // Save a copy of the image with the calibration markers - create a new object using Clone
                     lblInstructions.Text = "IR Calibration: Complete";
-                    mode = "irCalibrationComplete";
+                    btnWiimoteCalibrate.BackColor = colorCalibrated;
+                    btnSaveCalibration.BackColor = colorUncalibrated;
                     // Calibration data acquired. Compute warp
                     irToCamWarper.setDestination(camCalibrationPoints.TL, camCalibrationPoints.TR, camCalibrationPoints.BL, camCalibrationPoints.BR);
                     irToCamWarper.setSource(irCalibrationPoints.TL, irCalibrationPoints.TR, irCalibrationPoints.BL, irCalibrationPoints.BR);
@@ -355,25 +387,42 @@ namespace FinalSolution
         #region Color Learning
         private void btnLearnRed_Click(object sender, EventArgs e)
         {
-            lblInstructions.Text = "Select Red Area in Camera View";
-            _statusWaitingForBandRegionSelection = true;
+            lblInstructions.Text = "Used selection to calculate Red properties";
+            btnLearnRed.BackColor = colorCalibrated;
+            btnSaveCalibration.BackColor = colorUncalibrated;
+
+            colors.Red.Learn(lastSelectedImage.Convert<Ycc, byte>());
+            //_statusWaitingForBandRegionSelection = true;
             //cbxVideo.Checked = false;
+            //colors.Red.CbHist.
 
         }
 
         private void btnLearnGreen_Click(object sender, EventArgs e)
         {
+            lblInstructions.Text = "Used selection to calculate Green properties";
+            btnLearnGreen.BackColor = colorCalibrated;
+            btnSaveCalibration.BackColor = colorUncalibrated;
 
+            colors.Green.Learn(lastSelectedImage.Convert<Ycc, byte>());
         }
 
         private void btnLearnOrange_Click(object sender, EventArgs e)
         {
+            lblInstructions.Text = "Used selection to calculate Orange properties";
+            btnLearnOrange.BackColor = colorCalibrated;
+            btnSaveCalibration.BackColor = colorUncalibrated;
 
+            colors.Yellow.Learn(lastSelectedImage.Convert<Ycc, byte>());
         }
 
         private void btnLearnBlue_Click(object sender, EventArgs e)
         {
+            lblInstructions.Text = "Used selection to calculate Blue properties";
+            btnLearnBlue.BackColor = colorCalibrated;
+            btnSaveCalibration.BackColor = colorUncalibrated;
 
+            colors.Blue.Learn(lastSelectedImage.Convert<Ycc, byte>());
         }
 
         #endregion
@@ -383,26 +432,31 @@ namespace FinalSolution
             lblInstructions.Text = "Double click fired";
         }
 
-
-
-
-
         #region Save Calibration
         private void btnSaveCalibration_Click(object sender, EventArgs e)
         {
+            btnSaveCalibration.BackColor = colorCalibrated;
+
+            colors.Red.ErosionValue = tkbRedErosion.Value;
+            colors.Red.DilationValue = tkbRedDilation.Value;
+            colors.Red.ThresholdValue = tkbRedThreshold.Value;
+
+            colors.Green.ErosionValue = tkbGreenErosion.Value;
+            colors.Green.DilationValue = tkbGreenDilation.Value;
+            colors.Green.ThresholdValue = tkbGreenThreshold.Value;
+
+            colors.Yellow.ErosionValue = tkbOrangeErosion.Value;
+            colors.Yellow.DilationValue = tkbOrangeDilation.Value;
+            colors.Yellow.ThresholdValue = tkbOrangeThreshold.Value;
+
+            colors.Blue.ErosionValue = tkbBlueErosion.Value;
+            colors.Blue.DilationValue = tkbBlueDilation.Value;
+            colors.Blue.ThresholdValue = tkbBlueThreshold.Value;
 
         }
         #endregion
 
-        private void cameraCalibOutput_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (cameraCalibOutput.SelectedArea.Size.Height >= 3 && cameraCalibOutput.SelectedArea.Size.Width >= 3)
-            {
-                lastSelectedImage = new Image<Bgr,byte>(cameraCalibOutput.SelectedArea.Size);
-                CvInvoke.cvGetSubRect(cameraCalibOutput.Image.Ptr, lastSelectedImage.Ptr, cameraCalibOutput.SelectedArea);
-                imBoxSelection.Image = lastSelectedImage.Resize(imBoxSelection.Width, imBoxSelection.Height);
-            }
-        }
+
 
     }
 }

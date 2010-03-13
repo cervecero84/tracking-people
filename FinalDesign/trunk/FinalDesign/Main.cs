@@ -37,8 +37,8 @@ namespace FinalSolution
             comm.TouchReceived += new Communicator.TouchReceivedHandler(comm_TouchReceived);
             try
             {
-                wiimote.Connect();
-                wiimote.SetReportType(InputReport.IRAccel, true);
+                //wiimote.Connect();
+                //wiimote.SetReportType(InputReport.IRAccel, true);
             }
             catch (Exception ex)
             {
