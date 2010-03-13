@@ -104,6 +104,11 @@ namespace FinalSolution
                 cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), irCalibrationPoints.BL.X, irCalibrationPoints.BL.Y, 3, 3);
                 cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), irCalibrationPoints.BR.X, irCalibrationPoints.BR.Y, 3, 3);
 
+                if (!ckbDilate.Checked) colors.Red.DilationValue = colors.Green.DilationValue = colors.Yellow.DilationValue = colors.Blue.DilationValue = 0;
+                if (!ckbErosion.Checked) colors.Red.ErosionValue = colors.Green.ErosionValue = colors.Yellow.ErosionValue = colors.Blue.ErosionValue = 0;
+                if (!ckbThreshold.Checked) colors.Red.ThresholdValue = colors.Green.ThresholdValue = colors.Yellow.ThresholdValue = colors.Blue.ThresholdValue = 0;
+                
+
                 Image<Hsv, Byte> result = new Image<Hsv, byte>(source.Size);
                 if (cbxShowBlue.Checked) result = result.Or(colors.Blue.GetProbabilityImage(source, new Hsv(0,4,1)));
                 if (cbxShowOrange.Checked) result = result.Or(colors.Yellow.GetProbabilityImage(source, new Hsv(0.1, 1, 1)));

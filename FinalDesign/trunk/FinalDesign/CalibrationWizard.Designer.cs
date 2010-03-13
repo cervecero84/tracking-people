@@ -98,6 +98,8 @@
             this.imBoxSelection = new EnhancedEmguImageBox.EImageBox();
             this.lblSelection = new System.Windows.Forms.Label();
             this.imBoxProbImages = new EnhancedEmguImageBox.EImageBox();
+            this.lblProcessedVideo = new System.Windows.Forms.Label();
+            this.lblWiiOutput = new System.Windows.Forms.Label();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tkbBlueThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tkbBlueDilation)).BeginInit();
@@ -626,6 +628,8 @@
             // ckbThreshold
             // 
             this.ckbThreshold.AutoSize = true;
+            this.ckbThreshold.Checked = true;
+            this.ckbThreshold.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ckbThreshold.Location = new System.Drawing.Point(424, 408);
             this.ckbThreshold.Name = "ckbThreshold";
             this.ckbThreshold.Size = new System.Drawing.Size(79, 17);
@@ -636,6 +640,8 @@
             // ckbDilate
             // 
             this.ckbDilate.AutoSize = true;
+            this.ckbDilate.Checked = true;
+            this.ckbDilate.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ckbDilate.Location = new System.Drawing.Point(574, 408);
             this.ckbDilate.Name = "ckbDilate";
             this.ckbDilate.Size = new System.Drawing.Size(59, 17);
@@ -646,6 +652,8 @@
             // ckbErosion
             // 
             this.ckbErosion.AutoSize = true;
+            this.ckbErosion.Checked = true;
+            this.ckbErosion.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ckbErosion.Location = new System.Drawing.Point(508, 408);
             this.ckbErosion.Name = "ckbErosion";
             this.ckbErosion.Size = new System.Drawing.Size(60, 17);
@@ -822,11 +830,31 @@
             this.imBoxProbImages.TabIndex = 60;
             this.imBoxProbImages.TabStop = false;
             // 
+            // lblProcessedVideo
+            // 
+            this.lblProcessedVideo.AutoSize = true;
+            this.lblProcessedVideo.Location = new System.Drawing.Point(732, 327);
+            this.lblProcessedVideo.Name = "lblProcessedVideo";
+            this.lblProcessedVideo.Size = new System.Drawing.Size(87, 13);
+            this.lblProcessedVideo.TabIndex = 61;
+            this.lblProcessedVideo.Text = "Processed Video";
+            // 
+            // lblWiiOutput
+            // 
+            this.lblWiiOutput.AutoSize = true;
+            this.lblWiiOutput.Location = new System.Drawing.Point(1163, 327);
+            this.lblWiiOutput.Name = "lblWiiOutput";
+            this.lblWiiOutput.Size = new System.Drawing.Size(62, 13);
+            this.lblWiiOutput.TabIndex = 62;
+            this.lblWiiOutput.Text = "Wii Remote";
+            // 
             // CalibrationWizard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1228, 625);
+            this.Controls.Add(this.lblWiiOutput);
+            this.Controls.Add(this.lblProcessedVideo);
             this.Controls.Add(this.imBoxProbImages);
             this.Controls.Add(this.lblSelection);
             this.Controls.Add(this.imBoxSelection);
@@ -961,5 +989,7 @@
         private EnhancedEmguImageBox.EImageBox imBoxSelection;
         private System.Windows.Forms.Label lblSelection;
         private EnhancedEmguImageBox.EImageBox imBoxProbImages;
+        private System.Windows.Forms.Label lblProcessedVideo;
+        private System.Windows.Forms.Label lblWiiOutput;
     }
 }
