@@ -108,10 +108,17 @@ namespace FinalSolution
                 {
                     System.Drawing.PointF pointThing = new System.Drawing.PointF(irCalibrationPoints[i].X, irCalibrationPoints[i].Y);
                     Ellipse scrEllipse = new Ellipse(pointThing, new SizeF(1, 1), 0);
-                    source.Draw(scrEllipse, new Ycc(210, 246, 16), 2);
+                    //source.Draw(scrEllipse, new Ycc(210, 246, 16), 2);
                     irSource.Draw(scrEllipse, new Ycc(210, 246, 16), 2);
-                    cameraCalibOutput.Image = source;//.Resize(_frameWidth, _frameHeight);
+                    //cameraCalibOutput.Image = source;//.Resize(_frameWidth, _frameHeight);
                     wiiCalibOutput.Image = irSource;
+
+                    WiimoteLib.PointF irCalibPointsTemp = irToCamWarper.warp(irCalibrationPoints[i].X, irCalibrationPoints[i].Y);
+                    System.Drawing.PointF irCalibPointsWarped = new System.Drawing.PointF(irCalibPointsTemp.X, irCalibPointsTemp.Y);
+                    Ellipse irEllipseWarped = new Ellipse(irCalibPointsWarped, new SizeF(1, 1), 0);
+
+                    source.Draw(irEllipseWarped, new Ycc(210, 246, 16), 1);
+                    cameraCalibOutput.Image = source;
                     //Image<Ycc, byte> tempImage = new Image<Ycc, byte>(cameraCalibOutput.Size.Width, cameraCalibOutput.Size.Height);
                     //tempImage.Draw(scrEllipse, new Ycc(30, 120, 120), 2);
                     //cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), irCalibrationPoints[i].X, irCalibrationPoints[i].Y, 3, 3);
@@ -136,10 +143,16 @@ namespace FinalSolution
                     {
                         System.Drawing.PointF irPoint = new System.Drawing.PointF(irS[i].RawPosition.X * cameraCalibOutput.Size.Width / screenWidth, irS[i].RawPosition.Y * cameraCalibOutput.Size.Height / screenHeight);
                         Ellipse irEllipse = new Ellipse(irPoint, new SizeF(1, 1), 0);
-                        source.Draw(irEllipse, new Ycc(255, 128, 128), 2);
-                        cameraCalibOutput.Image = source;
+
                         irSource.Draw(irEllipse, new Ycc(255, 128, 128), 2);
                         wiiCalibOutput.Image = irSource;
+
+                        WiimoteLib.PointF irPointTemp= irToCamWarper.warp(irPoint.X, irPoint.Y);
+                        System.Drawing.PointF irPointWarped = new System.Drawing.PointF(irPointTemp.X, irPointTemp.Y);
+                        Ellipse irEllipseWarped = new Ellipse(irPoint, new SizeF(1, 1), 0);
+
+                        source.Draw(irEllipseWarped, new Ycc(255, 128, 128), 2);
+                        cameraCalibOutput.Image = source;
                         //cameraViewGraphics.DrawEllipse(new Pen(Color.FloralWhite), irS[i].RawPosition.X, irS[i].RawPosition.Y, 3, 3);
                     }
                 }
