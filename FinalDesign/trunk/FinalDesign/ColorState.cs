@@ -81,6 +81,8 @@ namespace FinalSolution
         /// <param name="img">Image representing the current color</param>
         public void Learn(Image<Ycc, Byte> img)
         {
+            CbHist = new DenseHistogram(16, new RangeF(0, 255));
+            CrHist = new DenseHistogram(16, new RangeF(0, 255));
             Image<Gray, Byte>[] bandImageChannels = img.Split();
             IntPtr[] bandImageChannelsPtr = new IntPtr[1];
             // Use the whole image
@@ -95,6 +97,14 @@ namespace FinalSolution
             CvInvoke.cvCalcHist(bandImageChannelsPtr, CbHist, false, mask);
         }
 
+        public void Learn(Image<Ycc, Byte> img, int t, int e, int d)
+        {
+            Learn(img);
+            ThresholdValue = t;
+            ErosionValue = e;
+            DilationValue = d;
+        }
+
         /// <summary>
         /// Get the probability of the current color for a given image
         /// </summary>
@@ -105,29 +115,25 @@ namespace FinalSolution
             Image<Gray, Byte>[] sourceChannels = img.Split();
 
             // Initialization
-            int channelIndex;
             IntPtr[] sourcePtr = new IntPtr[1];
 
             // Use the Cr-channel
-            channelIndex = 1;
-            sourcePtr[0] = sourceChannels[channelIndex];
-
+            sourcePtr[0] = sourceChannels[1];
             Image<Gray, Byte> backProjectCr = new Image<Gray, byte>(img.Size);
             CvInvoke.cvCalcBackProject(sourcePtr, backProjectCr, CrHist);
-
+            
             // Use the Cb-channel
-            channelIndex = 2;
-            sourcePtr[0] = sourceChannels[channelIndex];
-
+            sourcePtr[0] = sourceChannels[2];
             Image<Gray, Byte> backProjectCb = new Image<Gray, byte>(img.Size);
             CvInvoke.cvCalcBackProject(sourcePtr, backProjectCb, CbHist);
 
             // Change color of the detected band in the output image
             Image<Gray, Byte> result = backProjectCr.And(backProjectCb);
 
-            result = result.ThresholdBinary(new Gray(ThresholdValue), new Gray(255))
-                .Erode(ErosionValue)
-                .Dilate(DilationValue);
+            // In place thresholding, erosion and dilation
+            if (ThresholdValue > 0) result._ThresholdBinary(new Gray(ThresholdValue), new Gray(255));
+            result._Erode(ErosionValue);
+            result._Dilate(DilationValue);
 
             return result;
         }

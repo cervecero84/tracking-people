@@ -77,7 +77,6 @@
             this.cbxShowOrange = new System.Windows.Forms.CheckBox();
             this.cbxShowGreen = new System.Windows.Forms.CheckBox();
             this.cbxShowRed = new System.Windows.Forms.CheckBox();
-            this.btnSaveCalibration = new System.Windows.Forms.Button();
             this.ckbThreshold = new System.Windows.Forms.CheckBox();
             this.ckbDilate = new System.Windows.Forms.CheckBox();
             this.ckbErosion = new System.Windows.Forms.CheckBox();
@@ -93,13 +92,13 @@
             this.ckbSwitchCamera = new System.Windows.Forms.CheckBox();
             this.btnCamera = new System.Windows.Forms.Button();
             this.btnVideo = new System.Windows.Forms.Button();
-            this.cameraCalibOutput = new EnhancedEmguImageBox.EImageBox();
-            this.wiiCalibOutput = new EnhancedEmguImageBox.EImageBox();
-            this.imBoxSelection = new EnhancedEmguImageBox.EImageBox();
             this.lblSelection = new System.Windows.Forms.Label();
-            this.imBoxProbImages = new EnhancedEmguImageBox.EImageBox();
             this.lblProcessedVideo = new System.Windows.Forms.Label();
             this.lblWiiOutput = new System.Windows.Forms.Label();
+            this.imBoxProbImages = new EnhancedEmguImageBox.EImageBox();
+            this.imBoxSelection = new EnhancedEmguImageBox.EImageBox();
+            this.wiiCalibOutput = new EnhancedEmguImageBox.EImageBox();
+            this.cameraCalibOutput = new EnhancedEmguImageBox.EImageBox();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tkbBlueThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tkbBlueDilation)).BeginInit();
@@ -116,10 +115,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.tkbRedThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tkbRedDilation)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tkbRedErosion)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cameraCalibOutput)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.wiiCalibOutput)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBoxSelection)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBoxProbImages)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBoxSelection)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.wiiCalibOutput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cameraCalibOutput)).BeginInit();
             this.SuspendLayout();
             // 
             // btnLearnRed
@@ -204,7 +203,7 @@
             this.tkbBlueThreshold.Maximum = 255;
             this.tkbBlueThreshold.Minimum = 200;
             this.tkbBlueThreshold.Name = "tkbBlueThreshold";
-            this.tkbBlueThreshold.Size = new System.Drawing.Size(104, 42);
+            this.tkbBlueThreshold.Size = new System.Drawing.Size(104, 45);
             this.tkbBlueThreshold.TabIndex = 17;
             this.tkbBlueThreshold.Value = 200;
             this.tkbBlueThreshold.Scroll += new System.EventHandler(this.tkbBlueThreshold_Scroll);
@@ -232,7 +231,7 @@
             this.tkbBlueDilation.Location = new System.Drawing.Point(69, 55);
             this.tkbBlueDilation.Maximum = 6;
             this.tkbBlueDilation.Name = "tkbBlueDilation";
-            this.tkbBlueDilation.Size = new System.Drawing.Size(104, 42);
+            this.tkbBlueDilation.Size = new System.Drawing.Size(104, 45);
             this.tkbBlueDilation.TabIndex = 16;
             this.tkbBlueDilation.Value = 1;
             this.tkbBlueDilation.Scroll += new System.EventHandler(this.tkbBlueDilation_Scroll);
@@ -251,7 +250,7 @@
             this.tkbBlueErosion.Location = new System.Drawing.Point(69, 19);
             this.tkbBlueErosion.Maximum = 6;
             this.tkbBlueErosion.Name = "tkbBlueErosion";
-            this.tkbBlueErosion.Size = new System.Drawing.Size(104, 42);
+            this.tkbBlueErosion.Size = new System.Drawing.Size(104, 45);
             this.tkbBlueErosion.TabIndex = 12;
             this.tkbBlueErosion.Value = 1;
             this.tkbBlueErosion.Scroll += new System.EventHandler(this.tkbBlueErosion_Scroll);
@@ -307,7 +306,7 @@
             this.tkbOrangeThreshold.Maximum = 255;
             this.tkbOrangeThreshold.Minimum = 200;
             this.tkbOrangeThreshold.Name = "tkbOrangeThreshold";
-            this.tkbOrangeThreshold.Size = new System.Drawing.Size(104, 42);
+            this.tkbOrangeThreshold.Size = new System.Drawing.Size(104, 45);
             this.tkbOrangeThreshold.TabIndex = 13;
             this.tkbOrangeThreshold.Value = 200;
             this.tkbOrangeThreshold.Scroll += new System.EventHandler(this.tkbOrangeThreshold_Scroll);
@@ -335,7 +334,7 @@
             this.tkbOrangeDilation.Location = new System.Drawing.Point(66, 55);
             this.tkbOrangeDilation.Maximum = 6;
             this.tkbOrangeDilation.Name = "tkbOrangeDilation";
-            this.tkbOrangeDilation.Size = new System.Drawing.Size(104, 42);
+            this.tkbOrangeDilation.Size = new System.Drawing.Size(104, 45);
             this.tkbOrangeDilation.TabIndex = 12;
             this.tkbOrangeDilation.Value = 1;
             this.tkbOrangeDilation.Scroll += new System.EventHandler(this.tkbOrangeDilation_Scroll);
@@ -354,7 +353,7 @@
             this.tkbOrangeErosion.Location = new System.Drawing.Point(66, 19);
             this.tkbOrangeErosion.Maximum = 6;
             this.tkbOrangeErosion.Name = "tkbOrangeErosion";
-            this.tkbOrangeErosion.Size = new System.Drawing.Size(104, 42);
+            this.tkbOrangeErosion.Size = new System.Drawing.Size(104, 45);
             this.tkbOrangeErosion.TabIndex = 8;
             this.tkbOrangeErosion.Value = 1;
             this.tkbOrangeErosion.Scroll += new System.EventHandler(this.tkbOrangeErosion_Scroll);
@@ -410,7 +409,7 @@
             this.tkbGreenThreshold.Maximum = 255;
             this.tkbGreenThreshold.Minimum = 200;
             this.tkbGreenThreshold.Name = "tkbGreenThreshold";
-            this.tkbGreenThreshold.Size = new System.Drawing.Size(104, 42);
+            this.tkbGreenThreshold.Size = new System.Drawing.Size(104, 45);
             this.tkbGreenThreshold.TabIndex = 11;
             this.tkbGreenThreshold.Value = 200;
             this.tkbGreenThreshold.Scroll += new System.EventHandler(this.tkbGreenThreshold_Scroll);
@@ -438,7 +437,7 @@
             this.tkbGreenDilation.Location = new System.Drawing.Point(60, 55);
             this.tkbGreenDilation.Maximum = 6;
             this.tkbGreenDilation.Name = "tkbGreenDilation";
-            this.tkbGreenDilation.Size = new System.Drawing.Size(104, 42);
+            this.tkbGreenDilation.Size = new System.Drawing.Size(104, 45);
             this.tkbGreenDilation.TabIndex = 8;
             this.tkbGreenDilation.Value = 1;
             this.tkbGreenDilation.Scroll += new System.EventHandler(this.tkbGreenDilation_Scroll);
@@ -457,7 +456,7 @@
             this.tkbGreenErosion.Location = new System.Drawing.Point(60, 19);
             this.tkbGreenErosion.Maximum = 6;
             this.tkbGreenErosion.Name = "tkbGreenErosion";
-            this.tkbGreenErosion.Size = new System.Drawing.Size(104, 42);
+            this.tkbGreenErosion.Size = new System.Drawing.Size(104, 45);
             this.tkbGreenErosion.TabIndex = 4;
             this.tkbGreenErosion.Value = 1;
             this.tkbGreenErosion.Scroll += new System.EventHandler(this.tkbGreenErosion_Scroll);
@@ -513,7 +512,7 @@
             this.tkbRedThreshold.Maximum = 255;
             this.tkbRedThreshold.Minimum = 200;
             this.tkbRedThreshold.Name = "tkbRedThreshold";
-            this.tkbRedThreshold.Size = new System.Drawing.Size(104, 42);
+            this.tkbRedThreshold.Size = new System.Drawing.Size(104, 45);
             this.tkbRedThreshold.TabIndex = 6;
             this.tkbRedThreshold.Value = 200;
             this.tkbRedThreshold.Scroll += new System.EventHandler(this.tkbRedThreshold_Scroll);
@@ -550,7 +549,7 @@
             this.tkbRedDilation.Location = new System.Drawing.Point(60, 55);
             this.tkbRedDilation.Maximum = 6;
             this.tkbRedDilation.Name = "tkbRedDilation";
-            this.tkbRedDilation.Size = new System.Drawing.Size(104, 42);
+            this.tkbRedDilation.Size = new System.Drawing.Size(104, 45);
             this.tkbRedDilation.TabIndex = 2;
             this.tkbRedDilation.Value = 1;
             this.tkbRedDilation.Scroll += new System.EventHandler(this.tkbRedDilation_Scroll);
@@ -570,7 +569,7 @@
             this.tkbRedErosion.Location = new System.Drawing.Point(60, 19);
             this.tkbRedErosion.Maximum = 6;
             this.tkbRedErosion.Name = "tkbRedErosion";
-            this.tkbRedErosion.Size = new System.Drawing.Size(104, 42);
+            this.tkbRedErosion.Size = new System.Drawing.Size(104, 45);
             this.tkbRedErosion.TabIndex = 0;
             this.tkbRedErosion.Value = 1;
             this.tkbRedErosion.Scroll += new System.EventHandler(this.tkbRedErosion_Scroll);
@@ -614,16 +613,6 @@
             this.cbxShowRed.TabIndex = 34;
             this.cbxShowRed.Text = "View";
             this.cbxShowRed.UseVisualStyleBackColor = true;
-            // 
-            // btnSaveCalibration
-            // 
-            this.btnSaveCalibration.Location = new System.Drawing.Point(716, 2);
-            this.btnSaveCalibration.Name = "btnSaveCalibration";
-            this.btnSaveCalibration.Size = new System.Drawing.Size(119, 31);
-            this.btnSaveCalibration.TabIndex = 38;
-            this.btnSaveCalibration.Text = "Save Learning";
-            this.btnSaveCalibration.UseVisualStyleBackColor = true;
-            this.btnSaveCalibration.Click += new System.EventHandler(this.btnSaveCalibration_Click);
             // 
             // ckbThreshold
             // 
@@ -775,41 +764,6 @@
             this.btnVideo.UseVisualStyleBackColor = true;
             this.btnVideo.Click += new System.EventHandler(this.btnVideo_Click);
             // 
-            // cameraCalibOutput
-            // 
-            this.cameraCalibOutput.BackColor = System.Drawing.SystemColors.ControlText;
-            this.cameraCalibOutput.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
-            this.cameraCalibOutput.Location = new System.Drawing.Point(13, 40);
-            this.cameraCalibOutput.Name = "cameraCalibOutput";
-            this.cameraCalibOutput.SelectedArea = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this.cameraCalibOutput.Size = new System.Drawing.Size(400, 300);
-            this.cameraCalibOutput.TabIndex = 2;
-            this.cameraCalibOutput.TabStop = false;
-            this.cameraCalibOutput.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cameraCalibOutput_MouseClick);
-            this.cameraCalibOutput.MouseUp += new System.Windows.Forms.MouseEventHandler(this.cameraCalibOutput_MouseUp);
-            // 
-            // wiiCalibOutput
-            // 
-            this.wiiCalibOutput.BackColor = System.Drawing.SystemColors.ControlText;
-            this.wiiCalibOutput.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
-            this.wiiCalibOutput.Location = new System.Drawing.Point(825, 39);
-            this.wiiCalibOutput.Name = "wiiCalibOutput";
-            this.wiiCalibOutput.SelectedArea = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this.wiiCalibOutput.Size = new System.Drawing.Size(400, 300);
-            this.wiiCalibOutput.TabIndex = 2;
-            this.wiiCalibOutput.TabStop = false;
-            this.wiiCalibOutput.MouseClick += new System.Windows.Forms.MouseEventHandler(this.wiiCalibOutput_MouseClick);
-            // 
-            // imBoxSelection
-            // 
-            this.imBoxSelection.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
-            this.imBoxSelection.Location = new System.Drawing.Point(489, 346);
-            this.imBoxSelection.Name = "imBoxSelection";
-            this.imBoxSelection.SelectedArea = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this.imBoxSelection.Size = new System.Drawing.Size(105, 46);
-            this.imBoxSelection.TabIndex = 2;
-            this.imBoxSelection.TabStop = false;
-            // 
             // lblSelection
             // 
             this.lblSelection.AutoSize = true;
@@ -818,17 +772,6 @@
             this.lblSelection.Size = new System.Drawing.Size(51, 13);
             this.lblSelection.TabIndex = 59;
             this.lblSelection.Text = "Selection";
-            // 
-            // imBoxProbImages
-            // 
-            this.imBoxProbImages.BackColor = System.Drawing.SystemColors.ControlText;
-            this.imBoxProbImages.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
-            this.imBoxProbImages.Location = new System.Drawing.Point(419, 39);
-            this.imBoxProbImages.Name = "imBoxProbImages";
-            this.imBoxProbImages.SelectedArea = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this.imBoxProbImages.Size = new System.Drawing.Size(400, 300);
-            this.imBoxProbImages.TabIndex = 60;
-            this.imBoxProbImages.TabStop = false;
             // 
             // lblProcessedVideo
             // 
@@ -847,6 +790,52 @@
             this.lblWiiOutput.Size = new System.Drawing.Size(62, 13);
             this.lblWiiOutput.TabIndex = 62;
             this.lblWiiOutput.Text = "Wii Remote";
+            // 
+            // imBoxProbImages
+            // 
+            this.imBoxProbImages.BackColor = System.Drawing.SystemColors.ControlText;
+            this.imBoxProbImages.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
+            this.imBoxProbImages.Location = new System.Drawing.Point(419, 39);
+            this.imBoxProbImages.Name = "imBoxProbImages";
+            this.imBoxProbImages.SelectedArea = new System.Drawing.Rectangle(0, 0, 0, 0);
+            this.imBoxProbImages.Size = new System.Drawing.Size(400, 300);
+            this.imBoxProbImages.TabIndex = 60;
+            this.imBoxProbImages.TabStop = false;
+            // 
+            // imBoxSelection
+            // 
+            this.imBoxSelection.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
+            this.imBoxSelection.Location = new System.Drawing.Point(489, 346);
+            this.imBoxSelection.Name = "imBoxSelection";
+            this.imBoxSelection.SelectedArea = new System.Drawing.Rectangle(0, 0, 0, 0);
+            this.imBoxSelection.Size = new System.Drawing.Size(105, 46);
+            this.imBoxSelection.TabIndex = 2;
+            this.imBoxSelection.TabStop = false;
+            // 
+            // wiiCalibOutput
+            // 
+            this.wiiCalibOutput.BackColor = System.Drawing.SystemColors.ControlText;
+            this.wiiCalibOutput.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
+            this.wiiCalibOutput.Location = new System.Drawing.Point(825, 39);
+            this.wiiCalibOutput.Name = "wiiCalibOutput";
+            this.wiiCalibOutput.SelectedArea = new System.Drawing.Rectangle(0, 0, 0, 0);
+            this.wiiCalibOutput.Size = new System.Drawing.Size(400, 300);
+            this.wiiCalibOutput.TabIndex = 2;
+            this.wiiCalibOutput.TabStop = false;
+            this.wiiCalibOutput.MouseClick += new System.Windows.Forms.MouseEventHandler(this.wiiCalibOutput_MouseClick);
+            // 
+            // cameraCalibOutput
+            // 
+            this.cameraCalibOutput.BackColor = System.Drawing.SystemColors.ControlText;
+            this.cameraCalibOutput.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
+            this.cameraCalibOutput.Location = new System.Drawing.Point(13, 40);
+            this.cameraCalibOutput.Name = "cameraCalibOutput";
+            this.cameraCalibOutput.SelectedArea = new System.Drawing.Rectangle(0, 0, 0, 0);
+            this.cameraCalibOutput.Size = new System.Drawing.Size(400, 300);
+            this.cameraCalibOutput.TabIndex = 2;
+            this.cameraCalibOutput.TabStop = false;
+            this.cameraCalibOutput.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cameraCalibOutput_MouseClick);
+            this.cameraCalibOutput.MouseUp += new System.Windows.Forms.MouseEventHandler(this.cameraCalibOutput_MouseUp);
             // 
             // CalibrationWizard
             // 
@@ -873,7 +862,6 @@
             this.Controls.Add(this.ckbThreshold);
             this.Controls.Add(this.ckbDilate);
             this.Controls.Add(this.ckbErosion);
-            this.Controls.Add(this.btnSaveCalibration);
             this.Controls.Add(this.cbxShowBlue);
             this.Controls.Add(this.cbxShowOrange);
             this.Controls.Add(this.cbxShowGreen);
@@ -889,6 +877,7 @@
             this.Controls.Add(this.cameraCalibOutput);
             this.Name = "CalibrationWizard";
             this.Text = "CalibrationWizard";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CalibrationWizard_FormClosing);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tkbBlueThreshold)).EndInit();
@@ -909,10 +898,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.tkbRedThreshold)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tkbRedDilation)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tkbRedErosion)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cameraCalibOutput)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.wiiCalibOutput)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imBoxSelection)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imBoxProbImages)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imBoxSelection)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.wiiCalibOutput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cameraCalibOutput)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -968,7 +957,6 @@
         private System.Windows.Forms.CheckBox cbxShowOrange;
         private System.Windows.Forms.CheckBox cbxShowGreen;
         private System.Windows.Forms.CheckBox cbxShowRed;
-        private System.Windows.Forms.Button btnSaveCalibration;
         private System.Windows.Forms.CheckBox ckbThreshold;
         private System.Windows.Forms.CheckBox ckbDilate;
         private System.Windows.Forms.CheckBox ckbErosion;
