@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="Fireflies.Glow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Height="136" Width="138 " x:Name="gl" DataContext="{Binding ElementName=gl}">
+    
+    <UserControl.Background>
+        <ImageBrush ImageSource="{Binding Path}"
+                    Opacity="70" />
+         
+    </UserControl.Background>
+    
+    
+</UserControl>

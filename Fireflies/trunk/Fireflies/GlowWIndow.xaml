@@ -1,0 +1,15 @@
+﻿<mt:Window x:Class="Fireflies.GlowWindow"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:mt="http://schemas.multitouch.com/Multitouch/2008/04"
+           Title="Fireflies"
+           WindowState="Maximized">
+
+    <Grid>
+        <mt:TouchablePanel x:Name="glowPanel" 
+                               AngularDamping="0.001"
+                               LinearDamping="0.001"
+                               RandomizePositions="False" mt:TouchablePanel.IsScalable="False">
+        </mt:TouchablePanel>
+    </Grid>
+</mt:Window>
