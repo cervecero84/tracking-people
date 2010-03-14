@@ -91,7 +91,7 @@ namespace FinalSolution
 
                 cameraCalibOutput.Image = source;
 
-                Image<Ycc, Byte> irSource = new Image<Ycc, byte>(wiiCalibOutput.Size.Width, wiiCalibOutput.Size.Height);
+                Image<Ycc, Byte> irSource = new Image<Ycc, byte>(wiiCalibOutput.Size.Width, wiiCalibOutput.Size.Height, new Ycc(16, 128, 128));
                 
                 //irViewGraphics = Graphics.FromImage(wiiCalibOutput.SourceImage);
 
