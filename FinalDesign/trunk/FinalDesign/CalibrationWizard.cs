@@ -71,6 +71,7 @@ namespace FinalSolution
                 //cameraCalibOutput.Image = camera.QueryFrame().Resize(cameraCalibOutput.Width, cameraCalibOutput.Height, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR);
 
                 Image<Ycc, Byte> source = camera.QueryFrame().Convert<Ycc, byte>();
+                
 
                 // Reached the last frame in the source - happens in video files
                 if (source == null)
@@ -90,6 +91,7 @@ namespace FinalSolution
 
                 cameraCalibOutput.Image = source;
 
+                Image<Ycc, Byte> irSource = new Image<Ycc, byte>(wiiCalibOutput.Size.Width, wiiCalibOutput.Size.Height);
                 
                 //irViewGraphics = Graphics.FromImage(wiiCalibOutput.SourceImage);
 
@@ -97,7 +99,7 @@ namespace FinalSolution
                 {
                     System.Drawing.PointF pointThing = new System.Drawing.PointF(camCalibrationPoints[i].X, camCalibrationPoints[i].Y);
                     Ellipse scrEllipse = new Ellipse(pointThing, new SizeF(1,1), 0);
-                    source.Draw(scrEllipse, new Ycc(0.5,1,1), 2);
+                    source.Draw(scrEllipse, new Ycc(40,109,240), 2);
                     cameraCalibOutput.Image = source;//.Resize(_frameWidth, _frameHeight);
                     //cameraViewGraphics.DrawEllipse(new Pen(Color.Azure), camCalibrationPoints[i].X, , 3, 3);
                 }
@@ -106,8 +108,12 @@ namespace FinalSolution
                 {
                     System.Drawing.PointF pointThing = new System.Drawing.PointF(irCalibrationPoints[i].X, irCalibrationPoints[i].Y);
                     Ellipse scrEllipse = new Ellipse(pointThing, new SizeF(1, 1), 0);
-                    source.Draw(scrEllipse, new Ycc(0.0, 1, 1), 2);
+                    source.Draw(scrEllipse, new Ycc(210, 246, 16), 2);
+                    irSource.Draw(scrEllipse, new Ycc(210, 246, 16), 2);
                     cameraCalibOutput.Image = source;//.Resize(_frameWidth, _frameHeight);
+                    wiiCalibOutput.Image = irSource;
+                    //Image<Ycc, byte> tempImage = new Image<Ycc, byte>(cameraCalibOutput.Size.Width, cameraCalibOutput.Size.Height);
+                    //tempImage.Draw(scrEllipse, new Ycc(30, 120, 120), 2);
                     //cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), irCalibrationPoints[i].X, irCalibrationPoints[i].Y, 3, 3);
                 }
 
@@ -122,10 +128,20 @@ namespace FinalSolution
                 if (cbxShowGreen.Checked) result = result.Or(colors.Green.GetProbabilityImage(source, new Hsv(0.3, 1, 1)));
                 imBoxProbImages.Image = result;
 
+               
                 IRSensor[] irS = wiimote.WiimoteState.IRState.IRSensors;
                 for (int i = 0; i < 4; i++)
                 {
-                    if (irS[i].Found) cameraViewGraphics.DrawEllipse(new Pen(Color.FloralWhite), irS[i].RawPosition.X, irS[i].RawPosition.Y, 3, 3);
+                    if (irS[i].Found)
+                    {
+                        System.Drawing.PointF irPoint = new System.Drawing.PointF(irS[i].RawPosition.X * cameraCalibOutput.Size.Width / screenWidth, irS[i].RawPosition.Y * cameraCalibOutput.Size.Height / screenHeight);
+                        Ellipse irEllipse = new Ellipse(irPoint, new SizeF(1, 1), 0);
+                        source.Draw(irEllipse, new Ycc(255, 128, 128), 2);
+                        cameraCalibOutput.Image = source;
+                        irSource.Draw(irEllipse, new Ycc(255, 128, 128), 2);
+                        wiiCalibOutput.Image = irSource;
+                        //cameraViewGraphics.DrawEllipse(new Pen(Color.FloralWhite), irS[i].RawPosition.X, irS[i].RawPosition.Y, 3, 3);
+                    }
                 }
             }
         }
