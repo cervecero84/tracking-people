@@ -90,17 +90,25 @@ namespace FinalSolution
 
                 cameraCalibOutput.Image = source;
 
-                cameraViewGraphics = Graphics.FromImage(cameraCalibOutput.Image.Bitmap);
+                
                 //irViewGraphics = Graphics.FromImage(wiiCalibOutput.SourceImage);
 
                 for (int i = 0; i < 4; i++)
                 {
-                    cameraViewGraphics.DrawEllipse(new Pen(Color.Azure), camCalibrationPoints[i].X, camCalibrationPoints[i].Y, 3, 3);
+                    System.Drawing.PointF pointThing = new System.Drawing.PointF(camCalibrationPoints[i].X, camCalibrationPoints[i].Y);
+                    Ellipse scrEllipse = new Ellipse(pointThing, new SizeF(1,1), 0);
+                    source.Draw(scrEllipse, new Ycc(0.5,1,1), 2);
+                    cameraCalibOutput.Image = source;//.Resize(_frameWidth, _frameHeight);
+                    //cameraViewGraphics.DrawEllipse(new Pen(Color.Azure), camCalibrationPoints[i].X, , 3, 3);
                 }
 
                 for (int i = 0; i < 4; i++)
                 {
-                    cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), irCalibrationPoints[i].X, irCalibrationPoints[i].Y, 3, 3);
+                    System.Drawing.PointF pointThing = new System.Drawing.PointF(irCalibrationPoints[i].X, irCalibrationPoints[i].Y);
+                    Ellipse scrEllipse = new Ellipse(pointThing, new SizeF(1, 1), 0);
+                    source.Draw(scrEllipse, new Ycc(0.0, 1, 1), 2);
+                    cameraCalibOutput.Image = source;//.Resize(_frameWidth, _frameHeight);
+                    //cameraViewGraphics.DrawEllipse(new Pen(Color.Salmon), irCalibrationPoints[i].X, irCalibrationPoints[i].Y, 3, 3);
                 }
 
                 if (!ckbDilate.Checked) colors.Red.DilationValue = colors.Green.DilationValue = colors.Yellow.DilationValue = colors.Blue.DilationValue = 0;
