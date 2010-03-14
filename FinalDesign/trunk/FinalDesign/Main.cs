@@ -34,11 +34,12 @@ namespace FinalSolution
         public Main()
         {
             InitializeComponent();
+            //camera.FlipHorizontal = true;
             comm.TouchReceived += new Communicator.TouchReceivedHandler(comm_TouchReceived);
             try
             {
-                //wiimote.Connect();
-                //wiimote.SetReportType(InputReport.IRAccel, true);
+                wiimote.Connect();
+                wiimote.SetReportType(InputReport.IRAccel, true);
             }
             catch (Exception ex)
             {
@@ -85,7 +86,7 @@ namespace FinalSolution
                 // NOTE: The ROIs have to be adjusted. The color band detection should use a smaller ROI
 
                 // Compute Distance of point to touch
-                double dist = Math.Pow(irPoints[i].X - currTouch.X, 2) + Math.Pow(irPoints[i].Y - currTouch.Y, 2);                
+                double dist = Math.Pow(irPoints[i].X - currTouch.X, 2) + Math.Pow(irPoints[i].Y - currTouch.Y, 2);
                 // Compute color of point
                 BandColor bc = ColorState.FindBand(cameraImageYcc.GetSubRect(roi), colors);
                 // Compute skin connection probability
