@@ -105,16 +105,16 @@ namespace DynamicButtons
                 SolidColorBrush b;
                 switch (t.Color)
                 {
-                    case "Red":
+                    case TableTopCommunicator.Colors.Red:
                         b = Brushes.Red;
                         break;
-                    case "Yellow":
+                    case TableTopCommunicator.Colors.Yellow:
                         b = Brushes.Yellow;
                         break;
-                    case "Blue":
+                    case TableTopCommunicator.Colors.Blue:
                         b = Brushes.Blue;
                         break;
-                    case "Green":
+                    case TableTopCommunicator.Colors.Green:
                         b = Brushes.Green;
                         break;
                     default:
