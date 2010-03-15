@@ -25,8 +25,6 @@ namespace FinalSolution
         Warper irToCamWarper = new Warper();
         int screenWidth = 1024;
         int screenHeight = 768;
-        Graphics cameraViewGraphics;
-        Graphics irViewGraphics;
 
         Image<Ycc, byte> lastSelectedImage;
         // States 0 - 3: indicate point number (TL, TR, BL, BR)
@@ -129,7 +127,6 @@ namespace FinalSolution
                 if (cbxShowOrange.Checked) result = result.Or(colors.Yellow.GetProbabilityImage(source, new Hsv(0.1, 1, 1)));
                 if (cbxShowGreen.Checked) result = result.Or(colors.Green.GetProbabilityImage(source, new Hsv(0.3, 1, 1)));
                 imBoxProbImages.Image = result;
-
                
                 IRSensor[] irS = wiimote.WiimoteState.IRState.IRSensors;
                 for (int i = 0; i < 4; i++)
@@ -464,17 +461,9 @@ namespace FinalSolution
 
         #endregion
 
-        private void cameraCalibOutput_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            lblInstructions.Text = "Double click fired";
-        }
-
         private void CalibrationWizard_FormClosing(object sender, FormClosingEventArgs e)
         {
             Application.Idle -= new EventHandler(ProcessFrame);
         }
-
-
-
     }
 }

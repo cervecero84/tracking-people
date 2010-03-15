@@ -18,16 +18,16 @@ namespace FinalSolution
         public static Rectangle getROI(WiimoteLib.PointF one, WiimoteLib.PointF two, double width)
         {
             int x = (int)(((one.X+two.X)/2)-width/2); // avg b/w the 2 x co-ords gives the middle of the 2 points, subtract 1/2 the desired width to get the left edge.
-            int y = (int) Math.Max(one.Y, two.Y);
+            int y = (int) Math.Min(one.Y, two.Y);
             int w = (int)width;
-            int h = (int) (one.Y-two.Y);
+            int h = (int) Math.Abs(one.Y-two.Y);
             return new Rectangle(x, y, w, h);
         }
 
         public static Rectangle getROI(WiimoteLib.PointF one, WiimoteLib.PointF two)
         {
             int x = (int)Math.Min(one.X, two.X);
-            int y = (int)Math.Min(one.Y, two.Y); //since Rectangle constructor takes the UPPER left corner, shouldn't this be MAX(one, two)??? unless y is negative.
+            int y = (int)Math.Min(one.Y, two.Y);
             int width = (int)Math.Max(one.X, two.X) - x;
             int height = (int)Math.Max(one.Y, two.Y) - y;
             return new Rectangle(x, y, width, height);

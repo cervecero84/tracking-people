@@ -32,7 +32,9 @@ namespace FinalSolution
             Image<Bgr, Byte> handROI=region.Clone();
             Rectangle rectROI=Utility.getROI(touch, ir, handWidth);
             CvInvoke.cvSetImageROI(handROI, rectROI);
-            Image<Gray, byte> skinPixels = SkinDetect(handROI);
+            Image<Bgr, Byte> hand = new Image<Bgr,byte>(rectROI.Size);
+            CvInvoke.cvGetSubRect(handROI, hand, rectROI);
+            Image<Gray, byte> skinPixels = SkinDetect(hand);
             double skinProb = skinPixels.GetAverage().Intensity / (skinPixels.Rows * skinPixels.Cols * 0.75); // 0.75 is a fudge factor, since hand will most like occupy a whole rectangle of ROI region
 
             return skinProb * sizeProb;
@@ -47,7 +49,6 @@ namespace FinalSolution
 
         public static Image<Gray, byte> SkinDetect(Image<Bgr, byte> Img)
         {
-
 
             Image<Gray, byte> S = new Image<Gray, byte>(Img.Width, Img.Height);
             Image<Gray, byte> skin = new Image<Gray, byte>(Img.Width, Img.Height);
