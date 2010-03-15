@@ -38,16 +38,16 @@ namespace Fireflies
                 Colors c;
                 switch (t.Color)
                 {
-                    case "Red":
+                    case TableTopCommunicator.Colors.Red:
                         c = Colors.Red;
                         break;
-                    case "Yellow":
+                    case TableTopCommunicator.Colors.Yellow:
                         c = Colors.Yellow;
                         break;
-                    case "Blue":
+                    case TableTopCommunicator.Colors.Blue:
                         c = Colors.Blue;
                         break;
-                    case "Green":
+                    case TableTopCommunicator.Colors.Green:
                         c = Colors.Green;
                         break;
                     default:
