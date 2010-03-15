@@ -99,6 +99,7 @@
             this.imBoxSelection = new EnhancedEmguImageBox.EImageBox();
             this.wiiCalibOutput = new EnhancedEmguImageBox.EImageBox();
             this.cameraCalibOutput = new EnhancedEmguImageBox.EImageBox();
+            this.cbxSkinDetection = new System.Windows.Forms.CheckBox();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tkbBlueThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tkbBlueDilation)).BeginInit();
@@ -837,11 +838,24 @@
             this.cameraCalibOutput.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cameraCalibOutput_MouseClick);
             this.cameraCalibOutput.MouseUp += new System.Windows.Forms.MouseEventHandler(this.cameraCalibOutput_MouseUp);
             // 
+            // cbxSkinDetection
+            // 
+            this.cbxSkinDetection.AutoSize = true;
+            this.cbxSkinDetection.Checked = true;
+            this.cbxSkinDetection.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbxSkinDetection.Location = new System.Drawing.Point(299, 368);
+            this.cbxSkinDetection.Name = "cbxSkinDetection";
+            this.cbxSkinDetection.Size = new System.Drawing.Size(126, 17);
+            this.cbxSkinDetection.TabIndex = 63;
+            this.cbxSkinDetection.Text = "Show Skin Detection";
+            this.cbxSkinDetection.UseVisualStyleBackColor = true;
+            // 
             // CalibrationWizard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1228, 625);
+            this.Controls.Add(this.cbxSkinDetection);
             this.Controls.Add(this.lblWiiOutput);
             this.Controls.Add(this.lblProcessedVideo);
             this.Controls.Add(this.imBoxProbImages);
@@ -979,5 +993,6 @@
         private EnhancedEmguImageBox.EImageBox imBoxProbImages;
         private System.Windows.Forms.Label lblProcessedVideo;
         private System.Windows.Forms.Label lblWiiOutput;
+        private System.Windows.Forms.CheckBox cbxSkinDetection;
     }
 }

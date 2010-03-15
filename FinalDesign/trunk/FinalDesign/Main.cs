@@ -28,6 +28,7 @@ namespace FinalSolution
         Warper irToScreenWarper = new Warper();
         Warper screenToCamWarper = new Warper();
         Warper irToCamWarper = new Warper();
+        int cameraPixelToRealCmRatio = 1;
 
         const int TOUCH_MIN_DIST = 20;
 
@@ -38,8 +39,8 @@ namespace FinalSolution
             comm.TouchReceived += new Communicator.TouchReceivedHandler(comm_TouchReceived);
             try
             {
-                wiimote.Connect();
-                wiimote.SetReportType(InputReport.IRAccel, true);
+                //wiimote.Connect();
+                //wiimote.SetReportType(InputReport.IRAccel, true);
             }
             catch (Exception ex)
             {
@@ -78,10 +79,12 @@ namespace FinalSolution
             // Measure distance of each point from touch
             for (int i = 0; i < irPoints.Count; i++)
             {
-                // WARNING: The warped coordinates can be non-existent on screen. If this is not taken into account,
-                // it may throw unexpected errors
-                WiimoteLib.PointF camIrPt = irToCamWarper.warp(irPoints[i].X, irPoints[i].Y);
-                WiimoteLib.PointF camTouchPt = screenToCamWarper.warp(currTouch.X, currTouch.Y);
+                CalibrationWizard sizeReference = new CalibrationWizard();
+                Size IRViewerSize = sizeReference.getIRViewerSize();
+                // Normalize takes into account points that are visible to the IR but not to the camera
+                // and points in the screen not visible to the camera
+                WiimoteLib.PointF camIrPt = Utility.Normalize(irToCamWarper.warp(irPoints[i].X * IRViewerSize.Width / 1024, irPoints[i].Y * IRViewerSize.Height / 768), sizeReference.getCameraViewerSize());
+                WiimoteLib.PointF camTouchPt = Utility.Normalize(screenToCamWarper.warp(currTouch.X, currTouch.Y), sizeReference.getCameraViewerSize());
                 Rectangle roi = Utility.getROI(camIrPt, camTouchPt);
                 // NOTE: The ROIs have to be adjusted. The color band detection should use a smaller ROI
 
@@ -90,9 +93,8 @@ namespace FinalSolution
                 // Compute color of point
                 BandColor bc = ColorState.FindBand(cameraImageYcc.GetSubRect(roi), colors);
                 // Compute skin connection probability
-                int pixel2cmRatio = 1; // to be calculated by Jesse or Aishwar!!!!!!!!
-                double prob = HandProb.SkinConnectedProb(cameraImage, camTouchPt, camIrPt, pixel2cmRatio);
-
+                
+                double prob = HandProb.SkinConnectedProb(cameraImage, camTouchPt, camIrPt, cameraPixelToRealCmRatio);
                 resolvedIrPoints.Add(new Utility.ResolvedIRPoints(camIrPt, camTouchPt, dist, bc, prob));
             }
 
@@ -117,24 +119,18 @@ namespace FinalSolution
             });
             Utility.ResolvedIRPoints resolvedPoint;
 
-            Random r = new Random();
-
             // If no IR points were found, set Band Color to NotFound
-            
             if (resolvedIrPoints.Count > 0)
             {
                 resolvedPoint = resolvedIrPoints[0];
             }
             else
             {
-                resolvedPoint = new Utility.ResolvedIRPoints(new WiimoteLib.PointF(), new WiimoteLib.PointF(), -1, (BandColor)r.Next(0, 5), -1);
+                resolvedPoint = new Utility.ResolvedIRPoints(new WiimoteLib.PointF(), new WiimoteLib.PointF(), -1, BandColor.NotFound, -1);
             }
 
-
-            
-
             // Update the touch
-            currTouch.setInfo(Enum.GetName(typeof(BandColor), resolvedPoint.Color), 
+            currTouch.setInfo((Colors)Enum.Parse(typeof(Colors),Enum.GetName(typeof(BandColor), resolvedPoint.Color),true), 
                 Utility.ComputeOrientation(resolvedPoint.IRPoint, resolvedPoint.TouchPoint));
             comm.UpdateTouchInfo(currTouch);
         }

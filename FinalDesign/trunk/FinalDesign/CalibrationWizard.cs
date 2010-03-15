@@ -36,6 +36,10 @@ namespace FinalSolution
         Color colorUncalibrated = Color.Salmon;
         Color colorCalibrated = Color.ForestGreen;
 
+        public CalibrationWizard()
+        {
+        }
+
         public CalibrationWizard(Capture c, Wiimote w, CalibrationPoints irCP, CalibrationPoints camCP, 
             ColorStateSet cs, Warper ir2S, Warper s2Cam, Warper ir2Cam,int scrW, int scrH)
         {
@@ -121,12 +125,20 @@ namespace FinalSolution
                 if (!ckbErosion.Checked) colors.Red.ErosionValue = colors.Green.ErosionValue = colors.Yellow.ErosionValue = colors.Blue.ErosionValue = 0;
                 if (!ckbThreshold.Checked) colors.Red.ThresholdValue = colors.Green.ThresholdValue = colors.Yellow.ThresholdValue = colors.Blue.ThresholdValue = 0;
 
-                Image<Hsv, Byte> result = new Image<Hsv, byte>(source.Size);
-                if (cbxShowRed.Checked) result = result.Or(colors.Red.GetProbabilityImage(source, new Hsv(0, 1, 1)));
-                if (cbxShowBlue.Checked) result = result.Or(colors.Blue.GetProbabilityImage(source, new Hsv(0,4,1)));
-                if (cbxShowOrange.Checked) result = result.Or(colors.Yellow.GetProbabilityImage(source, new Hsv(0.1, 1, 1)));
-                if (cbxShowGreen.Checked) result = result.Or(colors.Green.GetProbabilityImage(source, new Hsv(0.3, 1, 1)));
-                imBoxProbImages.Image = result;
+                // Show Skin Detection in Action
+                if (cbxSkinDetection.Checked)
+                {
+                    imBoxProbImages.Image = HandProb.SkinDetect(source.Convert<Bgr, Byte>());
+                }
+                else
+                {
+                    Image<Hsv, Byte> result = new Image<Hsv, byte>(source.Size);
+                    if (cbxShowRed.Checked) result = result.Or(colors.Red.GetProbabilityImage(source, new Hsv(0, 1, 1)));
+                    if (cbxShowBlue.Checked) result = result.Or(colors.Blue.GetProbabilityImage(source, new Hsv(0, 4, 1)));
+                    if (cbxShowOrange.Checked) result = result.Or(colors.Yellow.GetProbabilityImage(source, new Hsv(0.1, 1, 1)));
+                    if (cbxShowGreen.Checked) result = result.Or(colors.Green.GetProbabilityImage(source, new Hsv(0.3, 1, 1)));
+                    imBoxProbImages.Image = result;
+                }
                
                 IRSensor[] irS = wiimote.WiimoteState.IRState.IRSensors;
                 for (int i = 0; i < 4; i++)
@@ -211,6 +223,11 @@ namespace FinalSolution
         #endregion
 
         #region Web Camera Calibration
+        public Size getCameraViewerSize()
+        {
+            return cameraCalibOutput.Size;
+        }
+
         private void btnCameraCalibrate_Click(object sender, EventArgs e)
         {
             _camCalibrationState = 0;
@@ -218,12 +235,14 @@ namespace FinalSolution
             lblInstructions.Text = "WebCam Calibration: Click TopLeft point";
             
         }
-
-       
-
         #endregion
 
         #region Infrared Camera Calibration
+        public Size getIRViewerSize()
+        {
+            return wiiCalibOutput.Size;
+        }
+
         private void btnWiimoteCalibrate_Click(object sender, EventArgs e)
         {
             _irCalibrationState = 0;

@@ -56,5 +56,14 @@ namespace FinalSolution
                 SkinProbability = sP;
             }
         }
+
+        public static WiimoteLib.PointF Normalize(WiimoteLib.PointF p, Size s)
+        {
+            if (p.X < 0) p.X = 0;
+            if (p.Y < 0) p.Y = 0;
+            if (p.X >= s.Width) p.X = s.Width - 1;
+            if (p.Y >= s.Height) p.Y = s.Height - 1;
+            return p;
+        }
     }
 }
