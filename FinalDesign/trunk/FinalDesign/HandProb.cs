@@ -98,5 +98,13 @@ namespace FinalSolution
             return skin;
 
         }
+
+        public static double getOrientation(WiimoteLib.PointF irPoint, WiimoteLib.PointF touchPoint)
+        {
+            touchPoint.X = irPoint.X - touchPoint.X;
+            touchPoint.Y = irPoint.Y - touchPoint.Y;
+
+            return Math.Atan2(touchPoint.Y, touchPoint.X);
+        }
     }
 }

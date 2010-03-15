@@ -131,7 +131,7 @@ namespace FinalSolution
 
             // Update the touch
             currTouch.setInfo((Colors)Enum.Parse(typeof(Colors),Enum.GetName(typeof(BandColor), resolvedPoint.Color),true), 
-                Utility.ComputeOrientation(resolvedPoint.IRPoint, resolvedPoint.TouchPoint));
+                (int)(HandProb.getOrientation(resolvedPoint.IRPoint, resolvedPoint.TouchPoint) * 180.0 / Math.PI));
             comm.UpdateTouchInfo(currTouch);
         }
 
