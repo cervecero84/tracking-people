@@ -33,25 +33,17 @@ namespace FinalSolution
             return new Rectangle(x, y, width, height);
         }
 
-        // TODO: Complete this
-        public static int ComputeOrientation(WiimoteLib.PointF one, WiimoteLib.PointF two)
-        {
-            return 0;
-        }
-
         public class ResolvedIRPoints
         {
             public WiimoteLib.PointF IRPoint { get; set; }
             public WiimoteLib.PointF TouchPoint { get; set; }
-            public double Distance { get; set; }
             public BandColor Color { get; set; }
             public double SkinProbability { get; set; }
 
-            public ResolvedIRPoints(WiimoteLib.PointF irP, WiimoteLib.PointF tP, double d, BandColor c, double sP)
+            public ResolvedIRPoints(WiimoteLib.PointF irP, WiimoteLib.PointF tP, BandColor c, double sP)
             {
                 IRPoint = irP;
                 TouchPoint = tP;
-                Distance = d;
                 Color = c;
                 SkinProbability = sP;
             }

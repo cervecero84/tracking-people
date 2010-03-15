@@ -85,17 +85,16 @@ namespace FinalSolution
                 // and points in the screen not visible to the camera
                 WiimoteLib.PointF camIrPt = Utility.Normalize(irToCamWarper.warp(irPoints[i].X * IRViewerSize.Width / 1024, irPoints[i].Y * IRViewerSize.Height / 768), sizeReference.getCameraViewerSize());
                 WiimoteLib.PointF camTouchPt = Utility.Normalize(screenToCamWarper.warp(currTouch.X, currTouch.Y), sizeReference.getCameraViewerSize());
-                Rectangle roi = Utility.getROI(camIrPt, camTouchPt);
-                // NOTE: The ROIs have to be adjusted. The color band detection should use a smaller ROI
 
-                // Compute Distance of point to touch
-                double dist = Math.Pow(irPoints[i].X - currTouch.X, 2) + Math.Pow(irPoints[i].Y - currTouch.Y, 2);
+                // NOTE: The ROIs have to be adjusted. The color band detection should use a smaller ROI
+                Rectangle roi = Utility.getROI(camIrPt, camTouchPt);
+                
                 // Compute color of point
                 BandColor bc = ColorState.FindBand(cameraImageYcc.GetSubRect(roi), colors);
                 // Compute skin connection probability
-                
                 double prob = HandProb.SkinConnectedProb(cameraImage, camTouchPt, camIrPt, cameraPixelToRealCmRatio);
-                resolvedIrPoints.Add(new Utility.ResolvedIRPoints(camIrPt, camTouchPt, dist, bc, prob));
+
+                resolvedIrPoints.Add(new Utility.ResolvedIRPoints(camIrPt, camTouchPt, bc, prob));
             }
 
             #region hide this temporarily
@@ -117,8 +116,8 @@ namespace FinalSolution
             {
                 return firstPair.SkinProbability.CompareTo(nextPair.SkinProbability);
             });
-            Utility.ResolvedIRPoints resolvedPoint;
 
+            Utility.ResolvedIRPoints resolvedPoint;
             // If no IR points were found, set Band Color to NotFound
             if (resolvedIrPoints.Count > 0)
             {
@@ -126,7 +125,7 @@ namespace FinalSolution
             }
             else
             {
-                resolvedPoint = new Utility.ResolvedIRPoints(new WiimoteLib.PointF(), new WiimoteLib.PointF(), -1, BandColor.NotFound, -1);
+                resolvedPoint = new Utility.ResolvedIRPoints(new WiimoteLib.PointF(), new WiimoteLib.PointF(), BandColor.NotFound, -1);
             }
 
             // Update the touch

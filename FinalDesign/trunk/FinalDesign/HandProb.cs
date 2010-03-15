@@ -28,7 +28,11 @@ namespace FinalSolution
 
         public static double SkinConnectedProb(Image<Bgr, Byte> region, WiimoteLib.PointF touch, WiimoteLib.PointF ir, float pxRatio)
         {
+            // Probability this is a hand, by size of hand
             double sizeProb = HandSizeProb(touch, ir, pxRatio);
+
+            // Create a bounding box and look at the number of skin pixels to compute a prob of skin connection
+            // between the touch point and the IR point
             Image<Bgr, Byte> handROI=region.Clone();
             Rectangle rectROI=Utility.getROI(touch, ir, handWidth);
             CvInvoke.cvSetImageROI(handROI, rectROI);
@@ -37,6 +41,7 @@ namespace FinalSolution
             Image<Gray, byte> skinPixels = SkinDetect(hand);
             double skinProb = skinPixels.GetAverage().Intensity / (skinPixels.Rows * skinPixels.Cols * 0.75); // 0.75 is a fudge factor, since hand will most like occupy a whole rectangle of ROI region
 
+            // Final probability = "probability of hand size" AND "probabilit of skin"
             return skinProb * sizeProb;
         }
 
