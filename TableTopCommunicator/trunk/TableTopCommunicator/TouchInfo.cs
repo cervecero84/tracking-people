@@ -14,7 +14,7 @@ namespace TableTopCommunicator
         private int _X;
         private int _Y;
         // Color or unique-id representing person
-        private string color;
+        private Colors color;
         // Orientation of the hand that made the touch: angle in degrees relative to 0,0:1024,0 baseline
         private double orientation;
         // Current state
@@ -29,7 +29,7 @@ namespace TableTopCommunicator
 
         public int X { get { return _X; } }
         public int Y { get { return _Y; } }
-        public string Color { get { return color; } }
+        public Colors Color { get { return color; } }
         public double Orientation { get { return orientation; } }
 
         // Has it been resolved?
@@ -44,7 +44,7 @@ namespace TableTopCommunicator
             return (state == State.Received);
         }
 
-        public void setInfo(string colr, int orientatin)
+        public void setInfo(Colors colr, int orientatin)
         {
             color = colr;
             orientation = orientatin;
