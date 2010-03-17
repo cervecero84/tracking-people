@@ -109,7 +109,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -119,17 +118,22 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="SkinDetector.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="Warper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="lib\cv200.dll" />
-    <Content Include="lib\cvaux200.dll" />
-    <Content Include="lib\cvextern.dll">
+    <Content Include="cv200.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="lib\cxcore200.dll" />
+    <Content Include="cvaux200.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cvextern.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cxcore200.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="dll\Emgu.CV.dll" />
     <Content Include="dll\Emgu.CV.UI.dll" />
     <Content Include="dll\Emgu.Util.dll" />
@@ -139,12 +143,16 @@
     <Content Include="dll\WiimoteLib.dll" />
     <Content Include="dll\ZedGraph.dll" />
     <Content Include="dll\zlib.net.dll" />
-    <Content Include="lib\GroupLab.Networking.dll">
+    <Content Include="GroupLab.Networking.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="lib\highgui200.dll" />
-    <Content Include="lib\ml200.dll" />
-    <Content Include="lib\opencv_ffmpeg200.dll" />
+    <Content Include="highgui200.dll" />
+    <Content Include="ml200.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="opencv_ffmpeg200.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\LiveBlueBand.jpg" />
     <Content Include="resources\LiveGreenBand.jpg" />
     <Content Include="resources\LiveOrangeBand.jpg" />
