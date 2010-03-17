@@ -77,9 +77,6 @@
             this.cbxShowOrange = new System.Windows.Forms.CheckBox();
             this.cbxShowGreen = new System.Windows.Forms.CheckBox();
             this.cbxShowRed = new System.Windows.Forms.CheckBox();
-            this.ckbThreshold = new System.Windows.Forms.CheckBox();
-            this.ckbDilate = new System.Windows.Forms.CheckBox();
-            this.ckbErosion = new System.Windows.Forms.CheckBox();
             this.cbxDrawCalibrationMarkers = new System.Windows.Forms.CheckBox();
             this.cbxDrawIRPoints = new System.Windows.Forms.CheckBox();
             this.btnCameraCalibrate = new System.Windows.Forms.Button();
@@ -100,6 +97,14 @@
             this.wiiCalibOutput = new EnhancedEmguImageBox.EImageBox();
             this.cameraCalibOutput = new EnhancedEmguImageBox.EImageBox();
             this.cbxSkinDetection = new System.Windows.Forms.CheckBox();
+            this.btnSaveLearning = new System.Windows.Forms.Button();
+            this.txtScreenX = new System.Windows.Forms.TextBox();
+            this.txtScreenY = new System.Windows.Forms.TextBox();
+            this.lblScreenCoordinatesTester = new System.Windows.Forms.Label();
+            this.lblScreenSize = new System.Windows.Forms.Label();
+            this.txtScreenHeight = new System.Windows.Forms.TextBox();
+            this.txtScreenWidth = new System.Windows.Forms.TextBox();
+            this.btnSaveScreenSize = new System.Windows.Forms.Button();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tkbBlueThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tkbBlueDilation)).BeginInit();
@@ -202,7 +207,6 @@
             // 
             this.tkbBlueThreshold.Location = new System.Drawing.Point(69, 91);
             this.tkbBlueThreshold.Maximum = 255;
-            this.tkbBlueThreshold.Minimum = 200;
             this.tkbBlueThreshold.Name = "tkbBlueThreshold";
             this.tkbBlueThreshold.Size = new System.Drawing.Size(104, 45);
             this.tkbBlueThreshold.TabIndex = 17;
@@ -305,7 +309,6 @@
             // 
             this.tkbOrangeThreshold.Location = new System.Drawing.Point(66, 91);
             this.tkbOrangeThreshold.Maximum = 255;
-            this.tkbOrangeThreshold.Minimum = 200;
             this.tkbOrangeThreshold.Name = "tkbOrangeThreshold";
             this.tkbOrangeThreshold.Size = new System.Drawing.Size(104, 45);
             this.tkbOrangeThreshold.TabIndex = 13;
@@ -408,7 +411,6 @@
             // 
             this.tkbGreenThreshold.Location = new System.Drawing.Point(60, 91);
             this.tkbGreenThreshold.Maximum = 255;
-            this.tkbGreenThreshold.Minimum = 200;
             this.tkbGreenThreshold.Name = "tkbGreenThreshold";
             this.tkbGreenThreshold.Size = new System.Drawing.Size(104, 45);
             this.tkbGreenThreshold.TabIndex = 11;
@@ -511,7 +513,6 @@
             // 
             this.tkbRedThreshold.Location = new System.Drawing.Point(60, 91);
             this.tkbRedThreshold.Maximum = 255;
-            this.tkbRedThreshold.Minimum = 200;
             this.tkbRedThreshold.Name = "tkbRedThreshold";
             this.tkbRedThreshold.Size = new System.Drawing.Size(104, 45);
             this.tkbRedThreshold.TabIndex = 6;
@@ -614,42 +615,6 @@
             this.cbxShowRed.TabIndex = 34;
             this.cbxShowRed.Text = "View";
             this.cbxShowRed.UseVisualStyleBackColor = true;
-            // 
-            // ckbThreshold
-            // 
-            this.ckbThreshold.AutoSize = true;
-            this.ckbThreshold.Checked = true;
-            this.ckbThreshold.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ckbThreshold.Location = new System.Drawing.Point(424, 408);
-            this.ckbThreshold.Name = "ckbThreshold";
-            this.ckbThreshold.Size = new System.Drawing.Size(79, 17);
-            this.ckbThreshold.TabIndex = 41;
-            this.ckbThreshold.Text = "Threshold?";
-            this.ckbThreshold.UseVisualStyleBackColor = true;
-            // 
-            // ckbDilate
-            // 
-            this.ckbDilate.AutoSize = true;
-            this.ckbDilate.Checked = true;
-            this.ckbDilate.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ckbDilate.Location = new System.Drawing.Point(574, 408);
-            this.ckbDilate.Name = "ckbDilate";
-            this.ckbDilate.Size = new System.Drawing.Size(59, 17);
-            this.ckbDilate.TabIndex = 40;
-            this.ckbDilate.Text = "Dilate?";
-            this.ckbDilate.UseVisualStyleBackColor = true;
-            // 
-            // ckbErosion
-            // 
-            this.ckbErosion.AutoSize = true;
-            this.ckbErosion.Checked = true;
-            this.ckbErosion.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ckbErosion.Location = new System.Drawing.Point(508, 408);
-            this.ckbErosion.Name = "ckbErosion";
-            this.ckbErosion.Size = new System.Drawing.Size(60, 17);
-            this.ckbErosion.TabIndex = 39;
-            this.ckbErosion.Text = "Erode?";
-            this.ckbErosion.UseVisualStyleBackColor = true;
             // 
             // cbxDrawCalibrationMarkers
             // 
@@ -850,11 +815,86 @@
             this.cbxSkinDetection.Text = "Show Skin Detection";
             this.cbxSkinDetection.UseVisualStyleBackColor = true;
             // 
+            // btnSaveLearning
+            // 
+            this.btnSaveLearning.Location = new System.Drawing.Point(679, 412);
+            this.btnSaveLearning.Name = "btnSaveLearning";
+            this.btnSaveLearning.Size = new System.Drawing.Size(88, 23);
+            this.btnSaveLearning.TabIndex = 64;
+            this.btnSaveLearning.Text = "Save Learning";
+            this.btnSaveLearning.UseVisualStyleBackColor = true;
+            this.btnSaveLearning.Click += new System.EventHandler(this.btnSaveLearning_Click);
+            // 
+            // txtScreenX
+            // 
+            this.txtScreenX.Location = new System.Drawing.Point(851, 357);
+            this.txtScreenX.Name = "txtScreenX";
+            this.txtScreenX.Size = new System.Drawing.Size(34, 20);
+            this.txtScreenX.TabIndex = 65;
+            // 
+            // txtScreenY
+            // 
+            this.txtScreenY.Location = new System.Drawing.Point(904, 357);
+            this.txtScreenY.Name = "txtScreenY";
+            this.txtScreenY.Size = new System.Drawing.Size(35, 20);
+            this.txtScreenY.TabIndex = 66;
+            // 
+            // lblScreenCoordinatesTester
+            // 
+            this.lblScreenCoordinatesTester.AutoSize = true;
+            this.lblScreenCoordinatesTester.Location = new System.Drawing.Point(848, 383);
+            this.lblScreenCoordinatesTester.Name = "lblScreenCoordinatesTester";
+            this.lblScreenCoordinatesTester.Size = new System.Drawing.Size(100, 13);
+            this.lblScreenCoordinatesTester.TabIndex = 67;
+            this.lblScreenCoordinatesTester.Text = "Screen Coordinates";
+            // 
+            // lblScreenSize
+            // 
+            this.lblScreenSize.AutoSize = true;
+            this.lblScreenSize.Location = new System.Drawing.Point(1087, 387);
+            this.lblScreenSize.Name = "lblScreenSize";
+            this.lblScreenSize.Size = new System.Drawing.Size(64, 13);
+            this.lblScreenSize.TabIndex = 70;
+            this.lblScreenSize.Text = "Screen Size";
+            // 
+            // txtScreenHeight
+            // 
+            this.txtScreenHeight.Location = new System.Drawing.Point(1125, 362);
+            this.txtScreenHeight.Name = "txtScreenHeight";
+            this.txtScreenHeight.Size = new System.Drawing.Size(35, 20);
+            this.txtScreenHeight.TabIndex = 69;
+            // 
+            // txtScreenWidth
+            // 
+            this.txtScreenWidth.Location = new System.Drawing.Point(1072, 362);
+            this.txtScreenWidth.Name = "txtScreenWidth";
+            this.txtScreenWidth.Size = new System.Drawing.Size(34, 20);
+            this.txtScreenWidth.TabIndex = 68;
+            // 
+            // btnSaveScreenSize
+            // 
+            this.btnSaveScreenSize.Location = new System.Drawing.Point(1072, 404);
+            this.btnSaveScreenSize.Name = "btnSaveScreenSize";
+            this.btnSaveScreenSize.Size = new System.Drawing.Size(88, 23);
+            this.btnSaveScreenSize.TabIndex = 71;
+            this.btnSaveScreenSize.Text = "Save Size";
+            this.btnSaveScreenSize.UseVisualStyleBackColor = true;
+            this.btnSaveScreenSize.Click += new System.EventHandler(this.btnSaveScreenSize_Click);
+            // 
             // CalibrationWizard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1228, 625);
+            this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.ClientSize = new System.Drawing.Size(1276, 606);
+            this.Controls.Add(this.btnSaveScreenSize);
+            this.Controls.Add(this.lblScreenSize);
+            this.Controls.Add(this.txtScreenHeight);
+            this.Controls.Add(this.txtScreenWidth);
+            this.Controls.Add(this.lblScreenCoordinatesTester);
+            this.Controls.Add(this.txtScreenY);
+            this.Controls.Add(this.txtScreenX);
+            this.Controls.Add(this.btnSaveLearning);
             this.Controls.Add(this.cbxSkinDetection);
             this.Controls.Add(this.lblWiiOutput);
             this.Controls.Add(this.lblProcessedVideo);
@@ -873,9 +913,6 @@
             this.Controls.Add(this.cbxDrawIRPoints);
             this.Controls.Add(this.btnCameraCalibrate);
             this.Controls.Add(this.btnWiimoteCalibrate);
-            this.Controls.Add(this.ckbThreshold);
-            this.Controls.Add(this.ckbDilate);
-            this.Controls.Add(this.ckbErosion);
             this.Controls.Add(this.cbxShowBlue);
             this.Controls.Add(this.cbxShowOrange);
             this.Controls.Add(this.cbxShowGreen);
@@ -971,9 +1008,6 @@
         private System.Windows.Forms.CheckBox cbxShowOrange;
         private System.Windows.Forms.CheckBox cbxShowGreen;
         private System.Windows.Forms.CheckBox cbxShowRed;
-        private System.Windows.Forms.CheckBox ckbThreshold;
-        private System.Windows.Forms.CheckBox ckbDilate;
-        private System.Windows.Forms.CheckBox ckbErosion;
         private System.Windows.Forms.CheckBox cbxDrawCalibrationMarkers;
         private System.Windows.Forms.CheckBox cbxDrawIRPoints;
         private System.Windows.Forms.Button btnCameraCalibrate;
@@ -994,5 +1028,13 @@
         private System.Windows.Forms.Label lblProcessedVideo;
         private System.Windows.Forms.Label lblWiiOutput;
         private System.Windows.Forms.CheckBox cbxSkinDetection;
+        private System.Windows.Forms.Button btnSaveLearning;
+        private System.Windows.Forms.TextBox txtScreenX;
+        private System.Windows.Forms.TextBox txtScreenY;
+        private System.Windows.Forms.Label lblScreenCoordinatesTester;
+        private System.Windows.Forms.Label lblScreenSize;
+        private System.Windows.Forms.TextBox txtScreenHeight;
+        private System.Windows.Forms.TextBox txtScreenWidth;
+        private System.Windows.Forms.Button btnSaveScreenSize;
     }
 }

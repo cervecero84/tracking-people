@@ -25,16 +25,17 @@ namespace FinalSolution
         CalibrationPoints irCalibrationPoints = new CalibrationPoints();
         CalibrationPoints camCalibrationPoints = new CalibrationPoints();
         ColorStateSet colors = new ColorStateSet();
-        Warper irToScreenWarper = new Warper();
         Warper screenToCamWarper = new Warper();
         Warper irToCamWarper = new Warper();
         int cameraPixelToRealCmRatio = 1;
-
-        const int TOUCH_MIN_DIST = 20;
+        
+        int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+        int screenHeight = Screen.PrimaryScreen.Bounds.Height;
 
         public Main()
         {
             InitializeComponent();
+
             //camera.FlipHorizontal = true;
             comm.TouchReceived += new Communicator.TouchReceivedHandler(comm_TouchReceived);
             try
@@ -49,7 +50,7 @@ namespace FinalSolution
             }
         }
 
-        private List<WiimoteLib.PointF> FindIRPointsInScreenCoords()
+        private List<WiimoteLib.PointF> FindIRPointsInWiiCoords()
         {
             List<WiimoteLib.PointF> points = new List<WiimoteLib.PointF>();
             WiimoteState ws = wiimote.WiimoteState;
@@ -59,8 +60,9 @@ namespace FinalSolution
                 IRSensor sensor = ws.IRState.IRSensors[i];
                 if (sensor.Found)
                 {
-                    WiimoteLib.PointF p = irToScreenWarper.warp(sensor.RawPosition.X, sensor.RawPosition.Y);
-                    // WARNING: A problem may arise here, if calibration used a scaled RawPosition for calibration
+                    WiimoteLib.PointF p = new WiimoteLib.PointF();
+                    p.X = sensor.RawPosition.X;
+                    p.Y = sensor.RawPosition.Y;
                     points.Add(p);
                 }
             }
@@ -70,16 +72,17 @@ namespace FinalSolution
 
         private void comm_TouchReceived(object sender, TouchEventArgs t)
         {
+            CalibrationWizard sizeReference = new CalibrationWizard();
+
             TouchInfo currTouch = t.Touch;
-            Image<Bgr, Byte> cameraImage = camera.QueryFrame();
+            Image<Bgr, Byte> cameraImage = camera.QueryFrame().Resize(sizeReference.getCameraViewerSize().Width, sizeReference.getCameraViewerSize().Height, INTER.CV_INTER_LINEAR);
             Image<Ycc, Byte> cameraImageYcc = cameraImage.Convert<Ycc, Byte>();
-            List<WiimoteLib.PointF> irPoints = FindIRPointsInScreenCoords();
+            List<WiimoteLib.PointF> irPoints = FindIRPointsInWiiCoords();
             List<Utility.ResolvedIRPoints> resolvedIrPoints = new List<Utility.ResolvedIRPoints>();
 
             // Measure distance of each point from touch
             for (int i = 0; i < irPoints.Count; i++)
             {
-                CalibrationWizard sizeReference = new CalibrationWizard();
                 Size IRViewerSize = sizeReference.getIRViewerSize();
                 // Normalize takes into account points that are visible to the IR but not to the camera
                 // and points in the screen not visible to the camera
@@ -87,10 +90,10 @@ namespace FinalSolution
                 WiimoteLib.PointF camTouchPt = Utility.Normalize(screenToCamWarper.warp(currTouch.X, currTouch.Y), sizeReference.getCameraViewerSize());
 
                 // NOTE: The ROIs have to be adjusted. The color band detection should use a smaller ROI
-                Rectangle roi = Utility.getROI(camIrPt, camTouchPt);
-                
+                Rectangle colorBandRoi = Utility.Normalize(Utility.getBoundingBoxForColor(camIrPt), sizeReference.getCameraViewerSize());
                 // Compute color of point
-                BandColor bc = ColorState.FindBand(cameraImageYcc.GetSubRect(roi), colors);
+                BandColor bc = ColorState.FindBand(cameraImageYcc.GetSubRect(colorBandRoi), colors);
+
                 // Compute skin connection probability
                 double prob = HandProb.SkinConnectedProb(cameraImage, camTouchPt, camIrPt, cameraPixelToRealCmRatio);
 
@@ -136,8 +139,8 @@ namespace FinalSolution
 
         private void btnSettings_Click(object sender, EventArgs e)
         {
-            CalibrationWizard wizard = new CalibrationWizard(camera, wiimote, irCalibrationPoints, camCalibrationPoints, colors,
-                irToScreenWarper, screenToCamWarper, irToCamWarper, 1024, 768);
+            CalibrationWizard wizard = new CalibrationWizard(camera, wiimote, irCalibrationPoints, camCalibrationPoints, 
+                colors, screenToCamWarper, irToCamWarper, ref screenWidth, ref screenHeight);
             wizard.Show();
         }
     }

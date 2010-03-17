@@ -132,8 +132,8 @@ namespace FinalSolution
 
             // In place thresholding, erosion and dilation
             if (ThresholdValue > 0) result._ThresholdBinary(new Gray(ThresholdValue), new Gray(255));
-            result._Erode(ErosionValue);
-            result._Dilate(DilationValue);
+            result = result.Erode(ErosionValue);
+            result = result.Dilate(DilationValue);
 
             return result;
         }
@@ -148,7 +148,7 @@ namespace FinalSolution
         {
             Image<Gray, Byte> gray = GetProbabilityImage(img);
             Image<Hsv, Byte> hsv = new Image<Hsv, byte>(img.Width, img.Height);
-            CvInvoke.cvMerge(gray.Mul(color.Hue), gray.Mul(color.Satuation), gray.Mul(color.Value), IntPtr.Zero, hsv);
+            CvInvoke.cvMerge(gray.Mul(color.Hue), gray, gray, IntPtr.Zero, hsv);
             return hsv;
         }
     }

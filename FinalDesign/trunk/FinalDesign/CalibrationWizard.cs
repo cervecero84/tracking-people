@@ -23,8 +23,8 @@ namespace FinalSolution
         //Warper irToScreenWarper = new Warper();
         Warper screenToCamWarper = new Warper();
         Warper irToCamWarper = new Warper();
-        int screenWidth = 1024;
-        int screenHeight = 768;
+        int screenWidth;
+        int screenHeight;
 
         Image<Ycc, byte> lastSelectedImage;
         // States 0 - 3: indicate point number (TL, TR, BL, BR)
@@ -38,18 +38,19 @@ namespace FinalSolution
 
         public CalibrationWizard()
         {
+            InitializeComponent();
         }
 
         public CalibrationWizard(Capture c, Wiimote w, CalibrationPoints irCP, CalibrationPoints camCP, 
-            ColorStateSet cs, Warper ir2S, Warper s2Cam, Warper ir2Cam,int scrW, int scrH)
+            ColorStateSet cs, Warper s2Cam, Warper ir2Cam, ref int scrW, ref int scrH)
         {
             InitializeComponent();
+            
             camera = c;
             wiimote = w;
             irCalibrationPoints = irCP;
             camCalibrationPoints = camCP;
             colors = cs;
-            //irToScreenWarper = ir2S;
             screenToCamWarper = s2Cam;
             irToCamWarper = ir2Cam;
             screenWidth = scrW;
@@ -61,6 +62,30 @@ namespace FinalSolution
             btnLearnOrange.BackColor = colorUncalibrated;
             btnLearnGreen.BackColor = colorUncalibrated;
             btnLearnBlue.BackColor = colorUncalibrated;
+
+            tkbRedThreshold.Value = (int)colors.Red.ThresholdValue;
+            tkbRedErosion.Value = (int)colors.Red.ErosionValue;
+            tkbRedDilation.Value = (int)colors.Red.DilationValue;
+
+            tkbBlueThreshold.Value = (int)colors.Blue.ThresholdValue;
+            tkbBlueErosion.Value = (int)colors.Blue.ErosionValue;
+            tkbBlueDilation.Value = (int)colors.Blue.DilationValue;
+
+            tkbOrangeThreshold.Value = (int)colors.Yellow.ThresholdValue;
+            tkbOrangeErosion.Value = (int)colors.Yellow.ErosionValue;
+            tkbOrangeDilation.Value = (int)colors.Yellow.DilationValue;
+
+            tkbGreenThreshold.Value = (int)colors.Green.ThresholdValue;
+            tkbGreenErosion.Value = (int)colors.Green.ErosionValue;
+            tkbGreenDilation.Value = (int)colors.Green.DilationValue;
+
+            if (screenHeight == 0 || screenWidth == 0)
+            {
+                screenHeight = Screen.PrimaryScreen.Bounds.Height;
+                screenWidth = Screen.PrimaryScreen.Bounds.Width;
+                txtScreenWidth.Text = screenWidth.ToString();
+                txtScreenHeight.Text = screenHeight.ToString();
+            }
 
             Application.Idle += new EventHandler(ProcessFrame);
         }
@@ -121,10 +146,6 @@ namespace FinalSolution
                     cameraCalibOutput.Image = source;
                 }
 
-                if (!ckbDilate.Checked) colors.Red.DilationValue = colors.Green.DilationValue = colors.Yellow.DilationValue = colors.Blue.DilationValue = 0;
-                if (!ckbErosion.Checked) colors.Red.ErosionValue = colors.Green.ErosionValue = colors.Yellow.ErosionValue = colors.Blue.ErosionValue = 0;
-                if (!ckbThreshold.Checked) colors.Red.ThresholdValue = colors.Green.ThresholdValue = colors.Yellow.ThresholdValue = colors.Blue.ThresholdValue = 0;
-
                 // Show Skin Detection in Action
                 if (cbxSkinDetection.Checked)
                 {
@@ -134,7 +155,7 @@ namespace FinalSolution
                 {
                     Image<Hsv, Byte> result = new Image<Hsv, byte>(source.Size);
                     if (cbxShowRed.Checked) result = result.Or(colors.Red.GetProbabilityImage(source, new Hsv(0, 1, 1)));
-                    if (cbxShowBlue.Checked) result = result.Or(colors.Blue.GetProbabilityImage(source, new Hsv(0, 4, 1)));
+                    if (cbxShowBlue.Checked) result = result.Or(colors.Blue.GetProbabilityImage(source, new Hsv(0.4, 1, 1)));
                     if (cbxShowOrange.Checked) result = result.Or(colors.Yellow.GetProbabilityImage(source, new Hsv(0.1, 1, 1)));
                     if (cbxShowGreen.Checked) result = result.Or(colors.Green.GetProbabilityImage(source, new Hsv(0.3, 1, 1)));
                     imBoxProbImages.Image = result;
@@ -156,10 +177,19 @@ namespace FinalSolution
                         System.Drawing.PointF irPointWarped = new System.Drawing.PointF(irPointTemp.X, irPointTemp.Y);
 
                         Image<Ycc, Byte> temp = new Image<Ycc, byte>(cameraCalibOutput.Image.Bitmap);
-                        temp.Draw(new Ellipse(new System.Drawing.PointF(irPointWarped.X, irPointWarped.Y), new SizeF(2, 2), 0), new Ycc(0, 0, 0), 2);
+                        temp.Draw(new Ellipse(new System.Drawing.PointF(irPointWarped.X, irPointWarped.Y), new SizeF(2, 2), 0), new Ycc(255, 128, 128), 2);
                         cameraCalibOutput.Image = temp;
                     }
                 }
+
+                int x = 0, y = 0;
+                Int32.TryParse(txtScreenX.Text, out x);
+                Int32.TryParse(txtScreenY.Text, out y);
+                WiimoteLib.PointF cam = screenToCamWarper.warp(x, y);
+
+                Image<Ycc, Byte> temp2 = new Image<Ycc, byte>(cameraCalibOutput.Image.Bitmap);
+                temp2.Draw(new Ellipse(new System.Drawing.PointF(cam.X, cam.Y), new SizeF(2, 2), 0), new Ycc(40, 240, 109), 2);
+                cameraCalibOutput.Image = temp2;
             }
         }
         #endregion
@@ -483,6 +513,47 @@ namespace FinalSolution
         private void CalibrationWizard_FormClosing(object sender, FormClosingEventArgs e)
         {
             Application.Idle -= new EventHandler(ProcessFrame);
+        }
+
+        private void btnSaveLearning_Click(object sender, EventArgs e)
+        {
+            colors.Red.ThresholdValue = tkbRedThreshold.Value;
+            colors.Red.ErosionValue = tkbRedErosion.Value;
+            colors.Red.DilationValue = tkbRedDilation.Value;
+
+            colors.Blue.ThresholdValue = tkbBlueThreshold.Value;
+            colors.Blue.ErosionValue = tkbBlueErosion.Value;
+            colors.Blue.DilationValue = tkbBlueDilation.Value;
+            
+            colors.Green.ThresholdValue = tkbGreenThreshold.Value;
+            colors.Green.ErosionValue = tkbGreenErosion.Value;
+            colors.Green.DilationValue = tkbGreenDilation.Value;
+
+            colors.Blue.ThresholdValue = tkbBlueThreshold.Value;
+            colors.Blue.ErosionValue = tkbBlueErosion.Value;
+            colors.Blue.DilationValue = tkbBlueDilation.Value;
+        }
+
+        private void btnScreenToCam_Click(object sender, EventArgs e)
+        {
+            int x = 0, y = 0;
+            Int32.TryParse(txtScreenX.Text, out x);
+            Int32.TryParse(txtScreenY.Text, out y);
+            WiimoteLib.PointF cam = screenToCamWarper.warp(x, y);
+        }
+
+        private void btnSaveScreenSize_Click(object sender, EventArgs e)
+        {
+            Int32.TryParse(txtScreenWidth.Text, out screenWidth);
+            Int32.TryParse(txtScreenHeight.Text, out screenHeight);
+
+            if (screenHeight == 0 || screenWidth == 0)
+            {
+                screenHeight = Screen.PrimaryScreen.Bounds.Height;
+                screenWidth = Screen.PrimaryScreen.Bounds.Width;
+                txtScreenWidth.Text = screenWidth.ToString();
+                txtScreenHeight.Text = screenHeight.ToString();
+            }
         }
     }
 }

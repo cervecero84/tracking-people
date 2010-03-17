@@ -19,7 +19,7 @@ namespace FinalSolution
         // units are cm
         private static double _mean = 18.65;
         private static double _var = 0.85;
-        private static double handWidth = 8.45;
+        //private static double handWidth = 8.45;
 
         private static NormalDist handPDF = new NormalDist(_mean, _var);
 
@@ -34,7 +34,8 @@ namespace FinalSolution
             // Create a bounding box and look at the number of skin pixels to compute a prob of skin connection
             // between the touch point and the IR point
             Image<Bgr, Byte> handROI=region.Clone();
-            Rectangle rectROI=Utility.getROI(touch, ir, handWidth);
+            CalibrationWizard sizeReference = new CalibrationWizard();
+            Rectangle rectROI = Utility.Normalize(Utility.getBoundingBox(touch, ir), sizeReference.getCameraViewerSize());
             CvInvoke.cvSetImageROI(handROI, rectROI);
             Image<Bgr, Byte> hand = new Image<Bgr,byte>(rectROI.Size);
             CvInvoke.cvGetSubRect(handROI, hand, rectROI);
