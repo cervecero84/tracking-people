@@ -150,6 +150,7 @@
     <Content Include="resources\LiveOrangeBand.jpg" />
     <Content Include="resources\LiveRedBand.jpg" />
     <Content Include="resources\LiveYellowBand.jpg" />
+    <Content Include="Todo-Notes.txt" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

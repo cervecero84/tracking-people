@@ -1,0 +1,14 @@
+﻿Things we can still improve on:
+
+ - Skin detection (lighting independence, AND/OR ability to adjust/calibrate to lighting condition)
+ - Color band detection (lighting independence)
+ - Multiple IR Arrays for IR lighting
+ - Better box for Wiimote and Camera
+ - Better placement of Wiimote and Camera
+ - 
+
+Things we need to ask for:
+ - White lights that can be placed next to our booth.
+   We are one of the first booths there (as you enter DC). That location does not have very good lighting, 
+   if I remember right (no artificial lights overhead, natural light not very much).
+ - 
