@@ -146,7 +146,9 @@
     <Content Include="GroupLab.Networking.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="highgui200.dll" />
+    <Content Include="highgui200.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="ml200.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

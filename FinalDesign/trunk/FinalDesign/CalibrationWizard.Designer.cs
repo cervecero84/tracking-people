@@ -105,6 +105,8 @@
             this.txtScreenHeight = new System.Windows.Forms.TextBox();
             this.txtScreenWidth = new System.Windows.Forms.TextBox();
             this.btnSaveScreenSize = new System.Windows.Forms.Button();
+            this.btnSaveToFile = new System.Windows.Forms.Button();
+            this.btnLoadToFile = new System.Windows.Forms.Button();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tkbBlueThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tkbBlueDilation)).BeginInit();
@@ -881,12 +883,34 @@
             this.btnSaveScreenSize.UseVisualStyleBackColor = true;
             this.btnSaveScreenSize.Click += new System.EventHandler(this.btnSaveScreenSize_Click);
             // 
+            // btnSaveToFile
+            // 
+            this.btnSaveToFile.Location = new System.Drawing.Point(851, 470);
+            this.btnSaveToFile.Name = "btnSaveToFile";
+            this.btnSaveToFile.Size = new System.Drawing.Size(142, 46);
+            this.btnSaveToFile.TabIndex = 72;
+            this.btnSaveToFile.Text = "Save To File";
+            this.btnSaveToFile.UseVisualStyleBackColor = true;
+            this.btnSaveToFile.Click += new System.EventHandler(this.btnSaveToFile_Click);
+            // 
+            // btnLoadToFile
+            // 
+            this.btnLoadToFile.Location = new System.Drawing.Point(851, 525);
+            this.btnLoadToFile.Name = "btnLoadToFile";
+            this.btnLoadToFile.Size = new System.Drawing.Size(142, 46);
+            this.btnLoadToFile.TabIndex = 73;
+            this.btnLoadToFile.Text = "Load File";
+            this.btnLoadToFile.UseVisualStyleBackColor = true;
+            this.btnLoadToFile.Click += new System.EventHandler(this.btnLoadToFile_Click);
+            // 
             // CalibrationWizard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(1276, 606);
+            this.Controls.Add(this.btnLoadToFile);
+            this.Controls.Add(this.btnSaveToFile);
             this.Controls.Add(this.btnSaveScreenSize);
             this.Controls.Add(this.lblScreenSize);
             this.Controls.Add(this.txtScreenHeight);
@@ -1036,5 +1060,7 @@
         private System.Windows.Forms.TextBox txtScreenHeight;
         private System.Windows.Forms.TextBox txtScreenWidth;
         private System.Windows.Forms.Button btnSaveScreenSize;
+        private System.Windows.Forms.Button btnSaveToFile;
+        private System.Windows.Forms.Button btnLoadToFile;
     }
 }

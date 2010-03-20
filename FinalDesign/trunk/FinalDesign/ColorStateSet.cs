@@ -5,6 +5,7 @@ using System.Text;
 
 namespace FinalSolution
 {
+    [Serializable()]
     public class ColorStateSet
     {
         public ColorStateSet()

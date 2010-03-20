@@ -5,6 +5,7 @@ using System.Drawing;
 
 namespace FinalSolution
 {
+    [Serializable()]
     public class Warper
     {
         float[] srcX = new float[4];

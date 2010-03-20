@@ -86,7 +86,7 @@ namespace FinalSolution
                 Size IRViewerSize = sizeReference.getIRViewerSize();
                 // Normalize takes into account points that are visible to the IR but not to the camera
                 // and points in the screen not visible to the camera
-                WiimoteLib.PointF camIrPt = Utility.Normalize(irToCamWarper.warp(irPoints[i].X * IRViewerSize.Width / 1024, irPoints[i].Y * IRViewerSize.Height / 768), sizeReference.getCameraViewerSize());
+                WiimoteLib.PointF camIrPt = Utility.Normalize(irToCamWarper.warp(irPoints[i].X * IRViewerSize.Width / screenWidth, irPoints[i].Y * IRViewerSize.Height / screenHeight), sizeReference.getCameraViewerSize());
                 WiimoteLib.PointF camTouchPt = Utility.Normalize(screenToCamWarper.warp(currTouch.X, currTouch.Y), sizeReference.getCameraViewerSize());
 
                 // NOTE: The ROIs have to be adjusted. The color band detection should use a smaller ROI
@@ -139,9 +139,25 @@ namespace FinalSolution
 
         private void btnSettings_Click(object sender, EventArgs e)
         {
-            CalibrationWizard wizard = new CalibrationWizard(camera, wiimote, irCalibrationPoints, camCalibrationPoints, 
+            CalibrationWizard wizard = new CalibrationWizard(this, camera, wiimote, irCalibrationPoints, camCalibrationPoints, 
                 colors, screenToCamWarper, irToCamWarper, ref screenWidth, ref screenHeight);
             wizard.Show();
+        }
+
+        public void setSettings(CalibrationPoints ir, CalibrationPoints cam, ColorStateSet cs, Warper s2C, Warper i2C)
+        {
+            irCalibrationPoints = ir;
+            camCalibrationPoints = cam;
+            colors = cs;
+            screenToCamWarper = s2C;
+            irToCamWarper = i2C;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            colors.Red.DilationValue = 5;
+            colors.Red.ErosionValue = 5;
+            colors.Red.ThresholdValue = 230;
         }
     }
 }

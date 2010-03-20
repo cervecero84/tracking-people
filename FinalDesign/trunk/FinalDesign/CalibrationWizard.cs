@@ -10,11 +10,15 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
 using WiimoteLib;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace FinalSolution
 {
     public partial class CalibrationWizard : Form
     {
+        Main parent;
         Capture camera;
         Wiimote wiimote;
         CalibrationPoints irCalibrationPoints = new CalibrationPoints();
@@ -41,11 +45,12 @@ namespace FinalSolution
             InitializeComponent();
         }
 
-        public CalibrationWizard(Capture c, Wiimote w, CalibrationPoints irCP, CalibrationPoints camCP, 
+        public CalibrationWizard(Main p, Capture c, Wiimote w, CalibrationPoints irCP, CalibrationPoints camCP, 
             ColorStateSet cs, Warper s2Cam, Warper ir2Cam, ref int scrW, ref int scrH)
         {
             InitializeComponent();
-            
+
+            parent = p;
             camera = c;
             wiimote = w;
             irCalibrationPoints = irCP;
@@ -56,6 +61,8 @@ namespace FinalSolution
             screenWidth = scrW;
             screenHeight = scrH;
 
+            updateTrackbars();
+
             btnCameraCalibrate.BackColor = colorUncalibrated;
             btnWiimoteCalibrate.BackColor = colorUncalibrated;
             btnLearnRed.BackColor = colorUncalibrated;
@@ -63,6 +70,22 @@ namespace FinalSolution
             btnLearnGreen.BackColor = colorUncalibrated;
             btnLearnBlue.BackColor = colorUncalibrated;
 
+            txtScreenWidth.Text = screenWidth.ToString();
+            txtScreenHeight.Text = screenHeight.ToString();
+
+            if (screenHeight == 0 || screenWidth == 0)
+            {
+                screenHeight = Screen.PrimaryScreen.Bounds.Height;
+                screenWidth = Screen.PrimaryScreen.Bounds.Width;
+                txtScreenWidth.Text = screenWidth.ToString();
+                txtScreenHeight.Text = screenHeight.ToString();
+            }
+
+            Application.Idle += new EventHandler(ProcessFrame);
+        }
+
+        private void updateTrackbars()
+        {
             tkbRedThreshold.Value = (int)colors.Red.ThresholdValue;
             tkbRedErosion.Value = (int)colors.Red.ErosionValue;
             tkbRedDilation.Value = (int)colors.Red.DilationValue;
@@ -78,16 +101,6 @@ namespace FinalSolution
             tkbGreenThreshold.Value = (int)colors.Green.ThresholdValue;
             tkbGreenErosion.Value = (int)colors.Green.ErosionValue;
             tkbGreenDilation.Value = (int)colors.Green.DilationValue;
-
-            if (screenHeight == 0 || screenWidth == 0)
-            {
-                screenHeight = Screen.PrimaryScreen.Bounds.Height;
-                screenWidth = Screen.PrimaryScreen.Bounds.Width;
-                txtScreenWidth.Text = screenWidth.ToString();
-                txtScreenHeight.Text = screenHeight.ToString();
-            }
-
-            Application.Idle += new EventHandler(ProcessFrame);
         }
 
         #region Process Frame
@@ -553,6 +566,40 @@ namespace FinalSolution
                 screenWidth = Screen.PrimaryScreen.Bounds.Width;
                 txtScreenWidth.Text = screenWidth.ToString();
                 txtScreenHeight.Text = screenHeight.ToString();
+            }
+        }
+
+        private void btnSaveToFile_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog s = new SaveFileDialog();
+            if (s.ShowDialog() == DialogResult.OK)
+            {
+                Stream stream = File.Open(s.FileName, FileMode.Create);
+                BinaryFormatter bFormatter = new BinaryFormatter();
+                bFormatter.Serialize(stream, colors);
+                bFormatter.Serialize(stream, camCalibrationPoints);
+                bFormatter.Serialize(stream, irCalibrationPoints);
+                bFormatter.Serialize(stream, irToCamWarper);
+                bFormatter.Serialize(stream, screenToCamWarper);
+                stream.Close();
+            }
+        }
+
+        private void btnLoadToFile_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog o = new OpenFileDialog();
+            if (o.ShowDialog() == DialogResult.OK)
+            {
+                Stream stream = File.Open(o.FileName, FileMode.Open);
+                BinaryFormatter bFormatter = new BinaryFormatter();
+                colors = (ColorStateSet)bFormatter.Deserialize(stream);
+                camCalibrationPoints = (CalibrationPoints)bFormatter.Deserialize(stream);
+                irCalibrationPoints = (CalibrationPoints)bFormatter.Deserialize(stream);
+                irToCamWarper = (Warper)bFormatter.Deserialize(stream);
+                screenToCamWarper = (Warper)bFormatter.Deserialize(stream);
+                stream.Close();
+                updateTrackbars();
+                parent.setSettings(irCalibrationPoints, camCalibrationPoints, colors, screenToCamWarper, irToCamWarper);
             }
         }
     }

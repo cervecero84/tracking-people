@@ -6,6 +6,7 @@ using System.Drawing;
 
 namespace FinalSolution
 {
+    [Serializable()]
     public class CalibrationPoints
     {
         //PointF _tl;

@@ -7,6 +7,7 @@ using Emgu.CV.Structure;
 
 namespace FinalSolution
 {
+    [Serializable()]
     public class ColorState
     {
         public DenseHistogram CbHist { get; set; }

@@ -118,6 +118,8 @@ namespace FinalSolution
 
         public static Rectangle Normalize(Rectangle r, Size s)
         {
+            if (r.X < 0) r.X = 0;
+            if (r.Y < 0) r.Y = 0;
             if (r.X + r.Width > s.Width) r.Width = s.Width - 1;
             if (r.Y + r.Height > s.Height) r.Height = s.Height - 1;
             return r;

@@ -35,6 +35,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnSettings = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ibxOutput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ibxSource)).BeginInit();
             this.SuspendLayout();
@@ -98,11 +99,22 @@
             this.lblStatus.TabIndex = 18;
             this.lblStatus.Text = "Status";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(465, 340);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 19;
+            this.button1.Text = "Update Color Vals";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(907, 394);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.btnSettings);
             this.Controls.Add(this.label2);
@@ -126,6 +138,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnSettings;
         private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.Button button1;
     }
 }
 
