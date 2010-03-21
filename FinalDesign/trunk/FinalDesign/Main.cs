@@ -81,7 +81,8 @@ namespace FinalSolution
             List<Utility.ResolvedIRPoints> resolvedIrPoints = new List<Utility.ResolvedIRPoints>();
 
             //Drawing code for debugging
-            ibxSource.Image = cameraImageYcc;
+            Image<Ycc, Byte> cameraImageYccDebug = cameraImageYcc;
+            ibxSource.Image = cameraImageYccDebug;
 
             // Measure distance of each point from touch
             for (int i = 0; i < irPoints.Count; i++)
@@ -93,9 +94,9 @@ namespace FinalSolution
                 WiimoteLib.PointF camTouchPt = Utility.Normalize(screenToCamWarper.warp(currTouch.X, currTouch.Y), sizeReference.getCameraViewerSize());
 
                 //Draw both IR and Screen Points to ibxSource
-                cameraImageYcc.Draw(new Ellipse(new System.Drawing.PointF(camIrPt.X, camIrPt.Y), new SizeF(1, 1), 0), new Ycc(40, 109, 240), 2);
-                cameraImageYcc.Draw(new Ellipse(new System.Drawing.PointF(camTouchPt.X, camTouchPt.Y), new SizeF(1, 1), 0), new Ycc(40, 109, 240), 2);
-                ibxSource.Image = cameraImageYcc;
+                cameraImageYccDebug.Draw(new Ellipse(new System.Drawing.PointF(camIrPt.X, camIrPt.Y), new SizeF(1, 1), 0), new Ycc(40, 109, 240), 2);
+                cameraImageYccDebug.Draw(new Ellipse(new System.Drawing.PointF(camTouchPt.X, camTouchPt.Y), new SizeF(1, 1), 0), new Ycc(40, 109, 240), 2);
+                ibxSource.Image = cameraImageYccDebug;
 
                 // NOTE: The ROIs have to be adjusted. The color band detection should use a smaller ROI
                 Rectangle colorBandRoi = Utility.Normalize(Utility.getBoundingBoxForColor(camIrPt), sizeReference.getCameraViewerSize());
@@ -103,12 +104,12 @@ namespace FinalSolution
                 BandColor bc = ColorState.FindBand(cameraImageYcc.GetSubRect(colorBandRoi), colors);
 
                 //Draw Rectangle to ibxSource
-                if(bc == BandColor.Red) cameraImageYcc.Draw(colorBandRoi, new Ycc(81, 240, 90), 2);
-                if (bc == BandColor.Green) cameraImageYcc.Draw(colorBandRoi, new Ycc(144, 34, 53), 2);
-                if (bc == BandColor.Yellow) cameraImageYcc.Draw(colorBandRoi, new Ycc(210, 146, 16), 2);
-                if (bc == BandColor.Blue) cameraImageYcc.Draw(colorBandRoi, new Ycc(40, 109, 240), 2);
+                if (bc == BandColor.Red) cameraImageYccDebug.Draw(colorBandRoi, new Ycc(81, 240, 90), 2);
+                if (bc == BandColor.Green) cameraImageYccDebug.Draw(colorBandRoi, new Ycc(144, 34, 53), 2);
+                if (bc == BandColor.Yellow) cameraImageYccDebug.Draw(colorBandRoi, new Ycc(210, 146, 16), 2);
+                if (bc == BandColor.Blue) cameraImageYccDebug.Draw(colorBandRoi, new Ycc(40, 109, 240), 2);
 
-                ibxSource.Image = cameraImageYcc;
+                ibxSource.Image = cameraImageYccDebug;
 
 
                 // Compute skin connection probability
