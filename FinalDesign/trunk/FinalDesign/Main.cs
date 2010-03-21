@@ -27,7 +27,7 @@ namespace FinalSolution
         ColorStateSet colors = new ColorStateSet();
         Warper screenToCamWarper = new Warper();
         Warper irToCamWarper = new Warper();
-        int cameraPixelToRealCmRatio = 1;
+        double cameraPixelToRealCmRatio = 1;
         
         int screenWidth = Screen.PrimaryScreen.Bounds.Width;
         int screenHeight = Screen.PrimaryScreen.Bounds.Height;
@@ -40,8 +40,8 @@ namespace FinalSolution
             comm.TouchReceived += new Communicator.TouchReceivedHandler(comm_TouchReceived);
             try
             {
-                //wiimote.Connect();
-                //wiimote.SetReportType(InputReport.IRAccel, true);
+                wiimote.Connect();
+                wiimote.SetReportType(InputReport.IRAccel, true);
             }
             catch (Exception ex)
             {
@@ -70,38 +70,67 @@ namespace FinalSolution
             return points;
         }
 
+        private void clearLog()
+        {
+            BeginInvoke(new MethodInvoker(delegate() { txtOuput.Text = ""; }));
+        }
+
+        private void log(String msg)
+        {
+            BeginInvoke(new MethodInvoker(delegate() { txtOuput.Text += msg + Environment.NewLine; }));
+        }
+
         private void comm_TouchReceived(object sender, TouchEventArgs t)
         {
             CalibrationWizard sizeReference = new CalibrationWizard();
 
+            camera.QueryFrame();
+            camera.QueryFrame();
+
+            clearLog();
             TouchInfo currTouch = t.Touch;
+            log("Touch X: " + currTouch.X + " Touch Y: " + currTouch.Y);
+
             Image<Bgr, Byte> cameraImage = camera.QueryFrame().Resize(sizeReference.getCameraViewerSize().Width, sizeReference.getCameraViewerSize().Height, INTER.CV_INTER_LINEAR);
-            Image<Ycc, Byte> cameraImageYcc = cameraImage.Convert<Ycc, Byte>();
+            Image<Ycc, Byte> cameraImageYcc = cameraImage.Clone().Convert<Ycc, Byte>();
             List<WiimoteLib.PointF> irPoints = FindIRPointsInWiiCoords();
             List<Utility.ResolvedIRPoints> resolvedIrPoints = new List<Utility.ResolvedIRPoints>();
 
+            cameraPixelToRealCmRatio = 95.0 / screenWidth * 3;
+
             //Drawing code for debugging
-            Image<Ycc, Byte> cameraImageYccDebug = cameraImageYcc;
+            Image<Ycc, Byte> cameraImageYccDebug = cameraImageYcc.Clone();
             ibxSource.Image = cameraImageYccDebug;
 
             // Measure distance of each point from touch
             for (int i = 0; i < irPoints.Count; i++)
             {
+                log("");
                 Size IRViewerSize = sizeReference.getIRViewerSize();
+
+                log("Raw IR X: " + irPoints[i].X + " Raw IR Y: " + irPoints[i].Y);
                 // Normalize takes into account points that are visible to the IR but not to the camera
                 // and points in the screen not visible to the camera
                 WiimoteLib.PointF camIrPt = Utility.Normalize(irToCamWarper.warp(irPoints[i].X * IRViewerSize.Width / screenWidth, irPoints[i].Y * IRViewerSize.Height / screenHeight), sizeReference.getCameraViewerSize());
                 WiimoteLib.PointF camTouchPt = Utility.Normalize(screenToCamWarper.warp(currTouch.X, currTouch.Y), sizeReference.getCameraViewerSize());
 
+                log("Warped IR X: " + camIrPt.X + " Warped IR Y: " + camIrPt.Y);
+                log("Warped Touch X: " + camIrPt.X + " Warped Touch Y: " + camIrPt.Y);
+
                 //Draw both IR and Screen Points to ibxSource
-                cameraImageYccDebug.Draw(new Ellipse(new System.Drawing.PointF(camIrPt.X, camIrPt.Y), new SizeF(1, 1), 0), new Ycc(40, 109, 240), 2);
-                cameraImageYccDebug.Draw(new Ellipse(new System.Drawing.PointF(camTouchPt.X, camTouchPt.Y), new SizeF(1, 1), 0), new Ycc(40, 109, 240), 2);
+                cameraImageYccDebug.Draw(new Ellipse(new System.Drawing.PointF(camIrPt.X, camIrPt.Y), new SizeF(1, 1), 0), new Ycc(255, 128, 128), 2);
+                cameraImageYccDebug.Draw(new Ellipse(new System.Drawing.PointF(camTouchPt.X, camTouchPt.Y), new SizeF(1, 1), 0), new Ycc(81, 240, 90), 2);
                 ibxSource.Image = cameraImageYccDebug;
 
                 // NOTE: The ROIs have to be adjusted. The color band detection should use a smaller ROI
                 Rectangle colorBandRoi = Utility.Normalize(Utility.getBoundingBoxForColor(camIrPt), sizeReference.getCameraViewerSize());
                 // Compute color of point
-                BandColor bc = ColorState.FindBand(cameraImageYcc.GetSubRect(colorBandRoi), colors);
+                cameraImageYcc.ROI = colorBandRoi;
+                Image<Ycc, Byte> colorBandImage = new Image<Ycc,byte>(colorBandRoi.Size);
+                CvInvoke.cvCopy(cameraImageYcc, colorBandImage, IntPtr.Zero);
+
+                BandColor bc = ColorState.FindBand(colorBandImage, colors);
+                log("IR Point identified as " + bc.ToString());
 
                 //Draw Rectangle to ibxSource
                 if (bc == BandColor.Red) cameraImageYccDebug.Draw(colorBandRoi, new Ycc(81, 240, 90), 2);
@@ -111,30 +140,20 @@ namespace FinalSolution
 
                 ibxSource.Image = cameraImageYccDebug;
 
-
                 // Compute skin connection probability
                 double prob = HandProb.SkinConnectedProb(cameraImage, camTouchPt, camIrPt, cameraPixelToRealCmRatio);
+                log("P(touch, IR) = " + prob.ToString());
 
                 Rectangle rectROI = Utility.Normalize(Utility.getBoundingBox(camTouchPt, camIrPt), sizeReference.getCameraViewerSize());
-                cameraImageYcc.Draw(rectROI, new Ycc(255, 128, 128), 2);
-                ibxSource.Image = cameraImageYcc;
+                cameraImageYccDebug.Draw(rectROI, new Ycc(255, 128, 128), 2);
+                ibxSource.Image = cameraImageYccDebug;
 
-                resolvedIrPoints.Add(new Utility.ResolvedIRPoints(camIrPt, camTouchPt, bc, prob));
+                if (prob > 0)
+                {
+                    resolvedIrPoints.Add(new Utility.ResolvedIRPoints(camIrPt, camTouchPt, bc, prob));
+                }
+                cameraImageYcc.ROI = new Rectangle(0, 0, cameraImage.Width, cameraImage.Height);
             }
-
-            #region hide this temporarily
-            // NOTE: If point is too close, it's probably not the corresponding point:
-            // another person's hand (touch-coord) may have been close to a different band (IR)
-
-            /*
-            resolvedIrPoints.Sort((firstPair, nextPair) => {
-                double d1 = firstPair.Distance;
-                double d2 = nextPair.Distance;
-                d1 = (d1 < TOUCH_MIN_DIST) ? Int32.MaxValue - d1 : d1;
-                d2 = (d2 < TOUCH_MIN_DIST) ? Int32.MaxValue - d2 : d2;
-                return d1.CompareTo(d2); 
-            });*/
-            #endregion
 
             // We could try using this purely - the skin probability takes the distance into account
             resolvedIrPoints.Sort((firstPair, nextPair) =>
@@ -146,7 +165,7 @@ namespace FinalSolution
             // If no IR points were found, set Band Color to NotFound
             if (resolvedIrPoints.Count > 0)
             {
-                resolvedPoint = resolvedIrPoints[0];
+                resolvedPoint = resolvedIrPoints[resolvedIrPoints.Count - 1];
             }
             else
             {

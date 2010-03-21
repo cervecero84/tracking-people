@@ -65,8 +65,8 @@ namespace FinalSolution
         public static Rectangle getBoundingBoxForColor(WiimoteLib.PointF ir)
         {
             Rectangle r = new Rectangle();
-            r.X = (int)(ir.X - 20);
-            r.Y = (int)(ir.Y - 20);
+            r.X = (int)(ir.X - 10);
+            r.Y = (int)(ir.Y - 10);
             r.Width = r.Height = 20;
             return r;
         }

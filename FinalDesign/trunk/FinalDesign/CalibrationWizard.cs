@@ -160,19 +160,20 @@ namespace FinalSolution
                 }
 
                 // Show Skin Detection in Action
+                Image<Hsv, Byte> result = new Image<Hsv, byte>(source.Size);
                 if (cbxSkinDetection.Checked)
                 {
-                    imBoxProbImages.Image = HandProb.SkinDetect(source.Convert<Bgr, Byte>());
+                    //Image<Bgr, Byte> sourceCopy = new Image<Bgr, byte>(source.Bitmap);
+                    int w = 20, h = 20;
+                    source.ROI = new Rectangle(200 - w, 150 - h, 2*w, 2*h);
+                    Image<Gray, Byte> skin = HandProb.SkinDetect(source.Convert<Bgr, Byte>());
+                    CvInvoke.cvMerge(skin.Mul(0.04), skin.Mul(0.6), skin, IntPtr.Zero, result);
                 }
-                else
-                {
-                    Image<Hsv, Byte> result = new Image<Hsv, byte>(source.Size);
-                    if (cbxShowRed.Checked) result = result.Or(colors.Red.GetProbabilityImage(source, new Hsv(0, 1, 1)));
-                    if (cbxShowBlue.Checked) result = result.Or(colors.Blue.GetProbabilityImage(source, new Hsv(0.4, 1, 1)));
-                    if (cbxShowOrange.Checked) result = result.Or(colors.Yellow.GetProbabilityImage(source, new Hsv(0.1, 1, 1)));
-                    if (cbxShowGreen.Checked) result = result.Or(colors.Green.GetProbabilityImage(source, new Hsv(0.3, 1, 1)));
-                    imBoxProbImages.Image = result;
-                }
+                if (cbxShowRed.Checked) result = result.Or(colors.Red.GetProbabilityImage(source, new Hsv(0, 1, 1)));
+                if (cbxShowBlue.Checked) result = result.Or(colors.Blue.GetProbabilityImage(source, new Hsv(0.4, 1, 1)));
+                if (cbxShowOrange.Checked) result = result.Or(colors.Yellow.GetProbabilityImage(source, new Hsv(0.1, 1, 1)));
+                if (cbxShowGreen.Checked) result = result.Or(colors.Green.GetProbabilityImage(source, new Hsv(0.3, 1, 1)));
+                imBoxProbImages.Image = result;
                
                 IRSensor[] irS = wiimote.WiimoteState.IRState.IRSensors;
                 for (int i = 0; i < 4; i++)
@@ -190,7 +191,8 @@ namespace FinalSolution
                         System.Drawing.PointF irPointWarped = new System.Drawing.PointF(irPointTemp.X, irPointTemp.Y);
 
                         Image<Ycc, Byte> temp = new Image<Ycc, byte>(cameraCalibOutput.Image.Bitmap);
-                        temp.Draw(new Ellipse(new System.Drawing.PointF(irPointWarped.X, irPointWarped.Y), new SizeF(2, 2), 0), new Ycc(255, 128, 128), 2);
+                        temp.Draw(new Ellipse(new System.Drawing.PointF(irPointWarped.X, irPointWarped.Y), new SizeF(2, 2), 0), new Ycc(255, 128, 128), 3);
+                        temp.Draw(new Ellipse(new System.Drawing.PointF(irPointWarped.X, irPointWarped.Y), new SizeF(2, 2), 0), new Ycc(128, 128, 128), 1);
                         cameraCalibOutput.Image = temp;
                     }
                 }
@@ -453,12 +455,12 @@ namespace FinalSolution
             if (camera != null) camera.Dispose();
             if (ckbSwitchCamera.Checked)
             {
-                camera = new Capture(1);
+                camera = new Capture(0);
                 lblVideoSource.Text = "Live Web Camera 2";
             }
             else
             {
-                camera = new Capture(0);
+                camera = new Capture(1);
                 lblVideoSource.Text = "Live Web Camera 1";
             }
         }
@@ -600,6 +602,8 @@ namespace FinalSolution
                 stream.Close();
                 updateTrackbars();
                 parent.setSettings(irCalibrationPoints, camCalibrationPoints, colors, screenToCamWarper, irToCamWarper);
+                _camCalibrationState = 4;
+                _irCalibrationState = 4;
             }
         }
     }

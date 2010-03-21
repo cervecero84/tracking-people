@@ -26,19 +26,21 @@ namespace FinalSolution
         #endregion Static Variable
 
 
-        public static double SkinConnectedProb(Image<Bgr, Byte> region, WiimoteLib.PointF touch, WiimoteLib.PointF ir, float pxRatio)
+        public static double SkinConnectedProb(Image<Bgr, Byte> region, WiimoteLib.PointF touch, WiimoteLib.PointF ir, double pxRatio)
         {
             // Probability this is a hand, by size of hand
-            double sizeProb = HandSizeProb(touch, ir, pxRatio);
+            double sizeProb = 1;// HandSizeProb(touch, ir, pxRatio);
 
             // Create a bounding box and look at the number of skin pixels to compute a prob of skin connection
             // between the touch point and the IR point
             Image<Bgr, Byte> handROI=region.Clone();
             CalibrationWizard sizeReference = new CalibrationWizard();
             Rectangle rectROI = Utility.Normalize(Utility.getBoundingBox(touch, ir), sizeReference.getCameraViewerSize());
-            CvInvoke.cvSetImageROI(handROI, rectROI);
-            Image<Bgr, Byte> hand = new Image<Bgr,byte>(rectROI.Size);
-            CvInvoke.cvGetSubRect(handROI, hand, rectROI);
+
+            handROI.ROI = rectROI;
+            Image<Bgr, Byte> hand = new Image<Bgr, byte>(rectROI.Size);
+            CvInvoke.cvCopy(handROI, hand, IntPtr.Zero);
+
             Image<Gray, byte> skinPixels = SkinDetect(hand);
             double skinProb = skinPixels.GetAverage().Intensity / (skinPixels.Rows * skinPixels.Cols * 0.75); // 0.75 is a fudge factor, since hand will most like occupy a whole rectangle of ROI region
 
@@ -70,9 +72,9 @@ namespace FinalSolution
             Saturation = sqrt(Rg^2 + By^2)
             */
 
-            for (int j = skin.Width - 1; j >= 0; j--)
+            for (int i = skin.Height - 1; i >= 0; i--)
             {
-                for (int i = skin.Height - 1; i >= 0; i--)
+                for (int j = skin.Width - 1; j >= 0; j--)
                 {
 
                     int R = Img.Data[i, j, 2];

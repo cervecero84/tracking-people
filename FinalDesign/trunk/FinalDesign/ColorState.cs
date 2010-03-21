@@ -73,7 +73,7 @@ namespace FinalSolution
 
             colorProbs.Sort((firstPair, nextPair) => { return firstPair.Value.CompareTo(nextPair.Value); });
 
-            return colorProbs[0].Key;
+            return colorProbs[3].Key;
         }
 
         /// <summary>

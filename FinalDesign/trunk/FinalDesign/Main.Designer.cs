@@ -29,27 +29,15 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.ibxOutput = new Emgu.CV.UI.ImageBox();
             this.ibxSource = new Emgu.CV.UI.ImageBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.btnSettings = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.ibxOutput)).BeginInit();
+            this.txtOuput = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.ibxSource)).BeginInit();
             this.SuspendLayout();
-            // 
-            // ibxOutput
-            // 
-            this.ibxOutput.BackColor = System.Drawing.SystemColors.ControlText;
-            this.ibxOutput.Cursor = System.Windows.Forms.Cursors.Cross;
-            this.ibxOutput.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
-            this.ibxOutput.Location = new System.Drawing.Point(465, 28);
-            this.ibxOutput.Name = "ibxOutput";
-            this.ibxOutput.Size = new System.Drawing.Size(400, 300);
-            this.ibxOutput.TabIndex = 11;
-            this.ibxOutput.TabStop = false;
             // 
             // ibxSource
             // 
@@ -67,9 +55,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(462, 12);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(45, 13);
+            this.label2.Size = new System.Drawing.Size(81, 13);
             this.label2.TabIndex = 16;
-            this.label2.Text = "Wiimote";
+            this.label2.Text = "Verbose Output";
             // 
             // label1
             // 
@@ -109,21 +97,28 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // txtOuput
+            // 
+            this.txtOuput.Location = new System.Drawing.Point(465, 29);
+            this.txtOuput.Multiline = true;
+            this.txtOuput.Name = "txtOuput";
+            this.txtOuput.Size = new System.Drawing.Size(430, 299);
+            this.txtOuput.TabIndex = 20;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(907, 394);
+            this.Controls.Add(this.txtOuput);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.btnSettings);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.ibxOutput);
             this.Controls.Add(this.ibxSource);
             this.Name = "Main";
             this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.ibxOutput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ibxSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -132,13 +127,13 @@
 
         #endregion
 
-        private Emgu.CV.UI.ImageBox ibxOutput;
         private Emgu.CV.UI.ImageBox ibxSource;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnSettings;
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox txtOuput;
     }
 }
 
