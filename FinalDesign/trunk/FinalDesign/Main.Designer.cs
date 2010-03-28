@@ -36,7 +36,11 @@
             this.lblStatus = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.txtOuput = new System.Windows.Forms.TextBox();
+            this.cbxShowColors = new System.Windows.Forms.CheckBox();
+            this.ibxColors = new Emgu.CV.UI.ImageBox();
+            this.cbxDrawMode = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.ibxSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ibxColors)).BeginInit();
             this.SuspendLayout();
             // 
             // ibxSource
@@ -105,11 +109,45 @@
             this.txtOuput.Size = new System.Drawing.Size(430, 299);
             this.txtOuput.TabIndex = 20;
             // 
+            // cbxShowColors
+            // 
+            this.cbxShowColors.AutoSize = true;
+            this.cbxShowColors.Location = new System.Drawing.Point(465, 434);
+            this.cbxShowColors.Name = "cbxShowColors";
+            this.cbxShowColors.Size = new System.Drawing.Size(85, 17);
+            this.cbxShowColors.TabIndex = 21;
+            this.cbxShowColors.Text = "Show Colors";
+            this.cbxShowColors.UseVisualStyleBackColor = true;
+            // 
+            // ibxColors
+            // 
+            this.ibxColors.BackColor = System.Drawing.SystemColors.ControlText;
+            this.ibxColors.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.ibxColors.FunctionalMode = Emgu.CV.UI.ImageBox.FunctionalModeOption.Minimum;
+            this.ibxColors.Location = new System.Drawing.Point(29, 388);
+            this.ibxColors.Name = "ibxColors";
+            this.ibxColors.Size = new System.Drawing.Size(400, 300);
+            this.ibxColors.TabIndex = 22;
+            this.ibxColors.TabStop = false;
+            // 
+            // cbxDrawMode
+            // 
+            this.cbxDrawMode.AutoSize = true;
+            this.cbxDrawMode.Location = new System.Drawing.Point(465, 411);
+            this.cbxDrawMode.Name = "cbxDrawMode";
+            this.cbxDrawMode.Size = new System.Drawing.Size(81, 17);
+            this.cbxDrawMode.TabIndex = 23;
+            this.cbxDrawMode.Text = "Draw Mode";
+            this.cbxDrawMode.UseVisualStyleBackColor = true;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(907, 394);
+            this.ClientSize = new System.Drawing.Size(907, 702);
+            this.Controls.Add(this.cbxDrawMode);
+            this.Controls.Add(this.ibxColors);
+            this.Controls.Add(this.cbxShowColors);
             this.Controls.Add(this.txtOuput);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.lblStatus);
@@ -120,6 +158,7 @@
             this.Name = "Main";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.ibxSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ibxColors)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -134,6 +173,9 @@
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox txtOuput;
+        private System.Windows.Forms.CheckBox cbxShowColors;
+        private Emgu.CV.UI.ImageBox ibxColors;
+        private System.Windows.Forms.CheckBox cbxDrawMode;
     }
 }
 

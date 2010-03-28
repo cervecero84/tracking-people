@@ -73,6 +73,9 @@ namespace FinalSolution
 
             colorProbs.Sort((firstPair, nextPair) => { return firstPair.Value.CompareTo(nextPair.Value); });
 
+            // If the band is not found (all probabilies are 0)
+            if (colorProbs[3].Value < 0.01) return BandColor.NotFound;
+
             return colorProbs[3].Key;
         }
 

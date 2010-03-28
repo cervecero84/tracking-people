@@ -164,17 +164,17 @@ namespace FinalSolution
                 if (cbxSkinDetection.Checked)
                 {
                     //Image<Bgr, Byte> sourceCopy = new Image<Bgr, byte>(source.Bitmap);
-                    int w = 20, h = 20;
-                    source.ROI = new Rectangle(200 - w, 150 - h, 2*w, 2*h);
+                    //int w = 20, h = 20;
+                    //source.ROI = new Rectangle(200 - w, 150 - h, 2*w, 2*h);
                     Image<Gray, Byte> skin = HandProb.SkinDetect(source.Convert<Bgr, Byte>());
-                    CvInvoke.cvMerge(skin.Mul(0.04), skin.Mul(0.6), skin, IntPtr.Zero, result);
+                    CvInvoke.cvMerge(IntPtr.Zero, skin.Mul(0.5), skin, IntPtr.Zero, result);
                 }
                 if (cbxShowRed.Checked) result = result.Or(colors.Red.GetProbabilityImage(source, new Hsv(0, 1, 1)));
                 if (cbxShowBlue.Checked) result = result.Or(colors.Blue.GetProbabilityImage(source, new Hsv(0.4, 1, 1)));
                 if (cbxShowOrange.Checked) result = result.Or(colors.Yellow.GetProbabilityImage(source, new Hsv(0.1, 1, 1)));
                 if (cbxShowGreen.Checked) result = result.Or(colors.Green.GetProbabilityImage(source, new Hsv(0.3, 1, 1)));
                 imBoxProbImages.Image = result;
-               
+
                 IRSensor[] irS = wiimote.WiimoteState.IRState.IRSensors;
                 for (int i = 0; i < 4; i++)
                 {
