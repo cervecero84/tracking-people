@@ -39,6 +39,7 @@
             this.cbxShowColors = new System.Windows.Forms.CheckBox();
             this.ibxColors = new Emgu.CV.UI.ImageBox();
             this.cbxDrawMode = new System.Windows.Forms.CheckBox();
+            this.cbxRandomOutput = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.ibxSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ibxColors)).BeginInit();
             this.SuspendLayout();
@@ -106,13 +107,14 @@
             this.txtOuput.Location = new System.Drawing.Point(465, 29);
             this.txtOuput.Multiline = true;
             this.txtOuput.Name = "txtOuput";
+            this.txtOuput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtOuput.Size = new System.Drawing.Size(430, 299);
             this.txtOuput.TabIndex = 20;
             // 
             // cbxShowColors
             // 
             this.cbxShowColors.AutoSize = true;
-            this.cbxShowColors.Location = new System.Drawing.Point(465, 434);
+            this.cbxShowColors.Location = new System.Drawing.Point(465, 446);
             this.cbxShowColors.Name = "cbxShowColors";
             this.cbxShowColors.Size = new System.Drawing.Size(85, 17);
             this.cbxShowColors.TabIndex = 21;
@@ -133,18 +135,29 @@
             // cbxDrawMode
             // 
             this.cbxDrawMode.AutoSize = true;
-            this.cbxDrawMode.Location = new System.Drawing.Point(465, 411);
+            this.cbxDrawMode.Location = new System.Drawing.Point(465, 423);
             this.cbxDrawMode.Name = "cbxDrawMode";
             this.cbxDrawMode.Size = new System.Drawing.Size(81, 17);
             this.cbxDrawMode.TabIndex = 23;
             this.cbxDrawMode.Text = "Draw Mode";
             this.cbxDrawMode.UseVisualStyleBackColor = true;
             // 
+            // cbxRandomOutput
+            // 
+            this.cbxRandomOutput.AutoSize = true;
+            this.cbxRandomOutput.Location = new System.Drawing.Point(465, 400);
+            this.cbxRandomOutput.Name = "cbxRandomOutput";
+            this.cbxRandomOutput.Size = new System.Drawing.Size(101, 17);
+            this.cbxRandomOutput.TabIndex = 24;
+            this.cbxRandomOutput.Text = "Random Output";
+            this.cbxRandomOutput.UseVisualStyleBackColor = true;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(907, 702);
+            this.Controls.Add(this.cbxRandomOutput);
             this.Controls.Add(this.cbxDrawMode);
             this.Controls.Add(this.ibxColors);
             this.Controls.Add(this.cbxShowColors);
@@ -176,6 +189,7 @@
         private System.Windows.Forms.CheckBox cbxShowColors;
         private Emgu.CV.UI.ImageBox ibxColors;
         private System.Windows.Forms.CheckBox cbxDrawMode;
+        private System.Windows.Forms.CheckBox cbxRandomOutput;
     }
 }
 

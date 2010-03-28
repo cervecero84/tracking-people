@@ -110,6 +110,10 @@ namespace FinalSolution
             {
                 //cameraCalibOutput.Image = camera.QueryFrame().Resize(cameraCalibOutput.Width, cameraCalibOutput.Height, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR);
 
+                // Throw away frames in buffer
+                camera.QueryFrame();
+                camera.QueryFrame();
+
                 Image<Ycc, Byte> source = camera.QueryFrame().Convert<Ycc, byte>();
                 
 

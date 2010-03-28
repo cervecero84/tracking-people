@@ -41,6 +41,17 @@ namespace FinalSolution
             Image<Bgr, Byte> hand = new Image<Bgr, byte>(rectROI.Size);
             CvInvoke.cvCopy(handROI, hand, IntPtr.Zero);
 
+            // Normalized to the bounding box
+            ir.X = ir.X - rectROI.X;
+            ir.Y = ir.Y - rectROI.Y;
+            touch.X = touch.X - rectROI.X;
+            touch.Y = touch.Y - rectROI.Y;
+
+            //ImageViewer skinView = new ImageViewer();
+            //skinView.Text = "Skin Image Original";
+            //skinView.Image = hand;
+            //skinView.ShowDialog();
+
             Image<Gray, byte> skinPixels = SkinDetect(hand);
             double skinProb = getConnectionProbability(ir, touch, skinPixels);
 
@@ -68,6 +79,11 @@ namespace FinalSolution
 
         public static double getConnectionProbability(WiimoteLib.PointF ir, WiimoteLib.PointF touch, Image<Gray, Byte> skin)
         {
+            //ImageViewer skinView = new ImageViewer();
+            //skinView.Text = "Skin Image";
+            //skinView.Image = skin;
+            //skinView.ShowDialog();
+
             double m = (touch.Y - ir.Y)/(touch.X - ir.X);
             double b = touch.Y - touch.X * m;
             double prob = 0;
@@ -94,17 +110,34 @@ namespace FinalSolution
                     }
                     else
                     {
-                        dist = Math.Sqrt(Math.Pow(i - (m * j + b), 2) + Math.Pow(j - (i - b) / m, 2));
+                        // Perpendicular distance from a point to a line
+                        // Source: http://www.intmath.com/Plane-analytic-geometry/Perpendicular-distance-point-line.php
+                        double A = m;
+                        double B = -1;
+                        double C = b;
+                        dist = Math.Abs(A * j + B * i + C) / Math.Sqrt(A * A + B * B);
                     }
-                    // Quadratically reducing weights as move away from quasi-diagonal
+
+                    // Minimum distance has to be 1
+                    dist += 1;
                     dist *= dist;
+
+                    // Quadratically reducing weights as move away from quasi-diagonal
+                    //dist *= dist;
                     prob += skin.Data[i,j,0] / dist;
-                    result.Data[i, j, 0] = (byte)prob;
+                    result.Data[i, j, 0] = (byte)(skin.Data[i, j, 0] / dist);
                     total += 255 / dist;
                 }
             }
 
-            result._EqualizeHist();
+            //result._EqualizeHist();
+            //ImageViewer view = new ImageViewer();
+            //view.Text = "Weighted Probability Image";
+            //Image<Bgr, Byte> resultBgr = result.Convert<Bgr, Byte>();
+            //resultBgr.Draw(new LineSegment2D(new System.Drawing.Point((int)ir.X, (int)ir.Y), new System.Drawing.Point((int)touch.X, (int)touch.Y)), new Bgr(Color.Red), 3);
+            //resultBgr.Draw(new LineSegment2D(new System.Drawing.Point(0, (int)b), new System.Drawing.Point((int)skin.Width-1, (int)(m*(skin.Width-1)+b))), new Bgr(Color.Blue), 1);
+            //view.Image = resultBgr;
+            //view.ShowDialog();
 
             return prob / total;
         }

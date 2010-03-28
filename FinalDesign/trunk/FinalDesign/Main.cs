@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Diagnostics;
 using TableTopCommunicator;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
@@ -20,6 +21,7 @@ namespace FinalSolution
         Communicator comm = new Communicator();
         Capture camera = new Capture();
         Wiimote wiimote = new Wiimote();
+        Stopwatch stopWatch = new Stopwatch();
 
         // Calibration Information
         CalibrationPoints irCalibrationPoints = new CalibrationPoints();
@@ -72,39 +74,65 @@ namespace FinalSolution
 
         private void clearLog()
         {
+            BeginInvoke(new MethodInvoker(delegate() { stopWatch.Reset(); stopWatch.Start(); }));
             BeginInvoke(new MethodInvoker(delegate() { txtOuput.Text = ""; }));
         }
 
         private void log(String msg)
         {
-            BeginInvoke(new MethodInvoker(delegate() { txtOuput.Text += msg + Environment.NewLine; }));
+            BeginInvoke(new MethodInvoker(delegate()
+            {
+                stopWatch.Stop();
+                if (msg == "") msg = "          *** ***         ";
+                txtOuput.Text += "[" + stopWatch.ElapsedMilliseconds + " ms]" + msg + Environment.NewLine;
+                stopWatch.Start();
+            }));
         }
 
         private void comm_TouchReceived(object sender, TouchEventArgs t)
         {
+            clearLog();
             CalibrationWizard sizeReference = new CalibrationWizard();
 
             camera.QueryFrame();
             camera.QueryFrame();
+            log("Camera buffer cleared");
 
-            clearLog();
             TouchInfo currTouch = t.Touch;
             log("Touch X: " + currTouch.X + " Touch Y: " + currTouch.Y);
 
-            Image<Bgr, Byte> cameraImage = camera.QueryFrame().Resize(sizeReference.getCameraViewerSize().Width, sizeReference.getCameraViewerSize().Height, INTER.CV_INTER_LINEAR);
+            Image<Bgr, Byte> cameraImage = camera.QueryFrame();
+            log("Camera output acuired for processing");
+            cameraImage = cameraImage.Resize(sizeReference.getCameraViewerSize().Width, sizeReference.getCameraViewerSize().Height, INTER.CV_INTER_LINEAR);
+            log("Camera output resized");
+
             Image<Ycc, Byte> cameraImageYcc = cameraImage.Clone().Convert<Ycc, Byte>();
+            log("Image cloned and colorspace converted");
+
+            if (cbxRandomOutput.Checked)
+            {
+                Random r = new Random();
+                currTouch.setInfo((Colors)Enum.Parse(typeof(Colors), Enum.GetName(typeof(BandColor), (BandColor)r.Next(0, 5)), true), 0);
+                comm.UpdateTouchInfo(currTouch);
+                log("Random output given");
+                return;
+            }
 
             if (cbxShowColors.Checked)
             {
                 Image<Hsv, Byte> result = new Image<Hsv, byte>(cameraImage.Width, cameraImage.Height);
+                Image<Gray, Byte> skin = HandProb.SkinDetect(cameraImage);
+                CvInvoke.cvMerge(IntPtr.Zero, skin.Mul(0.5), skin, IntPtr.Zero, result);
                 result = result.Or(colors.Red.GetProbabilityImage(cameraImageYcc, new Hsv(0, 1, 1)));
                 result = result.Or(colors.Blue.GetProbabilityImage(cameraImageYcc, new Hsv(0.4, 1, 1)));
                 result = result.Or(colors.Yellow.GetProbabilityImage(cameraImageYcc, new Hsv(0.1, 1, 1)));
                 result = result.Or(colors.Green.GetProbabilityImage(cameraImageYcc, new Hsv(0.3, 1, 1)));
                 ibxColors.Image = result;
+                log("Colors and skin drawn in secondary monitor");
             }
 
             List<WiimoteLib.PointF> irPoints = FindIRPointsInWiiCoords();
+            log("IR Points obtained from Wiimote");
             List<Utility.ResolvedIRPoints> resolvedIrPoints = new List<Utility.ResolvedIRPoints>();
 
             double screenWidthInCam = (Math.Max(Math.Abs(camCalibrationPoints.TL.Y - camCalibrationPoints.TR.Y), Math.Abs(camCalibrationPoints.TL.X - camCalibrationPoints.TR.X))
@@ -114,6 +142,7 @@ namespace FinalSolution
             //Drawing code for debugging
             Image<Ycc, Byte> cameraImageYccDebug = cameraImageYcc.Clone();
             if (cbxDrawMode.Checked) ibxSource.Image = cameraImageYccDebug;
+            log("Clone image for debug output created");
 
             // Measure distance of each point from touch
             for (int i = 0; i < irPoints.Count; i++)
@@ -176,8 +205,8 @@ namespace FinalSolution
                 }
                 if (cbxDrawMode.Checked) ibxSource.Image = cameraImageYccDebug;
 
-                // Probability has to be at least 0.5%
-                if (prob > 0.005)
+                // Probability has to be at least 5%
+                if (prob > 0.05)
                 {
                     resolvedIrPoints.Add(new Utility.ResolvedIRPoints(camIrPt, camTouchPt, bc, prob));
                 }
