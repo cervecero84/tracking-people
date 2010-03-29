@@ -26,7 +26,7 @@ namespace FinalSolution
         #endregion Static Variable
 
 
-        public static double SkinConnectedProb(Image<Bgr, Byte> region, WiimoteLib.PointF touch, WiimoteLib.PointF ir, double pxRatio, ref double sizeP, ref double skinP)
+        public static double SkinConnectedProb(Image<Bgr, Byte> region, WiimoteLib.PointF touch, WiimoteLib.PointF ir, double pxRatio, Size cameraViewerSize, ref double sizeP, ref double skinP)
         {
             // Probability this is a hand, by size of hand
             double sizeProb = HandSizeProb(touch, ir, (float)pxRatio);
@@ -34,8 +34,7 @@ namespace FinalSolution
             // Create a bounding box and look at the number of skin pixels to compute a prob of skin connection
             // between the touch point and the IR point
             Image<Bgr, Byte> handROI=region.Clone();
-            CalibrationWizard sizeReference = new CalibrationWizard();
-            Rectangle rectROI = Utility.Normalize(Utility.getBoundingBox(touch, ir), sizeReference.getCameraViewerSize());
+            Rectangle rectROI = Utility.Normalize(Utility.getBoundingBox(touch, ir), cameraViewerSize);
 
             handROI.ROI = rectROI;
             Image<Bgr, Byte> hand = new Image<Bgr, byte>(rectROI.Size);
