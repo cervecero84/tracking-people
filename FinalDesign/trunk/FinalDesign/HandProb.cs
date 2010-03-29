@@ -84,8 +84,14 @@ namespace FinalSolution
             //skinView.Image = skin;
             //skinView.ShowDialog();
 
-            double m = (touch.Y - ir.Y)/(touch.X - ir.X);
-            double b = touch.Y - touch.X * m;
+            float tY = touch.Y, irY = ir.Y, tX = touch.X, irX = ir.X;
+            double m = (tY - irY)/(tX - irX);
+            double b = tY - tX * m;
+            
+            double A = m;
+            double B = -1;
+            double C = b;
+
             double prob = 0;
 
             Image<Gray, Byte> result = new Image<Gray, byte>(skin.Width, skin.Height);
@@ -93,6 +99,9 @@ namespace FinalSolution
             int h = skin.Height;
             int w = skin.Width;
             double total = 0;
+
+            byte[, ,] sdata = skin.Data;
+            byte[, ,] rdata = result.Data;
 
             for (int i = 0; i < h; i++)
             {
@@ -102,19 +111,16 @@ namespace FinalSolution
                     double dist = 0;
                     if (Double.IsInfinity(m))
                     {
-                        dist = Math.Abs(i - touch.Y);
+                        dist = Math.Abs(i - tY);
                     }
                     else if (m == 0)
                     {
-                        dist = Math.Abs(j - touch.X);
+                        dist = Math.Abs(j - tX);
                     }
                     else
                     {
                         // Perpendicular distance from a point to a line
                         // Source: http://www.intmath.com/Plane-analytic-geometry/Perpendicular-distance-point-line.php
-                        double A = m;
-                        double B = -1;
-                        double C = b;
                         dist = Math.Abs(A * j + B * i + C) / Math.Sqrt(A * A + B * B);
                     }
 
@@ -124,8 +130,8 @@ namespace FinalSolution
 
                     // Quadratically reducing weights as move away from quasi-diagonal
                     //dist *= dist;
-                    prob += skin.Data[i,j,0] / dist;
-                    result.Data[i, j, 0] = (byte)(skin.Data[i, j, 0] / dist);
+                    prob += sdata[i,j,0] / dist;
+                    rdata[i, j, 0] = (byte)(sdata[i, j, 0] / dist);
                     total += 255 / dist;
                 }
             }
@@ -146,8 +152,8 @@ namespace FinalSolution
         {
 
             Image<Gray, byte> S = new Image<Gray, byte>(Img.Width, Img.Height);
-            Image<Gray, byte> skin = new Image<Gray, byte>(Img.Width, Img.Height);
 
+            #region hide comments
             /* convert RGB color space to IRgBy color space using this formula:
             http://www.cs.hmc.edu/~fleck/naked-skin.html
             I = L(G)
@@ -158,15 +164,19 @@ namespace FinalSolution
             hue = atan2(Rg,By) * (180 / 3.141592654f)
             Saturation = sqrt(Rg^2 + By^2)
             */
+            #endregion
 
-            for (int i = skin.Height - 1; i >= 0; i--)
+            byte[, ,] iData = Img.Data;
+            byte[, ,] sData = S.Data;
+
+            for (int i = S.Height - 1; i >= 0; i--)
             {
-                for (int j = skin.Width - 1; j >= 0; j--)
+                for (int j = S.Width - 1; j >= 0; j--)
                 {
 
-                    int R = Img.Data[i, j, 2];
-                    int G = Img.Data[i, j, 1];
-                    int B = Img.Data[i, j, 0];
+                    int R = iData[i, j, 2];
+                    int G = iData[i, j, 1];
+                    int B = iData[i, j, 0];
 
                     double Rg = Math.Log(R) - Math.Log(G);
                     double By = Math.Log(B) - (Math.Log(G) + Math.Log(R)) / 2;
@@ -177,22 +187,15 @@ namespace FinalSolution
 
                     if (sat_val >= 20 && sat_val <= 130 && hue_val >= 110 && hue_val <= 180) //I simplified the naked people filter's two overlapping criteria
                     {
-                        S[i, j] = new Gray(255);
+                        sData[i, j, 0] = 255;
                     }
                     else
                     {
-                        S[i, j] = new Gray(0);
+                        sData[i, j,0] = 0;
                     }
                 }
             }
-
-
-            //skin = S.Erode(1);
-            //if (medianLevel % 2 == 0) medianLevel = medianLevel + 1;
-            //skin = S.SmoothMedian(medianLevel); // median filter is used so that the image will be kept black and white
-
             return S;
-
         }
 
         public static double getOrientation(WiimoteLib.PointF irPoint, WiimoteLib.PointF touchPoint)
