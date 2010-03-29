@@ -43,6 +43,7 @@ namespace FinalSolution
 
             //camera.FlipHorizontal = true;
             comm.TouchReceived += new Communicator.TouchReceivedHandler(comm_TouchReceived);
+
             try
             {
                 //wiimote.Connect();
@@ -98,10 +99,13 @@ namespace FinalSolution
 
         private void comm_TouchReceived(object sender, TouchEventArgs t)
         {
+            //VideoSource.Start();
             clearLog();
             log("Log cleared");
 
-            //camera.QueryFrame();
+            Image<Bgr, Byte> bclr = camera.QuerySmallFrame();
+            log("Buffer cleared");
+
             log("StopWatch running in high resolution mode: " + Stopwatch.IsHighResolution + " Frequency: " + Stopwatch.Frequency);
 
             TouchInfo currTouch = t.Touch;
@@ -244,8 +248,6 @@ namespace FinalSolution
                 (int)(HandProb.getOrientation(resolvedPoint.IRPoint, resolvedPoint.TouchPoint) * 180.0 / Math.PI));
             log("Orientation of resolved point: " + (int)(HandProb.getOrientation(resolvedPoint.IRPoint, resolvedPoint.TouchPoint) * 180.0 / Math.PI));
             comm.UpdateTouchInfo(currTouch);
-            camera.QueryFrame();
-            log("Buffer cleared");
         }
 
         private void btnSettings_Click(object sender, EventArgs e)
@@ -262,13 +264,6 @@ namespace FinalSolution
             colors = cs;
             screenToCamWarper = s2C;
             irToCamWarper = i2C;
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            colors.Red.DilationValue = 5;
-            colors.Red.ErosionValue = 5;
-            colors.Red.ThresholdValue = 230;
         }
     }
 }

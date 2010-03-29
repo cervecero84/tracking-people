@@ -34,7 +34,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnSettings = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.txtOuput = new System.Windows.Forms.TextBox();
             this.cbxShowColors = new System.Windows.Forms.CheckBox();
             this.ibxColors = new Emgu.CV.UI.ImageBox();
@@ -91,16 +90,6 @@
             this.lblStatus.Size = new System.Drawing.Size(37, 13);
             this.lblStatus.TabIndex = 18;
             this.lblStatus.Text = "Status";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(465, 340);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 19;
-            this.button1.Text = "Update Color Vals";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // txtOuput
             // 
@@ -162,7 +151,6 @@
             this.Controls.Add(this.ibxColors);
             this.Controls.Add(this.cbxShowColors);
             this.Controls.Add(this.txtOuput);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.btnSettings);
             this.Controls.Add(this.label2);
@@ -184,7 +172,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnSettings;
         private System.Windows.Forms.Label lblStatus;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox txtOuput;
         private System.Windows.Forms.CheckBox cbxShowColors;
         private Emgu.CV.UI.ImageBox ibxColors;
