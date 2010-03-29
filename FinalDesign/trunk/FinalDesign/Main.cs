@@ -30,6 +30,9 @@ namespace FinalSolution
         Warper screenToCamWarper = new Warper();
         Warper irToCamWarper = new Warper();
         double cameraPixelToRealCmRatio = 1;
+
+        // For size reference of controls used in calibration
+        CalibrationWizard sizeReference = new CalibrationWizard();
         
         int screenWidth = Screen.PrimaryScreen.Bounds.Width;
         int screenHeight = Screen.PrimaryScreen.Bounds.Height;
@@ -42,8 +45,8 @@ namespace FinalSolution
             comm.TouchReceived += new Communicator.TouchReceivedHandler(comm_TouchReceived);
             try
             {
-                wiimote.Connect();
-                wiimote.SetReportType(InputReport.IRAccel, true);
+                //wiimote.Connect();
+                //wiimote.SetReportType(InputReport.IRAccel, true);
             }
             catch (Exception ex)
             {
@@ -92,17 +95,18 @@ namespace FinalSolution
         private void comm_TouchReceived(object sender, TouchEventArgs t)
         {
             clearLog();
-            CalibrationWizard sizeReference = new CalibrationWizard();
+            log("Log cleared");
 
-            camera.QueryFrame();
-            camera.QueryFrame();
-            log("Camera buffer cleared");
+            //camera.QueryFrame();
+            //camera.QueryFrame();
+            //log("Buffer cleared");
 
             TouchInfo currTouch = t.Touch;
             log("Touch X: " + currTouch.X + " Touch Y: " + currTouch.Y);
 
             Image<Bgr, Byte> cameraImage = camera.QueryFrame();
             log("Camera output acuired for processing");
+            
             cameraImage = cameraImage.Resize(sizeReference.getCameraViewerSize().Width, sizeReference.getCameraViewerSize().Height, INTER.CV_INTER_LINEAR);
             log("Camera output resized");
 
@@ -190,7 +194,7 @@ namespace FinalSolution
 
                 // Compute skin connection probability
                 double sizeProb = 0, skinProb = 0;
-                double prob = HandProb.SkinConnectedProb(cameraImage, camTouchPt, camIrPt, cameraPixelToRealCmRatio, ref sizeProb, ref skinProb);
+                double prob = HandProb.SkinConnectedProb(cameraImage, camTouchPt, camIrPt, cameraPixelToRealCmRatio, sizeReference.getCameraViewerSize(), ref sizeProb, ref skinProb);
                 
                 // DEBUG: Calculate hand size just for log output
                 double dist = Math.Sqrt(Math.Pow(((camTouchPt.X - camIrPt.X) * cameraPixelToRealCmRatio), 2) + Math.Pow(((camTouchPt.Y - camIrPt.Y) * cameraPixelToRealCmRatio), 2));
