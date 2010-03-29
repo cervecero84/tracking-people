@@ -77,12 +77,15 @@ namespace FinalSolution
 
         private void clearLog()
         {
+#if DEBUG
             BeginInvoke(new MethodInvoker(delegate() { stopWatch.Reset(); stopWatch.Start(); }));
             BeginInvoke(new MethodInvoker(delegate() { txtOuput.Text = ""; }));
+#endif
         }
 
         private void log(String msg)
         {
+#if DEBUG
             BeginInvoke(new MethodInvoker(delegate()
             {
                 stopWatch.Stop();
@@ -90,6 +93,7 @@ namespace FinalSolution
                 txtOuput.Text += "[" + stopWatch.ElapsedMilliseconds + " ms]" + msg + Environment.NewLine;
                 stopWatch.Start();
             }));
+#endif
         }
 
         private void comm_TouchReceived(object sender, TouchEventArgs t)
@@ -98,8 +102,7 @@ namespace FinalSolution
             log("Log cleared");
 
             //camera.QueryFrame();
-            //camera.QueryFrame();
-            //log("Buffer cleared");
+            log("StopWatch running in high resolution mode: " + Stopwatch.IsHighResolution + " Frequency: " + Stopwatch.Frequency);
 
             TouchInfo currTouch = t.Touch;
             log("Touch X: " + currTouch.X + " Touch Y: " + currTouch.Y);
@@ -119,6 +122,8 @@ namespace FinalSolution
                 currTouch.setInfo((Colors)Enum.Parse(typeof(Colors), Enum.GetName(typeof(BandColor), (BandColor)r.Next(0, 5)), true), 0);
                 comm.UpdateTouchInfo(currTouch);
                 log("Random output given");
+                camera.QueryFrame();
+                log("Buffer cleared");
                 return;
             }
 
@@ -239,6 +244,8 @@ namespace FinalSolution
                 (int)(HandProb.getOrientation(resolvedPoint.IRPoint, resolvedPoint.TouchPoint) * 180.0 / Math.PI));
             log("Orientation of resolved point: " + (int)(HandProb.getOrientation(resolvedPoint.IRPoint, resolvedPoint.TouchPoint) * 180.0 / Math.PI));
             comm.UpdateTouchInfo(currTouch);
+            camera.QueryFrame();
+            log("Buffer cleared");
         }
 
         private void btnSettings_Click(object sender, EventArgs e)
