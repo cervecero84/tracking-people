@@ -38,6 +38,10 @@ namespace FinalSolution
 
             handROI.ROI = rectROI;
             Image<Bgr, Byte> hand = new Image<Bgr, byte>(rectROI.Size);
+
+            // In some cases bounding box is of size 0
+            if (hand.Width < 1 || hand.Height < 1) return 0;
+
             CvInvoke.cvCopy(handROI, hand, IntPtr.Zero);
 
             // Normalized to the bounding box

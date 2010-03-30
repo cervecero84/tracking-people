@@ -120,8 +120,8 @@ namespace FinalSolution
         {
             if (r.X < 0) r.X = 0;
             if (r.Y < 0) r.Y = 0;
-            if (r.X + r.Width > s.Width) r.Width = s.Width - 1;
-            if (r.Y + r.Height > s.Height) r.Height = s.Height - 1;
+            if (r.X + r.Width > s.Width) r.Width = s.Width - r.X - 1;
+            if (r.Y + r.Height > s.Height) r.Height = s.Height - r.Y - 1;
             return r;
         }
     }

@@ -46,8 +46,8 @@ namespace FinalSolution
 
             try
             {
-                //wiimote.Connect();
-                //wiimote.SetReportType(InputReport.IRAccel, true);
+                wiimote.Connect();
+                wiimote.SetReportType(InputReport.IRAccel, true);
             }
             catch (Exception ex)
             {
@@ -197,6 +197,7 @@ namespace FinalSolution
                     if (bc == BandColor.Green) cameraImageYccDebug.Draw(colorBandRoi, new Ycc(144, 34, 53), 2);
                     if (bc == BandColor.Yellow) cameraImageYccDebug.Draw(colorBandRoi, new Ycc(210, 146, 16), 2);
                     if (bc == BandColor.Blue) cameraImageYccDebug.Draw(colorBandRoi, new Ycc(40, 109, 240), 2);
+                    if (bc == BandColor.NotFound) cameraImageYccDebug.Draw(colorBandRoi, new Ycc(255, 128, 128), 2);
                 }
 
                 if (cbxDrawMode.Checked) ibxSource.Image = cameraImageYccDebug;
@@ -243,10 +244,15 @@ namespace FinalSolution
                 resolvedPoint = new Utility.ResolvedIRPoints(new WiimoteLib.PointF(), new WiimoteLib.PointF(), BandColor.NotFound, -1);
             }
 
+            int cameraViewBaseAngle1 = 180 - (int)(Math.Atan2(camCalibrationPoints.TR.Y - camCalibrationPoints.TL.Y,
+                camCalibrationPoints.TR.X - camCalibrationPoints.TL.X) * 180 / Math.PI);
+            int cameraViewBaseAngle2 = 180 - (int)(Math.Atan2(camCalibrationPoints.TR.Y - camCalibrationPoints.TL.Y,
+                camCalibrationPoints.TR.X - camCalibrationPoints.TL.X) * 180 / Math.PI);
+            int cameraViewBaseAngle = (cameraViewBaseAngle1 + cameraViewBaseAngle2) / 2;
             // Update the touch
             currTouch.setInfo((Colors)Enum.Parse(typeof(Colors),Enum.GetName(typeof(BandColor), resolvedPoint.Color),true), 
-                (int)(HandProb.getOrientation(resolvedPoint.IRPoint, resolvedPoint.TouchPoint) * 180.0 / Math.PI));
-            log("Orientation of resolved point: " + (int)(HandProb.getOrientation(resolvedPoint.IRPoint, resolvedPoint.TouchPoint) * 180.0 / Math.PI));
+                 cameraViewBaseAngle + (int)(HandProb.getOrientation(resolvedPoint.IRPoint, resolvedPoint.TouchPoint) * 180.0 / Math.PI));
+            log("Orientation of resolved point: " + (cameraViewBaseAngle + (int)(HandProb.getOrientation(resolvedPoint.IRPoint, resolvedPoint.TouchPoint) * 180.0 / Math.PI)));
             comm.UpdateTouchInfo(currTouch);
         }
 

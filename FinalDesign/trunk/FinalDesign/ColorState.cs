@@ -15,11 +15,13 @@ namespace FinalSolution
         public double ThresholdValue { get; set; }
         public int ErosionValue { get; set; }
         public int DilationValue { get; set; }
+        public byte BinSize { get; set; }
 
         public ColorState()
         {
-            CbHist = new DenseHistogram(16, new RangeF(0, 255));
-            CrHist = new DenseHistogram(16, new RangeF(0, 255));
+            BinSize = 32;
+            CbHist = new DenseHistogram(BinSize, new RangeF(0, 255));
+            CrHist = new DenseHistogram(BinSize, new RangeF(0, 255));
             ThresholdValue = ErosionValue = DilationValue = 0;
         }
 
@@ -85,8 +87,8 @@ namespace FinalSolution
         /// <param name="img">Image representing the current color</param>
         public void Learn(Image<Ycc, Byte> img)
         {
-            CbHist = new DenseHistogram(16, new RangeF(0, 255));
-            CrHist = new DenseHistogram(16, new RangeF(0, 255));
+            CbHist = new DenseHistogram(BinSize, new RangeF(0, 255));
+            CrHist = new DenseHistogram(BinSize, new RangeF(0, 255));
             Image<Gray, Byte>[] bandImageChannels = img.Split();
             IntPtr[] bandImageChannelsPtr = new IntPtr[1];
             // Use the whole image
