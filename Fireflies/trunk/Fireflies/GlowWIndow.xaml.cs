@@ -1,10 +1,11 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Media;
 using TableTopCommunicator;
 using Multitouch.Framework.WPF.Input;
 using Multitouch.Framework.WPF;
 using System.Windows.Controls;
-
+using System.Windows.Threading;
 
 namespace Fireflies
 {
@@ -15,13 +16,41 @@ namespace Fireflies
         enum Colors { Blue, Green, Red, Yellow, White };
         string[] glowPaths = { "/Images/blueGlow.png", "/Images/greenGlow.png", "/Images/redGlow.png",
                                "/Images/yellowGlow.png", "/Images/whiteGlow.png" };
+        DispatcherTimer timer = new DispatcherTimer();
+        DispatcherTimer opacityTimer = new DispatcherTimer();
 
         public GlowWindow()
         {
             MultitouchScreen.AddContactEnterHandler(this, ElementEnterHandler);
-            MultitouchScreen.AddContactRemovedHandler(this, ElementRemoveHandler);
-
             InitializeComponent();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            opacityTimer.Interval = TimeSpan.FromMilliseconds(100);
+            opacityTimer.Tick += new EventHandler(opacityTimer_Tick);
+            timer.Tick += new EventHandler(timer_Tick);
+            opacityTimer.Start();
+            timer.Start();
+        }
+
+        void opacityTimer_Tick(object sender, EventArgs e)
+        {
+            UIElementCollection children = this.glowPanel.Children;
+            Random r = new Random();
+            for (int i = 0; i < children.Count; i++)
+            {
+                var glow = children[i] as Glow;
+                glow.Opacity += ((r.NextDouble() - 0.8)/0.5) * 0.1;
+            }
+        }
+
+        void timer_Tick(object sender, EventArgs e)
+        {
+            UIElementCollection children = this.glowPanel.Children;
+            for (int i = 0; i < children.Count; i++)
+            {
+                var glow = children[0] as Glow;
+                glow.Timer -= 1;
+                if (glow.Timer == 0) children.Remove(glow);
+            }
         }
 
         private static void ElementEnterHandler(object sender, ContactEventArgs e)
@@ -59,24 +88,7 @@ namespace Fireflies
                 newView.SetValue(Canvas.LeftProperty, position.X - 136 / 2);
                 newView.SetValue(Canvas.TopProperty, position.Y - 138 / 2);
                 MultitouchScreen.AddContactEnterHandler(newView, ElementEnterHandler2);
-                MultitouchScreen.AddContactRemovedHandler(newView, ElementRemoveHandler2);
                 winElement.glowPanel.Children.Add(newView);
-            }
-        }
-
-        private static void ElementRemoveHandler(object sender, ContactEventArgs e)
-        {
-            var element = sender as GlowWindow;
-            element.glowPanel.Children.Remove(e.Contact.DirectlyOver as Glow);
-        }
-
-        private static void ElementRemoveHandler2(object sender, ContactEventArgs e)
-        {
-            var element = sender as Glow;
-            GlowWindow glowWindow = Window.GetWindow(element) as GlowWindow;
-            if (glowWindow != null)
-            {
-                glowWindow.glowPanel.Children.Remove(element);
             }
         }
 

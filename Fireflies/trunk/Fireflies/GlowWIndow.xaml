@@ -3,7 +3,7 @@
            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
            xmlns:mt="http://schemas.multitouch.com/Multitouch/2008/04"
            Title="Fireflies"
-           WindowState="Maximized">
+           WindowState="Maximized" WindowStyle="SingleBorderWindow">
 
     <Grid>
         <mt:TouchablePanel x:Name="glowPanel" 

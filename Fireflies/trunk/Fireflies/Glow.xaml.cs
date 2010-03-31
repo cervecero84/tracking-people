@@ -19,9 +19,12 @@ namespace Fireflies
     /// </summary>
     public partial class Glow : UserControl
     {
+        public const int MAX_TIMER = 5;
+
         public Glow(string p)
         {
             Path = p;
+            Timer = MAX_TIMER;
             InitializeComponent();
             
         }
@@ -30,6 +33,8 @@ namespace Fireflies
             get; 
             set; 
         }
+
+        public int Timer { get; set; }
 
     }
 }
